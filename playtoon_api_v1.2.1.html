@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>플레이툰 V1.2.1 API 명세 · 검토 문서</title>
+<meta name="viewport" content="width=1280">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+:root {
+  --brand-red: #DC3545;
+  --brand-red-dark: #B82838;
+  --brand-red-soft: #FCE7E9;
+  --maroon: #6B1F1F;
+  --lavender: #A99DE4;
+  --lavender-dark: #8E80D3;
+  --lavender-soft: #EEEBF9;
+  --yellow: #FACC15;
+  --yellow-soft: #FFFBE6;
+  --success: #10B981;
+  --success-soft: #D1FAE5;
+  --warn: #F59E0B;
+  --warn-soft: #FEF3C7;
+  --error: #EF4444;
+  --error-soft: #FEE2E2;
+  --info: #3B82F6;
+  --info-soft: #DBEAFE;
+  --coral: #FB923C;
+  --coral-soft: #FFEDD5;
+  --text: #111827;
+  --text-sub: #6B7280;
+  --text-muted: #9CA3AF;
+  --bg: #FFFFFF;
+  --bg-soft: #F8F9FA;
+  --bg-softer: #F3F4F6;
+  --border: #E5E7EB;
+  --border-soft: #F3F4F6;
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+  --sql-bg: #0D1117;
+  --sql-text: #E5E7EB;
+  --sql-keyword: #FF7B72;
+  --sql-string: #A5D6A7;
+  --sql-comment: #8B949E;
+  --sql-type: #79C0FF;
+  --sql-fn: #D2A8FF;
+  --sql-num: #F2CC60;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, sans-serif;
+  background: var(--bg-soft);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.alert-banner {
+  background: #1F1F1F;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.alert-banner .pill {
+  background: var(--brand-red);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.alert-banner .cta {
+  background: white;
+  color: var(--text);
+  padding: 4px 12px;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.doc-header {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 28px 48px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.doc-header .logo { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+.doc-header .title { font-size: 18px; font-weight: 600; }
+.doc-header .meta { margin-left: auto; display: flex; gap: 16px; font-size: 12px; color: var(--text-sub); }
+.doc-header .meta strong { color: var(--text); font-weight: 600; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  max-width: 1680px;
+  margin: 0 auto;
+}
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  background: white;
+  border-right: 1px solid var(--border);
+  padding: 24px 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar h3 {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  padding: 0 24px 8px;
+  margin-top: 20px;
+}
+.sidebar h3:first-of-type { margin-top: 0; }
+.sidebar a {
+  display: block;
+  padding: 7px 24px 7px 38px;
+  font-size: 13px;
+  color: var(--text-sub);
+  text-decoration: none;
+  position: relative;
+}
+.sidebar a:hover { background: var(--bg-soft); color: var(--text); }
+.sidebar a.active {
+  color: var(--brand-red);
+  font-weight: 600;
+  background: var(--brand-red-soft);
+}
+.sidebar a.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--brand-red);
+}
+.sidebar a .num {
+  display: inline-block;
+  width: 28px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-left: -24px;
+}
+.sidebar a.active .num { color: var(--brand-red); }
+
+.main { padding: 32px 48px 80px; max-width: 1340px; }
+
+.chapter-divider {
+  margin: 48px 0 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--text);
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+.chapter-divider:first-of-type { margin-top: 0; }
+.chapter-divider .num {
+  font-size: 64px;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+.chapter-divider .title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.chapter-divider .sub {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.section-intro {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+}
+.section-intro h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.section-intro p { color: var(--text-sub); font-size: 13px; line-height: 1.7; }
+.section-intro .pills { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+.pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--bg-soft);
+  color: var(--text-sub);
+}
+.pill.red { background: var(--brand-red-soft); color: var(--brand-red-dark); }
+.pill.lavender { background: var(--lavender-soft); color: var(--lavender-dark); }
+.pill.green { background: var(--success-soft); color: #065F46; }
+.pill.coral { background: var(--coral-soft); color: #9A3412; }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 16px 0;
+}
+.stat-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 14px;
+  text-align: center;
+}
+.stat-card .label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.stat-card .value {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--brand-red);
+  letter-spacing: -0.02em;
+}
+.stat-card .unit {
+  font-size: 11px;
+  color: var(--text-sub);
+  margin-top: 2px;
+}
+
+/* ─── 도메인 카드 (4개) ─── */
+.domain-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+.domain-card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 16px;
+}
+.domain-card.workspace { border-color: var(--brand-red); background: linear-gradient(180deg, var(--brand-red-soft) 0%, white 30%); }
+.domain-card.platform { border-color: var(--lavender); background: linear-gradient(180deg, var(--lavender-soft) 0%, white 30%); }
+.domain-card.admin { border-color: var(--maroon); background: linear-gradient(180deg, #FCE7E9 0%, white 30%); }
+.domain-card.public { border-color: var(--text-muted); background: linear-gradient(180deg, var(--bg-soft) 0%, white 30%); }
+.domain-card .h {
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.domain-card .auth {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-sub);
+  margin-bottom: 8px;
+}
+.domain-card .stats {
+  display: flex;
+  gap: 8px;
+  font-size: 10px;
+  margin-bottom: 6px;
+}
+.domain-card .stats span {
+  background: white;
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-soft);
+}
+.domain-card .desc {
+  font-size: 11px;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+
+/* ─── 엔드포인트 행 ─── */
+.endpoint-list {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.endpoint-list-header {
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.endpoint-list-header .badge {
+  background: var(--brand-red);
+  color: white;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  font-family: 'JetBrains Mono', monospace;
+}
+.endpoint-list-header .badge.lavender { background: var(--lavender); }
+.endpoint-list-header .badge.maroon { background: var(--maroon); }
+.endpoint-list-header .badge.dark { background: var(--text); }
+.endpoint-list-header .name {
+  font-size: 15px;
+  font-weight: 700;
+}
+.endpoint-list-header .count {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.endpoint-row {
+  display: grid;
+  grid-template-columns: 70px 1fr 100px 100px;
+  align-items: center;
+  padding: 10px 22px;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 12px;
+  gap: 12px;
+}
+.endpoint-row:last-child { border-bottom: none; }
+.endpoint-row:hover { background: var(--bg-soft); }
+.method {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 10px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  text-align: center;
+  width: 60px;
+}
+.method.get { background: var(--info-soft); color: #1E40AF; }
+.method.post { background: var(--success-soft); color: #065F46; }
+.method.patch { background: var(--warn-soft); color: #92400E; }
+.method.delete { background: var(--error-soft); color: #8B1F1F; }
+.path {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+}
+.summary {
+  color: var(--text-sub);
+  font-size: 11px;
+}
+.auth-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  text-align: center;
+  font-weight: 700;
+}
+.auth-tag.author { background: var(--brand-red-soft); color: var(--brand-red-dark); }
+.auth-tag.user { background: var(--lavender-soft); color: var(--lavender-dark); }
+.auth-tag.admin { background: #FCE7E9; color: var(--maroon); }
+.auth-tag.public { background: var(--bg-softer); color: var(--text-sub); }
+
+/* ─── 권한 분기 다이어그램 ─── */
+.flow-diagram {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  margin: 16px 0;
+}
+.flow-step {
+  background: var(--bg-soft);
+  border-left: 3px solid var(--brand-red);
+  padding: 10px 14px;
+  margin: 6px 0;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+}
+.flow-step .num {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--brand-red);
+  color: white;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-right: 8px;
+}
+.flow-step .title {
+  font-weight: 700;
+  color: var(--text);
+}
+.flow-step .detail {
+  font-size: 11px;
+  color: var(--text-sub);
+  margin-top: 3px;
+  margin-left: 26px;
+}
+.flow-step code {
+  background: white;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--brand-red-dark);
+}
+
+/* ─── 코드 블록 ─── */
+.sql-block {
+  background: var(--sql-bg);
+  color: var(--sql-text);
+  padding: 16px 20px;
+  border-radius: var(--r-md);
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 11px;
+  line-height: 1.7;
+  overflow-x: auto;
+  margin: 12px 0;
+  white-space: pre;
+}
+.sql-block .kw { color: var(--sql-keyword); font-weight: 600; }
+.sql-block .str { color: var(--sql-string); }
+.sql-block .cm { color: var(--sql-comment); font-style: italic; }
+.sql-block .tp { color: var(--sql-type); }
+.sql-block .fn { color: var(--sql-fn); }
+.sql-block .num { color: var(--sql-num); }
+
+/* ─── 인증 카드 (3종 JWT) ─── */
+.jwt-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+.jwt-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.jwt-card .head {
+  padding: 12px 16px;
+  font-weight: 700;
+  color: white;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.jwt-card.author .head { background: var(--brand-red); }
+.jwt-card.user .head { background: var(--lavender); }
+.jwt-card.admin .head { background: var(--maroon); }
+.jwt-card .head .exp {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(255,255,255,0.25);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.jwt-card .body {
+  padding: 14px 16px;
+  font-size: 11px;
+  color: var(--text-sub);
+}
+.jwt-card .claim {
+  background: var(--bg-soft);
+  padding: 8px 10px;
+  border-radius: var(--r-sm);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  margin: 6px 0;
+  line-height: 1.6;
+}
+
+/* ─── 에러 코드 테이블 ─── */
+.cols-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.cols-table th {
+  text-align: left;
+  background: var(--bg-soft);
+  color: var(--text);
+  padding: 8px 10px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+.cols-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+  color: var(--text-sub);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.cols-table td.col {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--text);
+}
+.cols-table td.code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--brand-red-dark);
+}
+
+/* 푸터 */
+.doc-footer {
+  background: var(--text);
+  color: white;
+  padding: 24px 48px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.9;
+}
+.doc-footer strong { color: var(--brand-red); margin-right: 4px; }
+.doc-footer .meta-line { margin-top: 6px; font-size: 11px; opacity: 0.65; }
+</style>
+</head>
+<body>
+
+<div class="alert-banner">
+  <span class="pill">NEW</span>
+  <span>V1.2.1 API 명세 (OpenAPI 3.0) — 48 엔드포인트 · 60 operation · 17 스키마</span>
+  <span class="cta">V1.0.0</span>
+</div>
+
+<header class="doc-header">
+  <div class="logo">PlayToon</div>
+  <div class="title">V1.2.1 API 명세 · 검토 문서</div>
+  <div class="meta">
+    <span><strong>OpenAPI 3.0.3</strong></span>
+    <span><strong>2026.05.29</strong></span>
+    <span>개발팀 · 어드민팀 전달용</span>
+  </div>
+</header>
+
+<div class="layout">
+
+<nav class="sidebar">
+  <h3>개요</h3>
+  <a href="#overview" class="active"><span class="num">A</span>전체 개요 · 통계</a>
+  <a href="#domains"><span class="num">B</span>도메인 분리 (4종)</a>
+
+  <h3>인증 · 권한</h3>
+  <a href="#auth-model"><span class="num">C</span>3종 JWT 토큰</a>
+  <a href="#authz-flow"><span class="num">D</span>권한 분기 흐름</a>
+
+  <h3>엔드포인트 카탈로그</h3>
+  <a href="#auth-endpoints"><span class="num">E1</span>Auth (인증)</a>
+  <a href="#link-endpoints"><span class="num">E2</span>Account Link · Profile</a>
+  <a href="#team-cp-endpoints"><span class="num">E3</span>Team · CP</a>
+  <a href="#delegation-endpoints"><span class="num">E4</span>Delegation (핵심)</a>
+  <a href="#content-endpoints"><span class="num">E5</span>Content Upload</a>
+  <a href="#review-endpoints"><span class="num">E6</span>Review (Admin)</a>
+  <a href="#publish-endpoints"><span class="num">E7</span>Publish</a>
+  <a href="#audit-endpoints"><span class="num">E8</span>Audit Log</a>
+
+  <h3>표준 · 가이드</h3>
+  <a href="#errors"><span class="num">F</span>에러 코드 표준</a>
+  <a href="#headers"><span class="num">G</span>헤더 · Rate Limit</a>
+  <a href="#integration"><span class="num">H</span>통합 시나리오 예시</a>
+</nav>
+
+<main class="main">
+
+<div class="chapter-divider">
+  <span class="num">A</span>
+  <span class="title">전체 개요 · 통계</span>
+  <span class="sub">2,065 lines · OpenAPI 3.0.3</span>
+</div>
+
+<section class="section-intro" id="overview">
+  <h2>V1.2.1 통합 API 명세란</h2>
+  <p>워크스페이스(작가) · 플랫폼(독자) · 어드민(운영)의 3개 클라이언트가 동일한 백엔드와 소통하는 통합 REST API. 회원가입 SB부터 위임 SB까지 4개 SB와 DB 마이그레이션 SQL에서 정의한 모든 데이터 모델·정책·비즈니스 로직이 48개 엔드포인트로 노출된다.</p>
+  <div class="pills">
+    <span class="pill red">OpenAPI 3.0.3</span>
+    <span class="pill lavender">JWT 3종 (User · Author · Admin)</span>
+    <span class="pill green">D-XXXX 위임 헤더 표준</span>
+    <span class="pill coral">표준 에러 코드 24종</span>
+  </div>
+</section>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="label">엔드포인트</div>
+    <div class="value">48</div>
+    <div class="unit">paths</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Operation</div>
+    <div class="value">60</div>
+    <div class="unit">GET 19 · POST 30 · PATCH 6 · DEL 5</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">태그</div>
+    <div class="value">10</div>
+    <div class="unit">도메인 분류</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">스키마</div>
+    <div class="value">17</div>
+    <div class="unit">데이터 모델</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">에러 응답</div>
+    <div class="value">8</div>
+    <div class="unit">공통 코드</div>
+  </div>
+</div>
+
+
+<!-- ─── B 도메인 분리 ─── -->
+<div class="chapter-divider" id="domains">
+  <span class="num">B</span>
+  <span class="title">도메인 분리 — 4종</span>
+  <span class="sub">URL 경로로 명확히 분리</span>
+</div>
+
+<section class="section-intro">
+  <h2>왜 도메인을 분리하나</h2>
+  <p>같은 백엔드 코드라도 사용자 그룹별로 노출되는 엔드포인트와 권한이 다르다. 도메인을 명확히 분리하여 라우팅·캐싱·Rate Limit·로깅을 독립 운영하고, 보안 경계를 강화한다.</p>
+</section>
+
+<div class="domain-grid">
+  <div class="domain-card workspace">
+    <div class="h">워크스페이스</div>
+    <div class="auth">AuthorBearer JWT</div>
+    <div class="stats">
+      <span>26개 path</span>
+      <span>33 operation</span>
+    </div>
+    <div class="desc">작가가 사용. 콘텐츠 제작·검수 제출·위임·발행. 만료 8시간. CP 마스터·정산담당은 추가 2FA.</div>
+  </div>
+  <div class="domain-card platform">
+    <div class="h">플랫폼</div>
+    <div class="auth">UserBearer JWT</div>
+    <div class="stats">
+      <span>4개 path</span>
+      <span>5 operation</span>
+    </div>
+    <div class="desc">독자가 사용. 본 V1.2.1 명세는 인증·프로필·연동 일부만 정의. 실제 콘텐츠 소비 API는 별도 문서.</div>
+  </div>
+  <div class="domain-card admin">
+    <div class="h">어드민</div>
+    <div class="auth">AdminBearer JWT</div>
+    <div class="stats">
+      <span>8개 path</span>
+      <span>8 operation</span>
+    </div>
+    <div class="desc">운영자가 사용. 검수 처리(승인·반려·보류)·전체 감사 로그·CP 관리. 만료 4시간. 2FA 강제.</div>
+  </div>
+  <div class="domain-card public">
+    <div class="h">공용 (인증 없음)</div>
+    <div class="auth">No Auth</div>
+    <div class="stats">
+      <span>10개 path</span>
+      <span>14 operation</span>
+    </div>
+    <div class="desc">로그인·회원가입·소셜·비밀번호 재설정 등 인증 자체를 처리. Rate Limit 강화 (IP 기반).</div>
+  </div>
+</div>
+
+<table class="cols-table" style="margin-top:16px;">
+  <tr><th>URL 패턴</th><th>도메인</th><th>예시</th></tr>
+  <tr><td class="col">/v1/auth/*</td><td>공용</td><td>POST /auth/login, POST /auth/signup-user</td></tr>
+  <tr><td class="col">/v1/me · /v1/teams/* · /v1/cp/* · /v1/delegation/* · /v1/content/* · /v1/publish/*</td><td>워크스페이스</td><td>POST /delegation, GET /content/uploads</td></tr>
+  <tr><td class="col">/v1/admin/*</td><td>어드민</td><td>POST /admin/review/{id}/approve, GET /admin/audit</td></tr>
+  <tr><td class="col">/v1/account-link/*</td><td>USER 또는 AUTHOR 양쪽</td><td>POST /account-link (사후 연동)</td></tr>
+</table>
+
+
+<!-- ─── C 인증 모델 ─── -->
+<div class="chapter-divider" id="auth-model">
+  <span class="num">C</span>
+  <span class="title">3종 JWT 토큰</span>
+  <span class="sub">claim · 만료 · 권한</span>
+</div>
+
+<section class="section-intro">
+  <h2>왜 3개의 별도 JWT인가</h2>
+  <p>USER와 AUTHOR는 같은 사람이라도 별도 계정(Q1·Q5). 어드민은 운영자로 보안 수준이 다르다. JWT의 <code>aud</code> claim으로 토큰의 발급 도메인을 명시하여, 잘못된 토큰으로 다른 도메인 API 호출 시 즉시 거부 (401).</p>
+</section>
+
+<div class="jwt-grid">
+  <div class="jwt-card author">
+    <div class="head">AuthorBearer<span class="exp">8h</span></div>
+    <div class="body">
+      <div>작가(워크스페이스) 인증용.</div>
+      <div class="claim">{
+  "sub": <span style="color:var(--brand-red);">123</span>,
+  "aud": "author",
+  "role": "author",
+  "cp_id": <span style="color:var(--text-muted);">null</span>,
+  "exp": <span style="color:var(--text-muted);">1735000000</span>,
+  "iat": <span style="color:var(--text-muted);">1734971200</span>
+}</div>
+      <div style="margin-top:8px;font-size:10px;">role 변경 시 즉시 재발급. CP 마스터·정산담당은 추가 2FA 통과 후 발급.</div>
+    </div>
+  </div>
+
+  <div class="jwt-card user">
+    <div class="head">UserBearer<span class="exp">24h</span></div>
+    <div class="body">
+      <div>독자(플랫폼) 인증용.</div>
+      <div class="claim">{
+  "sub": <span style="color:var(--lavender-dark);">456</span>,
+  "aud": "user",
+  "exp": <span style="color:var(--text-muted);">1735000000</span>,
+  "iat": <span style="color:var(--text-muted);">1734914400</span>
+}</div>
+      <div style="margin-top:8px;font-size:10px;">단순 구조. 만료 24시간. Refresh Token으로 무중단 갱신.</div>
+    </div>
+  </div>
+
+  <div class="jwt-card admin">
+    <div class="head">AdminBearer<span class="exp">4h</span></div>
+    <div class="body">
+      <div>어드민(운영) 인증용.</div>
+      <div class="claim">{
+  "sub": <span style="color:var(--maroon);">789</span>,
+  "aud": "admin",
+  "permissions": [
+    "review.approve",
+    "review.reject",
+    "cp.manage"
+  ],
+  "exp": <span style="color:var(--text-muted);">1735000000</span>,
+  "iat": <span style="color:var(--text-muted);">1734985600</span>
+}</div>
+      <div style="margin-top:8px;font-size:10px;">최단 만료. 2FA 강제. 권한이 permissions claim에 명시.</div>
+    </div>
+  </div>
+</div>
+
+<table class="cols-table" style="margin-top:16px;">
+  <tr><th>특성</th><th>UserBearer</th><th>AuthorBearer</th><th>AdminBearer</th></tr>
+  <tr><td class="col">만료 시간</td><td>24h</td><td>8h</td><td>4h</td></tr>
+  <tr><td class="col">2FA 강제</td><td>—</td><td>master · accounting만</td><td>항상</td></tr>
+  <tr><td class="col">claim 키</td><td>sub, aud</td><td>sub, aud, role, cp_id</td><td>sub, aud, permissions</td></tr>
+  <tr><td class="col">refresh 가능?</td><td>○</td><td>○</td><td>×</td></tr>
+  <tr><td class="col">Rate Limit</td><td>600/min</td><td>300/min</td><td>120/min</td></tr>
+</table>
+
+
+<!-- ─── D 권한 분기 흐름 ─── -->
+<div class="chapter-divider" id="authz-flow">
+  <span class="num">D</span>
+  <span class="title">권한 분기 흐름</span>
+  <span class="sub">verify_delegation_permission 알고리즘</span>
+</div>
+
+<section class="section-intro">
+  <h2>모든 콘텐츠 액션의 권한 검증</h2>
+  <p>검수 제출, 예약 공개, 발행 이력 수정 등 콘텐츠 관련 액션은 모두 위임 SB H3 알고리즘으로 검증된다. <code>POST /delegation/verify</code> API 또는 백엔드 함수 호출로 4단계 검증을 거쳐 self / delegated / cp_master / no_permission 중 하나로 결정.</p>
+</section>
+
+<div class="flow-diagram">
+  <div class="flow-step">
+    <span class="num">1</span>
+    <span class="title">JWT 인증</span>
+    <div class="detail">AuthorBearer 토큰 검증. <code>aud=author</code> 확인. 만료·서명 검증.</div>
+  </div>
+  <div class="flow-step" style="border-left-color:var(--success);">
+    <span class="num" style="background:var(--success);">2</span>
+    <span class="title">본인이 author인가? → <code>mode=self</code></span>
+    <div class="detail">SERIES.author_id == JWT.sub이면 즉시 권한 부여. 가장 빠른 경로.</div>
+  </div>
+  <div class="flow-step" style="border-left-color:var(--lavender);">
+    <span class="num" style="background:var(--lavender);">3</span>
+    <span class="title">활성 위임 존재? → <code>mode=delegated</code></span>
+    <div class="detail">
+      DELEGATION 테이블 조회 — receiver_id == JWT.sub AND issuer_id == series.author_id<br>
+      AND status='active' AND valid_to > NOW() AND action ∈ action_types<br>
+      AND (scope='all_series' OR series_id ∈ series_ids)
+    </div>
+  </div>
+  <div class="flow-step" style="border-left-color:var(--maroon);">
+    <span class="num" style="background:var(--maroon);">4</span>
+    <span class="title">CP 마스터 + 정책 ON? → <code>mode=cp_master</code></span>
+    <div class="detail">
+      JWT.role == 'master' AND series.team.cp_id == JWT.cp_id<br>
+      AND cp.master_uploads_without_delegation == TRUE (D-1 정책)
+    </div>
+  </div>
+  <div class="flow-step" style="border-left-color:var(--error);">
+    <span class="num" style="background:var(--error);">5</span>
+    <span class="title">모두 실패 → <code>403 Forbidden · no_permission</code></span>
+    <div class="detail">
+      응답: <code>{ ok: false, mode: 'no_permission', reason: 'no_permission' }</code><br>
+      클라이언트는 [팀장에게 위임 요청] 버튼 노출 → POST /delegation/request
+    </div>
+  </div>
+</div>
+
+<h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:20px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">D1. 권한 검증 호출 예시</h4>
+<div class="sql-block"><span class="cm">// 검수 제출 직전 (검수·발행 SB C4)</span>
+<span class="kw">const</span> result = <span class="kw">await</span> fetch(<span class="str">'/v1/delegation/verify'</span>, {
+  method: <span class="str">'POST'</span>,
+  headers: {
+    <span class="str">'Authorization'</span>: <span class="str">'Bearer eyJhbGc...'</span>,
+    <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>
+  },
+  body: <span class="fn">JSON.stringify</span>({
+    action: <span class="str">'submit_review'</span>,
+    seriesId: <span class="num">456</span>
+  })
+});
+
+<span class="cm">// 응답</span>
+{
+  ok: <span class="kw">true</span>,
+  mode: <span class="str">'delegated'</span>,        <span class="cm">// 'self' | 'delegated' | 'cp_master'</span>
+  delegationId: <span class="str">'D-2432'</span>,   <span class="cm">// delegated일 때 D-XXXX</span>
+  reason: <span class="kw">null</span>
+}
+
+<span class="cm">// → 클라이언트는 mode에 따라 UI 분기:</span>
+<span class="cm">//   self: 일반 검수 제출 모달</span>
+<span class="cm">//   delegated: Lavender callout (대리 업로드 안내) + X-Delegation-Id 헤더로 후속 요청</span>
+<span class="cm">//   cp_master: Maroon callout (CP 정책 모드 안내)</span></div>
+
+
+<h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:20px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">D2. X-Delegation-Id 헤더 표준</h4>
+<table class="cols-table">
+  <tr><th>상황</th><th>X-Delegation-Id 헤더</th><th>upload_mode</th></tr>
+  <tr><td>본인 author로 검수 제출</td><td>(생략)</td><td>self</td></tr>
+  <tr><td>위임받은 팀원이 대리 제출</td><td class="code">D-2432</td><td>delegated</td></tr>
+  <tr><td>CP 마스터가 무위임 업로드</td><td>(생략)</td><td>cp_master</td></tr>
+</table>
+
+<!-- ─── E 엔드포인트 카탈로그 ─── -->
+<div class="chapter-divider">
+  <span class="num">E</span>
+  <span class="title">엔드포인트 카탈로그</span>
+  <span class="sub">8개 도메인 · 48개 path</span>
+</div>
+
+<section class="section-intro">
+  <h2>도메인별 엔드포인트 매트릭스</h2>
+  <p>OpenAPI YAML의 모든 endpoint를 도메인별로 정리. 각 행은 메서드 · 경로 · 요약 · 인증 도메인을 보여준다. 위임이 필요한 액션은 별도 표시.</p>
+</section>
+
+<!-- E1 Auth -->
+<div class="endpoint-list" id="auth-endpoints">
+  <div class="endpoint-list-header">
+    <span class="badge">E1</span>
+    <span class="name">Auth — 인증 (10개)</span>
+    <span class="count">/v1/auth/* · No Auth</span>
+  </div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/auth/signup-user</span><span class="summary">USER 회원가입 (Q1 검증)</span><span class="auth-tag public">PUBLIC</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/auth/signup-author</span><span class="summary">AUTHOR 회원가입 (실명·SMS·CP 코드)</span><span class="auth-tag public">PUBLIC</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/auth/login</span><span class="summary">로그인 (targetDb=user|author)</span><span class="auth-tag public">PUBLIC</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/auth/oauth/{provider}</span><span class="summary">소셜 로그인 (Q3 검증)</span><span class="auth-tag public">PUBLIC</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/auth/verify-email</span><span class="summary">이메일 인증 토큰 검증</span><span class="auth-tag public">PUBLIC</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/auth/verify-phone</span><span class="summary">SMS 코드 → phoneToken 발급</span><span class="auth-tag public">PUBLIC</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/auth/password-reset/request</span><span class="summary">비번 재설정 요청 (Q2 분기)</span><span class="auth-tag public">PUBLIC</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/auth/password-reset/confirm</span><span class="summary">비번 재설정 확정</span><span class="auth-tag public">PUBLIC</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/auth/refresh</span><span class="summary">Access Token 갱신</span><span class="auth-tag public">PUBLIC</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/auth/logout</span><span class="summary">토큰 무효화</span><span class="auth-tag user">U/A</span></div>
+</div>
+
+<!-- E2 Account Link · Profile -->
+<div class="endpoint-list" id="link-endpoints">
+  <div class="endpoint-list-header">
+    <span class="badge">E2</span>
+    <span class="name">Account Link · Profile (9개)</span>
+    <span class="count">USER 또는 AUTHOR</span>
+  </div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/account-link</span><span class="summary">현재 연동 상태 (Q5: 1:1 매핑)</span><span class="auth-tag user">U/A</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/account-link</span><span class="summary">사후 연동 (post_signup)</span><span class="auth-tag user">U/A</span></div>
+  <div class="endpoint-row"><span class="method delete">DEL</span><span class="path">/account-link/{linkId}</span><span class="summary">연동 해제 (Q4)</span><span class="auth-tag user">U/A</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/account-link/oauth/{provider}</span><span class="summary">OAuth 추가 연동</span><span class="auth-tag user">U/A</span></div>
+  <div class="endpoint-row"><span class="method delete">DEL</span><span class="path">/account-link/oauth/{provider}</span><span class="summary">OAuth 연동 해제</span><span class="auth-tag user">U/A</span></div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/me</span><span class="summary">본인 프로필 (토큰 분기)</span><span class="auth-tag user">U/A</span></div>
+  <div class="endpoint-row"><span class="method patch">PATCH</span><span class="path">/me</span><span class="summary">프로필 수정</span><span class="auth-tag user">U/A</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/me/2fa/enable</span><span class="summary">2FA 활성화 (TOTP)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/me/2fa/verify</span><span class="summary">2FA 확정</span><span class="auth-tag author">AUTHOR</span></div>
+</div>
+
+<!-- E3 Team · CP -->
+<div class="endpoint-list" id="team-cp-endpoints">
+  <div class="endpoint-list-header">
+    <span class="badge">E3</span>
+    <span class="name">Team · CP (12개)</span>
+    <span class="count">팀·CP 회사 관리</span>
+  </div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/teams</span><span class="summary">본인 소속 팀 목록</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/teams/{teamId}</span><span class="summary">팀 상세</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method patch">PATCH</span><span class="path">/teams/{teamId}</span><span class="summary">팀 정보 수정 (Owner만)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/teams/{teamId}/members</span><span class="summary">팀 멤버 목록</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method patch">PATCH</span><span class="path">/teams/{teamId}/members/{authorId}</span><span class="summary">멤버 권한 변경</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method delete">DEL</span><span class="path">/teams/{teamId}/members/{authorId}</span><span class="summary">멤버 제거 (자동 위임 회수)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/teams/{teamId}/invitations</span><span class="summary">초대 목록</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/teams/{teamId}/invitations</span><span class="summary">팀 초대 발송</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/teams/invitations/accept</span><span class="summary">초대 수락</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/cp/me</span><span class="summary">본인 소속 CP 정보</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method patch">PATCH</span><span class="path">/cp/{cpId}/policy</span><span class="summary">⚠ D-1 정책 변경 (마스터)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/cp/{cpId}/invitations</span><span class="summary">CP 작가 영입 초대</span><span class="auth-tag author">AUTHOR</span></div>
+</div>
+
+<!-- E4 Delegation -->
+<div class="endpoint-list" id="delegation-endpoints">
+  <div class="endpoint-list-header">
+    <span class="badge lavender">E4</span>
+    <span class="name">Delegation — 위임 (10개)</span>
+    <span class="count">위임 SB 정합 · 핵심</span>
+  </div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/delegation</span><span class="summary">발급한 위임 목록 (B1 ① 탭)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/delegation</span><span class="summary">위임 발급 (C5 모달 · P-2 P-3 검증)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/delegation/received</span><span class="summary">받은 위임 목록 (B1 ② 탭)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/delegation/{delegationId}</span><span class="summary">위임 상세 (D-XXXX)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method delete">DEL</span><span class="path">/delegation/{delegationId}</span><span class="summary">위임 회수 (B3 4-Step)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method patch">PATCH</span><span class="path">/delegation/{delegationId}/extend</span><span class="summary">위임 연장 (기간만)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/delegation/request</span><span class="summary">팀원이 팀장에게 요청</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/delegation/verify</span><span class="summary">⚠ 권한 검증 (D 흐름 핵심)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/delegation/audit</span><span class="summary">위임 이력 5종 이벤트</span><span class="auth-tag author">AUTHOR</span></div>
+</div>
+
+<!-- E5 Content Upload -->
+<div class="endpoint-list" id="content-endpoints">
+  <div class="endpoint-list-header">
+    <span class="badge">E5</span>
+    <span class="name">Content Upload — 검수 제출 (6개)</span>
+    <span class="count">위임 헤더 지원</span>
+  </div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/content/uploads</span><span class="summary">업로드 이력 (G+ 탭)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/content/uploads</span><span class="summary">⚡ 검수 제출 (X-Delegation-Id 지원)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/content/uploads/{uploadId}</span><span class="summary">업로드 상세 + 반려·보류 정보</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/content/uploads/{uploadId}/resubmit</span><span class="summary">반려·보류 후 재제출</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/content/uploads/{uploadId}/onhold-messages</span><span class="summary">보류 채팅 조회</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/content/uploads/{uploadId}/onhold-messages</span><span class="summary">보류 채팅 답신 (작가)</span><span class="auth-tag author">AUTHOR</span></div>
+</div>
+
+<!-- E6 Review (Admin) -->
+<div class="endpoint-list" id="review-endpoints">
+  <div class="endpoint-list-header">
+    <span class="badge maroon">E6</span>
+    <span class="name">Review (Admin) — 검수 처리 (5개)</span>
+    <span class="count">/v1/admin/review/* · AdminBearer</span>
+  </div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/admin/review/queue</span><span class="summary">검수 대기 큐</span><span class="auth-tag admin">ADMIN</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/admin/review/{uploadId}/approve</span><span class="summary">검수 승인</span><span class="auth-tag admin">ADMIN</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/admin/review/{uploadId}/reject</span><span class="summary">검수 반려 (8 카테고리)</span><span class="auth-tag admin">ADMIN</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/admin/review/{uploadId}/onhold</span><span class="summary">검수 보류</span><span class="auth-tag admin">ADMIN</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/admin/review/{uploadId}/onhold-messages</span><span class="summary">보류 채팅 답신 (어드민)</span><span class="auth-tag admin">ADMIN</span></div>
+</div>
+
+<!-- E7 Publish -->
+<div class="endpoint-list" id="publish-endpoints">
+  <div class="endpoint-list-header">
+    <span class="badge">E7</span>
+    <span class="name">Publish — 예약 공개 · 발행 (6개)</span>
+    <span class="count">위임 헤더 지원</span>
+  </div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/publish/schedules</span><span class="summary">예약 큐 조회</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/publish/schedules</span><span class="summary">⚡ 예약 등록 (schedule_publish 권한)</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method patch">PATCH</span><span class="path">/publish/schedules/{scheduleId}</span><span class="summary">예약 변경</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method delete">DEL</span><span class="path">/publish/schedules/{scheduleId}</span><span class="summary">예약 취소</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/publish/now</span><span class="summary">즉시 발행</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/publish/history/episodes/{episodeId}</span><span class="summary">발행 이력</span><span class="auth-tag author">AUTHOR</span></div>
+  <div class="endpoint-row"><span class="method post">POST</span><span class="path">/publish/history/{historyId}/rollback</span><span class="summary">⚠ 롤백 (edit_publish_history 권한)</span><span class="auth-tag author">AUTHOR</span></div>
+</div>
+
+<!-- E8 Audit -->
+<div class="endpoint-list" id="audit-endpoints">
+  <div class="endpoint-list-header">
+    <span class="badge dark">E8</span>
+    <span class="name">Audit — 감사 로그 (2개)</span>
+    <span class="count">P-5 이력 추적</span>
+  </div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/audit/me</span><span class="summary">본인 관련 이벤트 (USER·AUTHOR)</span><span class="auth-tag user">U/A</span></div>
+  <div class="endpoint-row"><span class="method get">GET</span><span class="path">/admin/audit</span><span class="summary">전체 감사 로그 (IP·세션 포함)</span><span class="auth-tag admin">ADMIN</span></div>
+</div>
+
+<!-- ─── F 에러 코드 표준 ─── -->
+<div class="chapter-divider" id="errors">
+  <span class="num">F</span>
+  <span class="title">에러 코드 표준</span>
+  <span class="sub">UPPER_SNAKE_CASE · 24종</span>
+</div>
+
+<section class="section-intro">
+  <h2>표준 에러 응답</h2>
+  <p>모든 4xx·5xx 응답은 일관된 구조 — <code>error.code</code> (UPPER_SNAKE_CASE) + <code>error.message</code> (한국어) + 추가 컨텍스트. 5xx는 requestId 포함.</p>
+</section>
+
+<div class="sql-block"><span class="cm">// 표준 에러 응답 구조</span>
+{
+  <span class="str">"error"</span>: {
+    <span class="str">"code"</span>: <span class="str">"NO_PERMISSION"</span>,
+    <span class="str">"message"</span>: <span class="str">"이 작업의 권한이 없습니다"</span>,
+    <span class="str">"field"</span>: <span class="str">"submit_review"</span>,      <span class="cm">// validation/permission 시</span>
+    <span class="str">"requestId"</span>: <span class="str">"req_abc123xyz"</span>     <span class="cm">// 5xx 시</span>
+  }
+}</div>
+
+<h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:20px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">F1. 인증 · 권한 에러 (401 · 403)</h4>
+<table class="cols-table">
+  <tr><th>HTTP</th><th>code</th><th>message · 발생 조건</th></tr>
+  <tr><td class="col">401</td><td class="code">TOKEN_MISSING</td><td>Authorization 헤더 없음</td></tr>
+  <tr><td class="col">401</td><td class="code">TOKEN_INVALID</td><td>토큰 서명 검증 실패</td></tr>
+  <tr><td class="col">401</td><td class="code">TOKEN_EXPIRED</td><td>토큰 만료 → /auth/refresh 사용</td></tr>
+  <tr><td class="col">401</td><td class="code">WRONG_AUDIENCE</td><td>UserBearer로 워크스페이스 API 호출 시</td></tr>
+  <tr><td class="col">401</td><td class="code">TWO_FACTOR_REQUIRED</td><td>CP 마스터/정산담당이 2FA 미인증</td></tr>
+  <tr><td class="col">403</td><td class="code">NO_PERMISSION</td><td>verify_delegation_permission 결과 mode=no_permission</td></tr>
+  <tr><td class="col">403</td><td class="code">NOT_TEAM_OWNER</td><td>Owner 액션을 다른 멤버가 시도</td></tr>
+  <tr><td class="col">403</td><td class="code">NOT_CP_MASTER</td><td>CP 정책 변경 시 마스터 아님</td></tr>
+</table>
+
+<h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:20px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">F2. 정책 위반 · 충돌 (409 · 422)</h4>
+<table class="cols-table">
+  <tr><th>HTTP</th><th>code</th><th>message · 발생 조건</th></tr>
+  <tr><td class="col">409</td><td class="code">EMAIL_ALREADY_EXISTS</td><td>Q1 위반 (양쪽 DB 중복)</td></tr>
+  <tr><td class="col">409</td><td class="code">NICKNAME_TAKEN</td><td>USER 닉네임 중복</td></tr>
+  <tr><td class="col">409</td><td class="code">OAUTH_ALREADY_LINKED</td><td>Q3 위반 (다른 DB에 가입됨)</td></tr>
+  <tr><td class="col">409</td><td class="code">LINK_ALREADY_EXISTS</td><td>Q5 위반 (이미 다른 계정과 연동)</td></tr>
+  <tr><td class="col">409</td><td class="code">DELEGATION_DUPLICATE</td><td>같은 (receiver, scope, actions) 활성 위임 존재</td></tr>
+  <tr><td class="col">422</td><td class="code">P3_RECEIVER_NOT_TEAM_MEMBER</td><td>위임 SB P-3 위반</td></tr>
+  <tr><td class="col">422</td><td class="code">D2_DURATION_EXCEEDED</td><td>유효기간 365일 초과 (D-2 정책)</td></tr>
+  <tr><td class="col">422</td><td class="code">P6_MISSING_SUBMIT_REVIEW</td><td>action_types에 submit_review 미포함</td></tr>
+  <tr><td class="col">422</td><td class="code">UPLOAD_NOT_APPROVED</td><td>예약 공개 시 미승인 업로드</td></tr>
+  <tr><td class="col">422</td><td class="code">SCHEDULE_TOO_FAR</td><td>예약 일시가 3개월 초과</td></tr>
+</table>
+
+<h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:20px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">F3. 일반 에러 (400 · 404 · 429 · 500)</h4>
+<table class="cols-table">
+  <tr><th>HTTP</th><th>code</th><th>message · 발생 조건</th></tr>
+  <tr><td class="col">400</td><td class="code">INVALID_EMAIL_FORMAT</td><td>이메일 정규식 불일치</td></tr>
+  <tr><td class="col">400</td><td class="code">PASSWORD_TOO_SHORT</td><td>8자 미만</td></tr>
+  <tr><td class="col">400</td><td class="code">MISSING_REQUIRED_FIELD</td><td>required 필드 누락</td></tr>
+  <tr><td class="col">404</td><td class="code">RESOURCE_NOT_FOUND</td><td>존재하지 않는 ID</td></tr>
+  <tr><td class="col">404</td><td class="code">DELEGATION_NOT_FOUND</td><td>D-XXXX 존재하지 않음</td></tr>
+  <tr><td class="col">410</td><td class="code">TOKEN_USED_OR_EXPIRED</td><td>비번 재설정·이메일 인증 토큰 만료</td></tr>
+  <tr><td class="col">429</td><td class="code">RATE_LIMIT_EXCEEDED</td><td>분당 요청 수 초과</td></tr>
+  <tr><td class="col">500</td><td class="code">INTERNAL_ERROR</td><td>서버 오류 (requestId 포함)</td></tr>
+</table>
+
+
+<!-- ─── G 헤더 · Rate Limit ─── -->
+<div class="chapter-divider" id="headers">
+  <span class="num">G</span>
+  <span class="title">헤더 · Rate Limit</span>
+  <span class="sub">요청·응답 표준 헤더</span>
+</div>
+
+<section class="section-intro">
+  <h2>표준 헤더 4종</h2>
+  <p>모든 API는 4개의 표준 헤더를 지원한다. <code>X-Delegation-Id</code>는 위임 사용 시, 나머지 3개는 Rate Limit·추적용.</p>
+</section>
+
+<table class="cols-table">
+  <tr><th>헤더</th><th>방향</th><th>설명</th><th>예시</th></tr>
+  <tr><td class="col">Authorization</td><td>요청</td><td>JWT Bearer 토큰</td><td class="code">Bearer eyJhbGciOiJIUzI1...</td></tr>
+  <tr><td class="col">X-Delegation-Id</td><td>요청</td><td>위임 사용 시 D-XXXX (delegated 모드)</td><td class="code">D-2432</td></tr>
+  <tr><td class="col">X-Request-Id</td><td>응답</td><td>요청 추적용 unique ID</td><td class="code">req_abc123xyz</td></tr>
+  <tr><td class="col">X-RateLimit-Limit</td><td>응답</td><td>분당 허용 요청 수</td><td class="code">300</td></tr>
+  <tr><td class="col">X-RateLimit-Remaining</td><td>응답</td><td>남은 요청 수</td><td class="code">287</td></tr>
+  <tr><td class="col">X-RateLimit-Reset</td><td>응답</td><td>Reset 시각 (epoch)</td><td class="code">1735000060</td></tr>
+  <tr><td class="col">Retry-After</td><td>응답 (429)</td><td>재시도 대기 시간 (초)</td><td class="code">38</td></tr>
+</table>
+
+<h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:20px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">G1. Rate Limit 정책</h4>
+<table class="cols-table">
+  <tr><th>도메인</th><th>분당 한도</th><th>특이 사항</th></tr>
+  <tr><td class="col">UserBearer</td><td>600 req/min</td><td>독자 일반 트래픽</td></tr>
+  <tr><td class="col">AuthorBearer</td><td>300 req/min</td><td>워크스페이스 작업</td></tr>
+  <tr><td class="col">AdminBearer</td><td>120 req/min</td><td>운영 작업 (낮은 한도)</td></tr>
+  <tr><td class="col">/auth/*</td><td>10 req/min · IP 기반</td><td>로그인·가입 brute force 방지</td></tr>
+  <tr><td class="col">/auth/login (실패)</td><td>5 req/15min · IP+email 기반</td><td>비번 추측 공격 방지</td></tr>
+  <tr><td class="col">/auth/oauth/*</td><td>30 req/hour · IP 기반</td><td>소셜 로그인</td></tr>
+</table>
+
+
+<!-- ─── H 통합 시나리오 ─── -->
+<div class="chapter-divider" id="integration">
+  <span class="num">H</span>
+  <span class="title">통합 시나리오 예시</span>
+  <span class="sub">위임받은 작가의 검수 제출 풀 플로우</span>
+</div>
+
+<section class="section-intro">
+  <h2>현실적인 클라이언트 호출 시퀀스</h2>
+  <p>위임 SB · 검수·발행 SB · 본 API 명세가 어떻게 함께 동작하는지 보여주는 통합 예시. 김OO이 박OO의 작품 "어둠의 격투사 Ep.7"을 대리 검수 제출하는 전체 시퀀스.</p>
+</section>
+
+<div class="flow-diagram">
+  <div class="flow-step" style="border-left-color:var(--lavender);">
+    <span class="num" style="background:var(--lavender);">1</span>
+    <span class="title">대시보드 진입 — 받은 위임 확인</span>
+    <div class="detail">
+      <code>GET /me</code> → AuthorBearer 김OO 응답<br>
+      <code>GET /delegation/received?status=active</code> → D-2432 (박OO 발급) 표시
+    </div>
+  </div>
+
+  <div class="flow-step" style="border-left-color:var(--lavender);">
+    <span class="num" style="background:var(--lavender);">2</span>
+    <span class="title">검수·발행 영역의 [대리 발행] 탭 진입</span>
+    <div class="detail">
+      <code>GET /content/uploads?seriesId=456</code> → 어둠의 격투사 회차 목록<br>
+      Ep.7 draft 상태 확인
+    </div>
+  </div>
+
+  <div class="flow-step" style="border-left-color:var(--lavender);">
+    <span class="num" style="background:var(--lavender);">3</span>
+    <span class="title">검수 제출 모달 C4 — 권한 검증</span>
+    <div class="detail">
+      <code>POST /delegation/verify</code> { action: 'submit_review', seriesId: 456 }<br>
+      ← { ok: true, mode: 'delegated', delegationId: 'D-2432' }<br>
+      UI: Lavender callout 표시 ("박OO 작가의 작품으로 등록")
+    </div>
+  </div>
+
+  <div class="flow-step" style="border-left-color:var(--lavender);">
+    <span class="num" style="background:var(--lavender);">4</span>
+    <span class="title">최종 검수 제출 — X-Delegation-Id 헤더</span>
+    <div class="detail">
+      <code>POST /content/uploads</code><br>
+      Headers: <code>X-Delegation-Id: D-2432</code><br>
+      Body: { contentType, contentId, seriesId, version, submitMemo }<br>
+      → 백엔드: upload_mode=delegated · delegation_id=D-2432 저장 · author_id=박OO(불변) · uploaded_by_id=김OO
+    </div>
+  </div>
+
+  <div class="flow-step" style="border-left-color:var(--success);">
+    <span class="num" style="background:var(--success);">5</span>
+    <span class="title">자동 트리거 발동 (006_audit_log.sql)</span>
+    <div class="detail">
+      DELEGATION.usage_count++ · last_used_at = NOW()<br>
+      AUTH_AUDIT_LOG에 <code>delegation_used</code> 이벤트 자동 기록
+    </div>
+  </div>
+
+  <div class="flow-step" style="border-left-color:var(--maroon);">
+    <span class="num" style="background:var(--maroon);">6</span>
+    <span class="title">어드민 측 — 검수 큐 진입</span>
+    <div class="detail">
+      <code>GET /admin/review/queue?reviewStatus=submitted</code> → 어드민 토큰 필요<br>
+      author=박OO 표시 (D-3 정책: uploaded_by_id는 어드민에게만 노출)
+    </div>
+  </div>
+
+  <div class="flow-step" style="border-left-color:var(--success);">
+    <span class="num" style="background:var(--success);">7</span>
+    <span class="title">검수 승인 → 알림</span>
+    <div class="detail">
+      <code>POST /admin/review/{uploadId}/approve</code><br>
+      → 박OO(author)에게 인앱·이메일 알림 · 김OO(uploader)에게도 알림<br>
+      → review_status=approved · 예약 공개 가능 상태
+    </div>
+  </div>
+</div>
+
+<h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:20px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">H1. P0 작업 시리즈 정합 검증</h4>
+<table class="cols-table">
+  <tr><th>P0 작업</th><th>이 시나리오에서 검증되는 정책</th></tr>
+  <tr><td class="col">작업 1 (회원가입 SB)</td><td>김OO·박OO이 모두 AUTHOR DB 가입 · author_type=team</td></tr>
+  <tr><td class="col">작업 2 (검수·발행 SB)</td><td>C4 단계의 대리 권한 확인 · 검수 제출 6-Step</td></tr>
+  <tr><td class="col">작업 3 (위임 SB)</td><td>P-1 토큰형 · P-3 같은 팀 멤버 · P-4 author 불변 · P-5 이력 기록 · P-6 액션 명시</td></tr>
+  <tr><td class="col">작업 4 (DB 마이그레이션)</td><td>verify_delegation_permission() 호출 · content_uploads 트리거 · audit log</td></tr>
+  <tr><td class="col"><strong>작업 5 (이 API)</strong></td><td>POST /delegation/verify · X-Delegation-Id 헤더 · 표준 에러 응답</td></tr>
+</table>
+
+
+<!-- ─── 마무리 ─── -->
+<div class="chapter-divider">
+  <span class="num">⊕</span>
+  <span class="title">P0 완료 — V1.2.1 출시 준비 완료</span>
+  <span class="sub">5개 작업 · 18개 산출물</span>
+</div>
+
+<section class="section-intro">
+  <h2>다음 단계 (P0 완료 이후)</h2>
+  <p>본 5개 작업으로 워크스페이스 V1.2.1의 사양 정의가 완료된다. 다음으로는 (P1) 디자인팀의 Figma 시안 작성 → 개발 스프린트 분할 → 어드민 측 미정의 영역(예: 정산 시스템, 콘텐츠 큐레이션) 정의로 이어진다.</p>
+  <div class="pills">
+    <span class="pill green">✓ P0 5개 작업 완료</span>
+    <span class="pill lavender">→ P1 디자인·개발 진입</span>
+    <span class="pill coral">플레이북 에디터 (V1.3.0+) 준비</span>
+  </div>
+</section>
+
+<table class="cols-table" style="margin-top:16px;">
+  <tr><th>작업</th><th>산출물</th><th>크기</th></tr>
+  <tr><td class="col">1 — 회원가입 SB</td><td>playtoon_signup_sb_v1.0.0.html</td><td>99 KB · 2,299줄</td></tr>
+  <tr><td class="col">2 — 검수·발행 SB</td><td>playtoon_review_publish_sb_v1.0.0.html</td><td>123 KB · 2,444줄</td></tr>
+  <tr><td class="col">3 — 위임 SB</td><td>playtoon_delegation_sb_v1.0.0.html</td><td>141 KB · 2,589줄</td></tr>
+  <tr><td class="col">4 — DB 마이그레이션</td><td>playtoon_db_migration_v1.2.1.html + 11개 SQL 파일</td><td>HTML 77 KB · SQL 1,425줄</td></tr>
+  <tr><td class="col"><strong>5 — API 명세</strong></td><td><strong>playtoon_api_v1.2.1.html + playtoon_api_v1.2.1.yaml</strong></td><td><strong>HTML 약 80 KB · YAML 2,065줄</strong></td></tr>
+</table>
+
+</main>
+
+</div>
+
+<footer class="doc-footer">
+  <strong>PlayToon</strong>V1.2.1 API 명세 · 2026.05.29
+  <div class="meta-line">48 엔드포인트 · 60 operation · 17 스키마 · 8 공통 응답 · 2,065줄 OpenAPI YAML</div>
+</footer>
+
+<script>
+const links = document.querySelectorAll('.sidebar a');
+const sections = document.querySelectorAll('[id]');
+function activate() {
+  let current = '';
+  sections.forEach(s => {
+    if (s.getBoundingClientRect().top < 200) current = s.id;
+  });
+  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+}
+window.addEventListener('scroll', activate);
+links.forEach(l => l.addEventListener('click', e => {
+  const t = document.querySelector(l.getAttribute('href'));
+  if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+}));
+</script>
+
+</body>
+</html>

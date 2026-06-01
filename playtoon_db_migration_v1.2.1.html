@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>플레이툰 V1.2.1 DB 마이그레이션 · 검토 문서</title>
+<meta name="viewport" content="width=1280">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+:root {
+  --brand-red: #DC3545;
+  --brand-red-dark: #B82838;
+  --brand-red-soft: #FCE7E9;
+  --maroon: #6B1F1F;
+  --lavender: #A99DE4;
+  --lavender-dark: #8E80D3;
+  --lavender-soft: #EEEBF9;
+  --yellow: #FACC15;
+  --yellow-soft: #FFFBE6;
+  --success: #10B981;
+  --success-soft: #D1FAE5;
+  --warn: #F59E0B;
+  --warn-soft: #FEF3C7;
+  --error: #EF4444;
+  --error-soft: #FEE2E2;
+  --info: #3B82F6;
+  --info-soft: #DBEAFE;
+  --coral: #FB923C;
+  --coral-soft: #FFEDD5;
+  --text: #111827;
+  --text-sub: #6B7280;
+  --text-muted: #9CA3AF;
+  --bg: #FFFFFF;
+  --bg-soft: #F8F9FA;
+  --bg-softer: #F3F4F6;
+  --border: #E5E7EB;
+  --border-soft: #F3F4F6;
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+
+  /* SQL 시각화용 */
+  --sql-bg: #0D1117;
+  --sql-text: #E5E7EB;
+  --sql-keyword: #FF7B72;
+  --sql-string: #A5D6A7;
+  --sql-comment: #8B949E;
+  --sql-type: #79C0FF;
+  --sql-fn: #D2A8FF;
+  --sql-num: #F2CC60;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, sans-serif;
+  background: var(--bg-soft);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.alert-banner {
+  background: #1F1F1F;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.alert-banner .pill {
+  background: var(--brand-red);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.alert-banner .cta {
+  background: white;
+  color: var(--text);
+  padding: 4px 12px;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.doc-header {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 28px 48px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.doc-header .logo {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.doc-header .title {
+  font-size: 18px;
+  font-weight: 600;
+}
+.doc-header .meta {
+  margin-left: auto;
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-sub);
+}
+.doc-header .meta strong { color: var(--text); font-weight: 600; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  max-width: 1680px;
+  margin: 0 auto;
+}
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  background: white;
+  border-right: 1px solid var(--border);
+  padding: 24px 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar h3 {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  padding: 0 24px 8px;
+  margin-top: 20px;
+}
+.sidebar h3:first-of-type { margin-top: 0; }
+.sidebar a {
+  display: block;
+  padding: 7px 24px 7px 36px;
+  font-size: 13px;
+  color: var(--text-sub);
+  text-decoration: none;
+  position: relative;
+}
+.sidebar a:hover { background: var(--bg-soft); color: var(--text); }
+.sidebar a.active {
+  color: var(--brand-red);
+  font-weight: 600;
+  background: var(--brand-red-soft);
+}
+.sidebar a.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--brand-red);
+}
+.sidebar a .num {
+  display: inline-block;
+  width: 28px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-left: -22px;
+}
+.sidebar a.active .num { color: var(--brand-red); }
+
+.main { padding: 32px 48px 80px; max-width: 1340px; }
+
+.chapter-divider {
+  margin: 48px 0 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--text);
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+.chapter-divider:first-of-type { margin-top: 0; }
+.chapter-divider .num {
+  font-size: 64px;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+.chapter-divider .title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.chapter-divider .sub {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.section-intro {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+}
+.section-intro h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.section-intro p {
+  color: var(--text-sub);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.section-intro .pills {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--bg-soft);
+  color: var(--text-sub);
+}
+.pill.red { background: var(--brand-red-soft); color: var(--brand-red-dark); }
+.pill.lavender { background: var(--lavender-soft); color: var(--lavender-dark); }
+.pill.green { background: var(--success-soft); color: #065F46; }
+.pill.coral { background: var(--coral-soft); color: #9A3412; }
+
+/* ─── 통계 카드 ─── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+.stat-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 16px;
+  text-align: center;
+}
+.stat-card .label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.stat-card .value {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--brand-red);
+  letter-spacing: -0.02em;
+}
+.stat-card .unit {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-top: 2px;
+}
+
+/* ─── 테이블 카드 ─── */
+.table-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.table-card-header {
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.table-card-header .badge {
+  background: var(--brand-red);
+  color: white;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  font-family: 'JetBrains Mono', monospace;
+}
+.table-card-header .badge.maroon { background: var(--maroon); }
+.table-card-header .badge.lavender { background: var(--lavender); }
+.table-card-header .badge.dark { background: var(--text); }
+.table-card-header .name {
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+.table-card-header .ko {
+  font-size: 13px;
+  color: var(--text-sub);
+}
+.table-card-header .source {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.table-card-body {
+  padding: 18px 22px;
+}
+.table-card-body .desc {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+
+/* ─── 컬럼 테이블 ─── */
+.cols-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.cols-table th {
+  text-align: left;
+  background: var(--bg-soft);
+  color: var(--text);
+  padding: 8px 10px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+.cols-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+  color: var(--text-sub);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.cols-table td.col {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--text);
+}
+.cols-table td.type {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--brand-red-dark);
+  font-size: 11px;
+}
+.cols-table .pk-mark {
+  background: var(--brand-red);
+  color: white;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+.cols-table .fk-mark {
+  background: var(--lavender);
+  color: white;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+.cols-table .uniq-mark {
+  background: var(--info);
+  color: white;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+.cols-table .nn-mark {
+  background: var(--text-muted);
+  color: white;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+/* ─── SQL 코드 블록 ─── */
+.sql-block {
+  background: var(--sql-bg);
+  color: var(--sql-text);
+  padding: 16px 20px;
+  border-radius: var(--r-md);
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-x: auto;
+  margin: 12px 0;
+  white-space: pre;
+}
+.sql-block .kw { color: var(--sql-keyword); font-weight: 600; }
+.sql-block .str { color: var(--sql-string); }
+.sql-block .cm { color: var(--sql-comment); font-style: italic; }
+.sql-block .tp { color: var(--sql-type); }
+.sql-block .fn { color: var(--sql-fn); }
+.sql-block .num { color: var(--sql-num); }
+
+/* ─── 인덱스·제약 행 ─── */
+.constraint-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--bg-soft);
+  border-radius: var(--r-sm);
+  margin: 4px 0;
+  font-size: 12px;
+}
+.constraint-row .type-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.constraint-row .type-tag.idx { background: var(--info-soft); color: #1E40AF; }
+.constraint-row .type-tag.uniq { background: var(--lavender-soft); color: var(--lavender-dark); }
+.constraint-row .type-tag.check { background: var(--warn-soft); color: #92400E; }
+.constraint-row .type-tag.fk { background: var(--success-soft); color: #065F46; }
+.constraint-row .type-tag.gin { background: var(--brand-red-soft); color: var(--brand-red-dark); }
+.constraint-row .desc { color: var(--text-sub); flex: 1; }
+.constraint-row code {
+  background: white;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--brand-red-dark);
+}
+
+/* ─── ER 다이어그램 박스 ─── */
+.er-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+.er-box {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 12px;
+  font-size: 11px;
+}
+.er-box.account { border-color: var(--brand-red); }
+.er-box.team { border-color: var(--maroon); }
+.er-box.delegation { border-color: var(--lavender); }
+.er-box.content { border-color: var(--success); }
+.er-box.audit { border-color: var(--text); }
+.er-box .name {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  color: var(--text);
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.er-box .ko { font-size: 10px; color: var(--text-sub); margin-bottom: 6px; }
+.er-box .cols {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+.er-box .cols .pk { color: var(--brand-red); font-weight: 700; }
+.er-box .cols .fk { color: var(--lavender-dark); }
+
+.section-body {
+  padding: 24px 28px;
+  font-size: 13px;
+  color: var(--text-sub);
+}
+
+/* ─── 정책 매핑 카드 ─── */
+.policy-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--brand-red);
+  border-radius: var(--r-md);
+  padding: 14px 18px;
+  margin: 8px 0;
+}
+.policy-card .code {
+  background: var(--brand-red);
+  color: white;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.policy-card.lavender { border-left-color: var(--lavender); }
+.policy-card.lavender .code { background: var(--lavender); }
+.policy-card.maroon { border-left-color: var(--maroon); }
+.policy-card.maroon .code { background: var(--maroon); }
+.policy-card .title {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+.policy-card .impl {
+  font-size: 11px;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+.policy-card .impl code {
+  background: var(--bg-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--brand-red-dark);
+}
+
+/* ─── 푸터 ─── */
+.doc-footer {
+  background: var(--text);
+  color: white;
+  padding: 24px 48px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.9;
+}
+.doc-footer strong { color: var(--brand-red); margin-right: 4px; }
+.doc-footer .meta-line { margin-top: 6px; font-size: 11px; opacity: 0.65; }
+
+@media print {
+  .sidebar, .alert-banner { display: none; }
+  .layout { grid-template-columns: 1fr; }
+  .table-card { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<div class="alert-banner">
+  <span class="pill">NEW</span>
+  <span>V1.2.1 DB 마이그레이션 SQL이 작성되었습니다 — 19 테이블 · 74 인덱스 · 7 함수</span>
+  <span class="cta">V1.0.0</span>
+</div>
+
+<header class="doc-header">
+  <div class="logo">PlayToon</div>
+  <div class="title">V1.2.1 DB 마이그레이션 · 검토 문서</div>
+  <div class="meta">
+    <span><strong>PostgreSQL 14+</strong> 기준</span>
+    <span><strong>2026.05.29</strong></span>
+    <span>개발팀 전달용</span>
+  </div>
+</header>
+
+<div class="layout">
+
+<nav class="sidebar">
+  <h3>개요</h3>
+  <a href="#overview" class="active"><span class="num">A</span>전체 개요 · 통계</a>
+  <a href="#er-diagram"><span class="num">A+</span>스키마 ER 트리</a>
+
+  <h3>실행 가이드</h3>
+  <a href="#exec"><span class="num">B</span>마이그레이션 실행</a>
+
+  <h3>테이블 상세</h3>
+  <a href="#enums"><span class="num">C</span>ENUM 타입 17종</a>
+  <a href="#account-tables"><span class="num">D</span>계정 시스템 5종</a>
+  <a href="#cp-team-tables"><span class="num">E</span>CP · 팀 5종</a>
+  <a href="#delegation-tables"><span class="num">F</span>위임 2종</a>
+  <a href="#content-tables"><span class="num">G</span>콘텐츠·검수·발행 5종</a>
+  <a href="#audit-table"><span class="num">H</span>Audit Log</a>
+
+  <h3>비즈니스 로직</h3>
+  <a href="#functions"><span class="num">I</span>저장 함수 · 트리거</a>
+
+  <h3>정책 매핑</h3>
+  <a href="#policy-map"><span class="num">J</span>13개 정책 ↔ DDL</a>
+
+  <h3>운영</h3>
+  <a href="#operations"><span class="num">K</span>운영 권장 사항</a>
+</nav>
+
+<main class="main">
+
+<div class="chapter-divider">
+  <span class="num">A</span>
+  <span class="title">전체 개요 · 통계</span>
+  <span class="sub">19 tables · 1,425 lines</span>
+</div>
+
+<section class="section-intro" id="overview">
+  <h2>V1.2.1 DB 마이그레이션 SQL이란</h2>
+  <p>회원가입 SB · 검수·발행 SB · 위임 SB 세 문서에서 정의한 모든 신규/수정 테이블을 PostgreSQL 14+ DDL로 작성한 것. 계정 시스템 V1.1.0의 7대 정책(Q1~Q7)과 위임 모델의 6대 원칙(P-1~P-6), 그리고 6개의 운영 정책 결정 항목(D-1~D-만료후)을 모두 데이터베이스 제약 조건과 트리거로 강제한다.</p>
+  <div class="pills">
+    <span class="pill red">PostgreSQL 14+</span>
+    <span class="pill lavender">19 테이블 · 17 ENUM</span>
+    <span class="pill green">CHECK 제약 + 트리거</span>
+    <span class="pill coral">7개 비즈니스 함수</span>
+  </div>
+</section>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="label">테이블</div>
+    <div class="value">19</div>
+    <div class="unit">신규 + 수정</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">인덱스</div>
+    <div class="value">74</div>
+    <div class="unit">PK 제외</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">ENUM 타입</div>
+    <div class="value">17</div>
+    <div class="unit">상태·역할·이벤트</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">함수·트리거</div>
+    <div class="value">20</div>
+    <div class="unit">7 함수 + 13 트리거</div>
+  </div>
+</div>
+
+<!-- ─── A+ ER 다이어그램 ─── -->
+<div class="chapter-divider" id="er-diagram">
+  <span class="num">A+</span>
+  <span class="title">스키마 ER 트리</span>
+  <span class="sub">테이블 관계 시각화</span>
+</div>
+
+<section class="section-intro">
+  <h2>5개 도메인 그룹</h2>
+  <p>본 마이그레이션의 19개 테이블은 색상으로 구분된 5개 도메인으로 그룹화된다. 각 도메인은 명확한 책임을 가지며, 외래키로 연결된다.</p>
+</section>
+
+<div class="er-grid">
+  <div class="er-box account">
+    <div class="name">users</div>
+    <div class="ko">플랫폼 독자 · USER DB</div>
+    <div class="cols">
+      <span class="pk">id</span> · email (UNIQ)<br>
+      nickname (UNIQ) · status<br>
+      birth_year · tos_agreed_at
+    </div>
+  </div>
+  <div class="er-box account">
+    <div class="name">authors</div>
+    <div class="ko">워크스페이스 작가 · AUTHOR DB</div>
+    <div class="cols">
+      <span class="pk">id</span> · email (UNIQ)<br>
+      pen_name · real_name<br>
+      role · author_type<br>
+      <span class="fk">cp_id</span> → cp_companies
+    </div>
+  </div>
+  <div class="er-box account">
+    <div class="name">linked_accounts</div>
+    <div class="ko">USER ↔ AUTHOR 1:1 매핑 (Q5)</div>
+    <div class="cols">
+      <span class="pk">id</span><br>
+      <span class="fk">user_id</span> + <span class="fk">author_id</span> (UNIQ active)<br>
+      link_method · status
+    </div>
+  </div>
+
+  <div class="er-box account">
+    <div class="name">oauth_links</div>
+    <div class="ko">소셜 로그인 매핑 (Q3)</div>
+    <div class="cols">
+      <span class="pk">id</span> · provider + provider_user_id<br>
+      <span class="fk">user_id</span> XOR <span class="fk">author_id</span>
+    </div>
+  </div>
+  <div class="er-box account">
+    <div class="name">password_reset_tokens</div>
+    <div class="ko">비번 재설정 (Q2 분기)</div>
+    <div class="cols">
+      <span class="pk">id</span> · token_hash (UNIQ)<br>
+      target_db · expires_at
+    </div>
+  </div>
+  <div class="er-box team">
+    <div class="name">cp_companies</div>
+    <div class="ko">CP 회사</div>
+    <div class="cols">
+      <span class="pk">id</span> · company_code (UNIQ)<br>
+      <span class="fk">master_author_id</span><br>
+      master_uploads_without_delegation (D-1)
+    </div>
+  </div>
+
+  <div class="er-box team">
+    <div class="name">teams</div>
+    <div class="ko">팀</div>
+    <div class="cols">
+      <span class="pk">id</span> · team_name<br>
+      <span class="fk">owner_author_id</span> (P-4 author)<br>
+      <span class="fk">cp_id</span>
+    </div>
+  </div>
+  <div class="er-box team">
+    <div class="name">team_memberships</div>
+    <div class="ko">팀 멤버십</div>
+    <div class="cols">
+      <span class="pk">id</span><br>
+      <span class="fk">team_id</span> + <span class="fk">author_id</span><br>
+      member_role · status
+    </div>
+  </div>
+  <div class="er-box team">
+    <div class="name">team_invitations</div>
+    <div class="ko">팀 초대 (가입 전)</div>
+    <div class="cols">
+      <span class="pk">id</span> · invitation_token<br>
+      invited_email · expires_at (7d)
+    </div>
+  </div>
+
+  <div class="er-box team">
+    <div class="name">cp_invitations</div>
+    <div class="ko">CP 초대 코드</div>
+    <div class="cols">
+      <span class="pk">id</span> · invitation_code (6~10자)<br>
+      <span class="fk">cp_id</span>
+    </div>
+  </div>
+  <div class="er-box delegation">
+    <div class="name">delegations</div>
+    <div class="ko">발행 권한 위임 (P-1~P-6)</div>
+    <div class="cols">
+      <span class="pk">delegation_id</span> (D-XXXX)<br>
+      <span class="fk">issuer_id</span> → <span class="fk">receiver_id</span><br>
+      scope · action_types[] · valid_to
+    </div>
+  </div>
+  <div class="er-box delegation">
+    <div class="name">delegation_requests</div>
+    <div class="ko">팀원 → 팀장 요청</div>
+    <div class="cols">
+      <span class="pk">id</span><br>
+      <span class="fk">requester_id</span> + <span class="fk">target_owner_id</span><br>
+      status · expires_at (7d)
+    </div>
+  </div>
+
+  <div class="er-box content">
+    <div class="name">content_uploads</div>
+    <div class="ko">업로드 이력 (P-4)</div>
+    <div class="cols">
+      <span class="pk">upload_id</span> · series_id<br>
+      <span class="fk">author_id</span> ≠ <span class="fk">uploaded_by_id</span><br>
+      upload_mode · <span class="fk">delegation_id</span>
+    </div>
+  </div>
+  <div class="er-box content">
+    <div class="name">review_rejections</div>
+    <div class="ko">반려 사유 (D1)</div>
+    <div class="cols">
+      <span class="pk">id</span> · <span class="fk">upload_id</span><br>
+      category · rejection_message<br>
+      resubmit_count
+    </div>
+  </div>
+  <div class="er-box content">
+    <div class="name">review_onhold_messages</div>
+    <div class="ko">보류 채팅 (D2)</div>
+    <div class="cols">
+      <span class="pk">id</span> · <span class="fk">upload_id</span><br>
+      sender_type · sent_at
+    </div>
+  </div>
+
+  <div class="er-box content">
+    <div class="name">publish_schedules</div>
+    <div class="ko">예약 공개 (E)</div>
+    <div class="cols">
+      <span class="pk">id</span> · <span class="fk">upload_id</span><br>
+      scheduled_at · status<br>
+      notify_followers
+    </div>
+  </div>
+  <div class="er-box content">
+    <div class="name">publish_histories</div>
+    <div class="ko">발행 이력 (F)</div>
+    <div class="cols">
+      <span class="pk">id</span> · version<br>
+      <span class="fk">author_id</span> (불변) ≠ <span class="fk">changed_by_id</span><br>
+      is_current (UNIQ per episode)
+    </div>
+  </div>
+  <div class="er-box audit">
+    <div class="name">auth_audit_logs</div>
+    <div class="ko">감사 로그 (P-5 · 영구)</div>
+    <div class="cols">
+      <span class="pk">id</span> · event_type<br>
+      target_type + target_id<br>
+      event_data (JSONB)
+    </div>
+  </div>
+
+  <div class="er-box account" style="background:var(--bg-soft);border-style:dashed;opacity:0.7;">
+    <div class="name">[기존] series / episodes</div>
+    <div class="ko">V1.2.0 이전부터 존재</div>
+    <div class="cols">
+      참조만 함 (변경 없음)<br>
+      외래키 대상
+    </div>
+  </div>
+</div>
+
+<!-- ─── B 실행 가이드 ─── -->
+<div class="chapter-divider" id="exec">
+  <span class="num">B</span>
+  <span class="title">마이그레이션 실행 가이드</span>
+  <span class="sub">단일 명령 또는 단계별</span>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge dark">B1</span>
+    <span class="name">신규 환경 (전체 적용)</span>
+    <span class="ko">권장 · 1분 이내</span>
+  </div>
+  <div class="table-card-body">
+    <div class="sql-block"><span class="cm"># 1. DB 생성</span>
+$ createdb playtoon_v121
+
+<span class="cm"># 2. 마스터 SQL 실행</span>
+$ psql -d playtoon_v121 -f playtoon_v1.2.1_master.sql
+
+<span class="cm"># 3. (개발) 시드 데이터</span>
+$ psql -d playtoon_v121 -f 999_seed_dev.sql
+
+<span class="cm"># 4. 검증 — 테이블 수 확인 (19개여야 함)</span>
+$ psql -d playtoon_v121 -c <span class="str">"\dt"</span> | grep <span class="str">"table"</span> | wc -l</div>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge lavender">B2</span>
+    <span class="name">단계별 실행 (디버깅용)</span>
+    <span class="ko">파일 단위 점검</span>
+  </div>
+  <div class="table-card-body">
+    <table class="cols-table">
+      <tr><th>순서</th><th>파일</th><th>역할</th><th>예상 시간</th></tr>
+      <tr><td class="col">1</td><td class="col">000_preflight.sql</td><td>PG 14+ 체크 + 확장 (pg_trgm · pgcrypto)</td><td>1s</td></tr>
+      <tr><td class="col">2</td><td class="col">001_enums.sql</td><td>17종 ENUM 타입 정의</td><td>1s</td></tr>
+      <tr><td class="col">3</td><td class="col">002_account_system.sql</td><td>USER · AUTHOR · LINKED · OAUTH · RESET_TOKEN</td><td>2s</td></tr>
+      <tr><td class="col">4</td><td class="col">003_cp_team.sql</td><td>CP · TEAM · MEMBERSHIP · INVITATION</td><td>2s</td></tr>
+      <tr><td class="col">5</td><td class="col">004_delegation.sql</td><td>DELEGATION + 요청 + D-XXXX 시퀀스</td><td>1s</td></tr>
+      <tr><td class="col">6</td><td class="col">005_review_publish.sql</td><td>CONTENT_UPLOAD · REJECTION · ONHOLD · SCHEDULE · HISTORY</td><td>2s</td></tr>
+      <tr><td class="col">7</td><td class="col">006_audit_log.sql</td><td>AUDIT_LOG + updated_at 트리거 일괄</td><td>1s</td></tr>
+      <tr><td class="col">8</td><td class="col">007_functions.sql</td><td>권한 검증·발급·회수·자동 회수 함수</td><td>1s</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge maroon">B3</span>
+    <span class="name">롤백</span>
+    <span class="ko">⚠ 데이터 손실</span>
+  </div>
+  <div class="table-card-body">
+    <div class="sql-block"><span class="cm"># ⚠ 백업 후 실행 — 모든 V1.2.1 테이블 삭제</span>
+$ pg_dump playtoon_v121 > backup_<span class="str">$(date +%Y%m%d)</span>.sql
+$ psql -d playtoon_v121 -f rollback_all.sql</div>
+    <p style="font-size:12px;color:var(--text-sub);margin-top:8px;">롤백은 CASCADE로 진행되므로 series·episodes 등 기존 테이블은 영향받지 않지만, 본 마이그레이션이 추가한 모든 외래키와 컬럼이 제거된다.</p>
+  </div>
+</div>
+
+<!-- ─── C ENUM 17종 ─── -->
+<div class="chapter-divider" id="enums">
+  <span class="num">C</span>
+  <span class="title">ENUM 타입 17종</span>
+  <span class="sub">001_enums.sql</span>
+</div>
+
+<section class="section-intro">
+  <p>모든 상태·역할·이벤트 분류를 ENUM으로 정의하여 데이터 정합성과 IDE 자동완성을 보장한다. JOIN이나 추가 룩업 테이블 없이 컬럼만으로 의미가 전달되도록 설계.</p>
+</section>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">C1</span>
+    <span class="name">계정 · 상태</span>
+    <span class="ko">5종</span>
+  </div>
+  <div class="table-card-body">
+    <table class="cols-table">
+      <tr><th>ENUM</th><th>값</th><th>용도</th></tr>
+      <tr><td class="col">user_status</td><td class="type">pending · active · suspended · deleted</td><td>USER DB 상태</td></tr>
+      <tr><td class="col">author_status</td><td class="type">pending · pending_cp_approval · active · suspended · deleted</td><td>AUTHOR DB 상태 · CP 승인 대기 포함</td></tr>
+      <tr><td class="col">author_role</td><td class="type">author · master · accounting</td><td>작가 역할 (Q6 파트너 어드민)</td></tr>
+      <tr><td class="col">author_type</td><td class="type">individual · team</td><td>개인 / 팀 (회원가입 A2)</td></tr>
+      <tr><td class="col">team_member_role</td><td class="type">owner · editor · commenter · viewer</td><td>팀 내 권한</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge lavender">C2</span>
+    <span class="name">위임 · 업로드</span>
+    <span class="ko">5종</span>
+  </div>
+  <div class="table-card-body">
+    <table class="cols-table">
+      <tr><th>ENUM</th><th>값</th><th>용도</th></tr>
+      <tr><td class="col">delegation_scope</td><td class="type">all_series · specific_series</td><td>위임 범위 (C2 발급 폼)</td></tr>
+      <tr><td class="col">delegation_action_type</td><td class="type">submit_review · schedule_publish · edit_publish_history · respond_rejection</td><td>위임 액션 (P-6 · 배열 컬럼)</td></tr>
+      <tr><td class="col">delegation_status</td><td class="type">active · expired · revoked</td><td>위임 상태</td></tr>
+      <tr><td class="col">upload_mode</td><td class="type">self · delegated · cp_master</td><td>업로드 모드 (Author vs Uploader)</td></tr>
+      <tr><td class="col">team_member_status</td><td class="type">invited · active · left · removed</td><td>멤버 상태</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge maroon">C3</span>
+    <span class="name">검수 · 발행 · 인증</span>
+    <span class="ko">7종</span>
+  </div>
+  <div class="table-card-body">
+    <table class="cols-table">
+      <tr><th>ENUM</th><th>값</th><th>용도</th></tr>
+      <tr><td class="col">review_status</td><td class="type">draft · submitted · reviewing · approved · rejected · onhold</td><td>검수 상태 (검수·발행 SB D)</td></tr>
+      <tr><td class="col">publish_status</td><td class="type">pending · published · cancelled</td><td>예약 공개 상태</td></tr>
+      <tr><td class="col">rejection_category</td><td class="type">copyright_infringement · violence_grade_mismatch · sexual_grade_mismatch · image_quality · metadata_missing · ie_branch_error · policy_violation · other</td><td>반려 카테고리 8종</td></tr>
+      <tr><td class="col">oauth_provider</td><td class="type">google · apple · kakao · naver</td><td>소셜 로그인 4종</td></tr>
+      <tr><td class="col">linked_account_link_method</td><td class="type">signup_option · post_signup</td><td>연동 시점</td></tr>
+      <tr><td class="col">linked_account_status</td><td class="type">active · unlinked</td><td>연동 상태 (Q4)</td></tr>
+      <tr><td class="col">audit_event_type</td><td class="type">23종 (계정 · 위임 · 콘텐츠 · CP 정책)</td><td>감사 로그 이벤트 종류</td></tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ─── D 계정 시스템 5종 ─── -->
+<div class="chapter-divider" id="account-tables">
+  <span class="num">D</span>
+  <span class="title">계정 시스템 5종</span>
+  <span class="sub">002_account_system.sql</span>
+</div>
+
+<!-- D1. USERS -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">D1</span>
+    <span class="name">users</span>
+    <span class="ko">플랫폼 측 독자 계정</span>
+    <span class="source">계정 V1.1.0 · Q1 · Q7</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">독자가 플레이툰 콘텐츠를 소비하기 위해 사용하는 계정. AUTHOR와 완전히 분리된 별도 DB. 같은 이메일이 양쪽에 다른 사람으로 존재할 수 없음 (Q1).</div>
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:20%">타입</th><th>설명</th></tr>
+      <tr><td class="col">id<span class="pk-mark">PK</span></td><td class="type">BIGSERIAL</td><td>자동 증가 PK</td></tr>
+      <tr><td class="col">email<span class="uniq-mark">UNIQ</span></td><td class="type">VARCHAR(255)</td><td>RFC 5322 형식 CHECK · partial unique on active</td></tr>
+      <tr><td class="col">email_verified_at</td><td class="type">TIMESTAMPTZ</td><td>이메일 인증 완료 시각</td></tr>
+      <tr><td class="col">password_hash</td><td class="type">VARCHAR(255)</td><td>NULL 가능 (소셜 단독 가입 시)</td></tr>
+      <tr><td class="col">nickname<span class="uniq-mark">UNIQ</span></td><td class="type">VARCHAR(30)</td><td>3~30자 · 시스템 전체 unique</td></tr>
+      <tr><td class="col">birth_year</td><td class="type">SMALLINT</td><td>선택 · 1900~2030 · 성인 콘텐츠 필터링</td></tr>
+      <tr><td class="col">marketing_opt_in</td><td class="type">BOOLEAN</td><td>마케팅 수신 동의</td></tr>
+      <tr><td class="col">tos_agreed_at</td><td class="type">TIMESTAMPTZ<span class="nn-mark">NN</span></td><td>이용약관 동의 시각</td></tr>
+      <tr><td class="col">privacy_agreed_at</td><td class="type">TIMESTAMPTZ<span class="nn-mark">NN</span></td><td>개인정보 처리방침 동의 시각</td></tr>
+      <tr><td class="col">status</td><td class="type">user_status</td><td>default 'pending' → email 인증 후 'active'</td></tr>
+      <tr><td class="col">created_at · updated_at · deleted_at</td><td class="type">TIMESTAMPTZ</td><td>soft delete 패턴</td></tr>
+    </table>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:16px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">인덱스 · 제약</h4>
+    <div class="constraint-row"><span class="type-tag uniq">UNIQ</span><div class="desc"><code>users_email_uniq</code> · partial on deleted_at IS NULL</div></div>
+    <div class="constraint-row"><span class="type-tag uniq">UNIQ</span><div class="desc"><code>users_nickname_uniq</code> · partial</div></div>
+    <div class="constraint-row"><span class="type-tag idx">IDX</span><div class="desc"><code>users_status_idx</code> · partial WHERE status != deleted</div></div>
+    <div class="constraint-row"><span class="type-tag idx">IDX</span><div class="desc"><code>users_created_at_idx</code> · DESC</div></div>
+    <div class="constraint-row"><span class="type-tag check">CHECK</span><div class="desc">email RFC 5322 정규식 · nickname 3~30자 · birth_year 1900~2030</div></div>
+  </div>
+</div>
+
+<!-- D2. AUTHORS -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">D2</span>
+    <span class="name">authors</span>
+    <span class="ko">워크스페이스 측 작가 계정</span>
+    <span class="source">계정 V1.1.0 · Q1 · Q6 · Q7</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">작가가 워크스페이스에서 콘텐츠를 제작하기 위해 사용하는 계정. 실명·휴대폰 등 정산용 정보 포함. role 필드로 일반 작가 / CP 마스터 / 정산담당을 구분 (Q6).</div>
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:20%">타입</th><th>설명</th></tr>
+      <tr><td class="col">id<span class="pk-mark">PK</span></td><td class="type">BIGSERIAL</td><td></td></tr>
+      <tr><td class="col">email<span class="uniq-mark">UNIQ</span></td><td class="type">VARCHAR(255)</td><td>partial unique</td></tr>
+      <tr><td class="col">pen_name<span class="nn-mark">NN</span></td><td class="type">VARCHAR(50)</td><td>플랫폼 공개 필명 (Q7 분리)</td></tr>
+      <tr><td class="col">real_name<span class="nn-mark">NN</span></td><td class="type">VARCHAR(50)</td><td>비공개 · 정산용</td></tr>
+      <tr><td class="col">phone<span class="nn-mark">NN</span></td><td class="type">VARCHAR(20)</td><td>SMS 인증 필수</td></tr>
+      <tr><td class="col">phone_verified_at</td><td class="type">TIMESTAMPTZ</td><td>SMS 인증 완료</td></tr>
+      <tr><td class="col">author_type</td><td class="type">author_type</td><td>individual / team</td></tr>
+      <tr><td class="col">role</td><td class="type">author_role</td><td>author (default) / master / accounting</td></tr>
+      <tr><td class="col">cp_id<span class="fk-mark">FK</span></td><td class="type">BIGINT</td><td>→ cp_companies(id) · NULL 가능</td></tr>
+      <tr><td class="col">two_factor_enabled</td><td class="type">BOOLEAN</td><td>2FA 활성화 (정산담당·마스터 강제)</td></tr>
+      <tr><td class="col">status</td><td class="type">author_status</td><td>5단계 상태</td></tr>
+    </table>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:16px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">인덱스 · 제약</h4>
+    <div class="constraint-row"><span class="type-tag uniq">UNIQ</span><div class="desc"><code>authors_email_uniq</code> · partial on deleted_at IS NULL</div></div>
+    <div class="constraint-row"><span class="type-tag idx">IDX</span><div class="desc"><code>authors_cp_id_idx</code> · partial WHERE cp_id IS NOT NULL</div></div>
+    <div class="constraint-row"><span class="type-tag idx">IDX</span><div class="desc"><code>authors_role_idx</code> · partial WHERE role != author</div></div>
+    <div class="constraint-row"><span class="type-tag gin">GIN</span><div class="desc"><code>authors_pen_name_search_idx</code> · pg_trgm 작가 필명 검색</div></div>
+    <div class="constraint-row"><span class="type-tag check">CHECK</span><div class="desc"><code>authors_2fa_for_master</code> · CP 마스터·정산담당 active 상태면 2FA 필수</div></div>
+  </div>
+</div>
+
+<!-- D3. LINKED_ACCOUNTS -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge maroon">D3</span>
+    <span class="name">linked_accounts</span>
+    <span class="ko">USER ↔ AUTHOR 1:1 매핑</span>
+    <span class="source">Q5 · 정합 핵심</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">계정 V1.1.0의 Q5(1:1 매핑) 정책을 강제하는 핵심 테이블. partial unique index로 활성 상태일 때만 unique를 적용하여, 해제 후 다른 계정과 다시 연동 가능.</div>
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:20%">타입</th><th>설명</th></tr>
+      <tr><td class="col">id<span class="pk-mark">PK</span></td><td class="type">BIGSERIAL</td><td></td></tr>
+      <tr><td class="col">user_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td>→ users(id)</td></tr>
+      <tr><td class="col">author_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td>→ authors(id)</td></tr>
+      <tr><td class="col">link_method</td><td class="type">ENUM</td><td>signup_option · post_signup</td></tr>
+      <tr><td class="col">status</td><td class="type">ENUM</td><td>active · unlinked</td></tr>
+      <tr><td class="col">user_verified_at · author_verified_at</td><td class="type">TIMESTAMPTZ</td><td>양쪽 본인 확인 시각</td></tr>
+      <tr><td class="col">unlinked_at · unlinked_reason · unlinked_by_type</td><td class="type">TIMESTAMPTZ · TEXT</td><td>해제 정보 (Q4)</td></tr>
+    </table>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:16px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">인덱스 · 제약 (Q5 핵심)</h4>
+    <div class="constraint-row"><span class="type-tag uniq">UNIQ</span><div class="desc"><code>user_id</code> partial unique WHERE status='active' — 한 USER는 최대 1개 활성 연동</div></div>
+    <div class="constraint-row"><span class="type-tag uniq">UNIQ</span><div class="desc"><code>author_id</code> partial unique WHERE status='active' — 한 AUTHOR는 최대 1개 활성 연동</div></div>
+    <div class="constraint-row"><span class="type-tag check">CHECK</span><div class="desc">unlinked 상태 일관성 (status=unlinked AND unlinked_at NOT NULL)</div></div>
+  </div>
+</div>
+
+<!-- D4. OAUTH_LINKS -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">D4</span>
+    <span class="name">oauth_links</span>
+    <span class="ko">OAuth 연동 (Q3)</span>
+    <span class="source">소셜 4종</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">Q3(같은 OAuth identifier가 양쪽 DB에 동시 매핑 불가)을 CHECK 제약으로 강제. partial unique로 활성 매핑만 유일성 검사.</div>
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:20%">타입</th><th>설명</th></tr>
+      <tr><td class="col">id<span class="pk-mark">PK</span></td><td class="type">BIGSERIAL</td><td></td></tr>
+      <tr><td class="col">provider · provider_user_id</td><td class="type">oauth_provider · VARCHAR</td><td>OAuth 식별자</td></tr>
+      <tr><td class="col">user_id<span class="fk-mark">FK</span> · author_id<span class="fk-mark">FK</span></td><td class="type">BIGINT</td><td>XOR (하나만 NN, Q3)</td></tr>
+      <tr><td class="col">access_token · refresh_token</td><td class="type">TEXT</td><td>OAuth 토큰</td></tr>
+      <tr><td class="col">provider_email · provider_name · provider_picture</td><td class="type">VARCHAR</td><td>provider 캐시</td></tr>
+    </table>
+    <div class="constraint-row" style="margin-top:12px;"><span class="type-tag check">CHECK</span><div class="desc"><code>oauth_links_exclusive_target</code> — user_id XOR author_id (둘 중 하나만 NN)</div></div>
+    <div class="constraint-row"><span class="type-tag uniq">UNIQ</span><div class="desc"><code>(provider, provider_user_id)</code> partial unique WHERE unlinked_at IS NULL</div></div>
+  </div>
+</div>
+
+<!-- D5. PASSWORD_RESET_TOKENS -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">D5</span>
+    <span class="name">password_reset_tokens</span>
+    <span class="ko">비밀번호 재설정 (Q2 분기)</span>
+    <span class="source">독립 비밀번호 정책</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">USER와 AUTHOR가 같은 이메일을 공유해도 비밀번호는 독립 관리 (Q2). target_db 컬럼으로 어느 쪽 비밀번호를 재설정하는지 명시.</div>
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:20%">타입</th><th>설명</th></tr>
+      <tr><td class="col">id<span class="pk-mark">PK</span></td><td class="type">BIGSERIAL</td><td></td></tr>
+      <tr><td class="col">token · token_hash<span class="uniq-mark">UNIQ</span></td><td class="type">VARCHAR(255)</td><td>해시는 검색용</td></tr>
+      <tr><td class="col">target_db</td><td class="type">VARCHAR(10) NN</td><td>'user' | 'author'</td></tr>
+      <tr><td class="col">user_id · author_id</td><td class="type">BIGINT</td><td>target_db에 따라 하나만 NN</td></tr>
+      <tr><td class="col">expires_at</td><td class="type">TIMESTAMPTZ NN</td><td>1시간 후 만료</td></tr>
+      <tr><td class="col">used_at</td><td class="type">TIMESTAMPTZ</td><td>1회만 사용 가능</td></tr>
+      <tr><td class="col">ip_address · user_agent</td><td class="type">INET · TEXT</td><td>보안 추적</td></tr>
+    </table>
+    <div class="constraint-row" style="margin-top:12px;"><span class="type-tag check">CHECK</span><div class="desc"><code>password_reset_target_consistency</code> — target_db와 user_id/author_id 일관성</div></div>
+  </div>
+</div>
+
+
+<!-- ─── E CP · 팀 5종 ─── -->
+<div class="chapter-divider" id="cp-team-tables">
+  <span class="num">E</span>
+  <span class="title">CP · 팀 5종</span>
+  <span class="sub">003_cp_team.sql</span>
+</div>
+
+<!-- E1. CP_COMPANIES -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge maroon">E1</span>
+    <span class="name">cp_companies</span>
+    <span class="ko">CP (콘텐츠 제공자) 회사</span>
+    <span class="source">D-1 정책 토글</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">CP 회사 정보 + ⚠ 핵심 정책 토글 (<code>master_uploads_without_delegation</code>). E2 챕터의 무위임 업로드 정책을 결정한다.</div>
+    <table class="cols-table">
+      <tr><th style="width:32%">컬럼</th><th style="width:25%">타입</th><th>설명</th></tr>
+      <tr><td class="col">id<span class="pk-mark">PK</span></td><td class="type">BIGSERIAL</td><td></td></tr>
+      <tr><td class="col">company_name</td><td class="type">VARCHAR(100) NN</td><td>회사명</td></tr>
+      <tr><td class="col">company_code<span class="uniq-mark">UNIQ</span></td><td class="type">VARCHAR(20) NN</td><td>CP-XXX 형식</td></tr>
+      <tr><td class="col">master_author_id<span class="fk-mark">FK</span></td><td class="type">BIGINT</td><td>대표 CP 마스터</td></tr>
+      <tr><td class="col">master_uploads_without_delegation</td><td class="type">BOOLEAN</td><td><strong>D-1 정책 · default FALSE</strong></td></tr>
+      <tr><td class="col">policy_changed_at · policy_changed_by_id</td><td class="type">TIMESTAMPTZ · BIGINT FK</td><td>정책 변경 이력</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- E2. TEAMS -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">E2</span>
+    <span class="name">teams</span>
+    <span class="ko">팀 (개인 작가도 1인 팀)</span>
+    <span class="source">P-4 Author 불변</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc"><code>owner_author_id</code>가 작품의 author로 고정되는 P-4 원칙의 데이터 모델 기반.</div>
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:25%">타입</th><th>설명</th></tr>
+      <tr><td class="col">id<span class="pk-mark">PK</span></td><td class="type">BIGSERIAL</td><td></td></tr>
+      <tr><td class="col">team_name</td><td class="type">VARCHAR(100) NN</td><td>1~100자</td></tr>
+      <tr><td class="col">owner_author_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td><strong>P-4: 작품의 author 고정</strong></td></tr>
+      <tr><td class="col">cp_id<span class="fk-mark">FK</span></td><td class="type">BIGINT</td><td>CP 소속 (선택)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- E3. TEAM_MEMBERSHIPS -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">E3</span>
+    <span class="name">team_memberships</span>
+    <span class="ko">팀 멤버십</span>
+    <span class="source">P-3 수령자 자격</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">같은 작가가 여러 팀에 소속 가능. 위임 발급 시 P-3 수령자 자격 검증의 기반.</div>
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:25%">타입</th><th>설명</th></tr>
+      <tr><td class="col">team_id<span class="fk-mark">FK</span> + author_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td>composite unique on active+invited</td></tr>
+      <tr><td class="col">member_role</td><td class="type">team_member_role</td><td>owner/editor/commenter/viewer</td></tr>
+      <tr><td class="col">status</td><td class="type">team_member_status</td><td>invited/active/left/removed</td></tr>
+      <tr><td class="col">invited_at · joined_at · left_at · removed_at</td><td class="type">TIMESTAMPTZ</td><td>각 상태 전이 시각</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- E4. TEAM_INVITATIONS + E5. CP_INVITATIONS (요약) -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge lavender">E4 · E5</span>
+    <span class="name">team_invitations · cp_invitations</span>
+    <span class="ko">초대 토큰 (가입 전)</span>
+    <span class="source">7일 만료</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">가입 전 작가에게 발송되는 초대. 팀 초대(<code>team_invitations</code>)는 토큰 기반 링크 · CP 초대(<code>cp_invitations</code>)는 6~10자 코드 입력 방식.</div>
+    <table class="cols-table">
+      <tr><th style="width:25%">테이블</th><th style="width:30%">핵심 컬럼</th><th>방식</th></tr>
+      <tr><td class="col">team_invitations</td><td class="type">invitation_token (UNIQ)</td><td>이메일 링크 클릭 → 가입 시 자동 매핑</td></tr>
+      <tr><td class="col">cp_invitations</td><td class="type">invitation_code (UNIQ)</td><td>회원가입 폼에서 코드 직접 입력</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ─── F 위임 2종 ─── -->
+<div class="chapter-divider" id="delegation-tables">
+  <span class="num">F</span>
+  <span class="title">위임 2종</span>
+  <span class="sub">004_delegation.sql</span>
+</div>
+
+<!-- F1. DELEGATIONS -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge lavender">F1</span>
+    <span class="name">delegations</span>
+    <span class="ko">발행 권한 위임 (6대 원칙의 DDL 구현)</span>
+    <span class="source">위임 SB · 핵심 테이블</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">위임 SB의 6대 원칙(P-1~P-6)을 PostgreSQL 제약 조건과 트리거로 강제하는 핵심 테이블. <code>delegation_id</code>는 D-XXXX 외부 식별자이며 자동 생성된다.</div>
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:25%">타입</th><th>설명 · 원칙</th></tr>
+      <tr><td class="col">delegation_id<span class="pk-mark">PK</span></td><td class="type">VARCHAR(20)</td><td>D-XXXX · 트리거 자동 생성</td></tr>
+      <tr><td class="col">internal_id<span class="uniq-mark">UNIQ</span></td><td class="type">BIGSERIAL</td><td>내부 시퀀스 (조인용)</td></tr>
+      <tr><td class="col">issuer_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td><strong>P-2</strong> 발급자 (팀장/CP 마스터)</td></tr>
+      <tr><td class="col">receiver_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td><strong>P-3</strong> 수령자 (active 멤버)</td></tr>
+      <tr><td class="col">team_id<span class="fk-mark">FK</span> · cp_id<span class="fk-mark">FK</span></td><td class="type">BIGINT</td><td>관련 팀 · CP</td></tr>
+      <tr><td class="col">scope</td><td class="type">delegation_scope NN</td><td><strong>P-6</strong> all_series / specific_series</td></tr>
+      <tr><td class="col">series_ids</td><td class="type">BIGINT[]</td><td><strong>P-6</strong> 특정 작품 배열</td></tr>
+      <tr><td class="col">action_types</td><td class="type">delegation_action_type[] NN</td><td><strong>P-6</strong> 액션 배열 (submit_review 필수 포함)</td></tr>
+      <tr><td class="col">valid_from · valid_to</td><td class="type">TIMESTAMPTZ NN</td><td><strong>P-1</strong> 시한 (최대 365일)</td></tr>
+      <tr><td class="col">issued_reason</td><td class="type">TEXT</td><td>발급 사유 (감사용 · 200자)</td></tr>
+      <tr><td class="col">status</td><td class="type">delegation_status</td><td>active · expired · revoked</td></tr>
+      <tr><td class="col">revoked_at · revoked_by_id · revoked_reason</td><td class="type">TIMESTAMPTZ · BIGINT · TEXT</td><td>회수 정보</td></tr>
+      <tr><td class="col">usage_count · last_used_at</td><td class="type">INTEGER · TIMESTAMPTZ</td><td><strong>P-5</strong> 사용 추적</td></tr>
+    </table>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:16px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">CHECK 제약 (6대 원칙 강제)</h4>
+    <div class="constraint-row"><span class="type-tag check">CHECK</span><div class="desc"><code>delegations_period_check</code> · valid_to > valid_from</div></div>
+    <div class="constraint-row"><span class="type-tag check">CHECK</span><div class="desc"><code>delegations_max_duration</code> · <strong>D-2 정책</strong> · 최대 365일</div></div>
+    <div class="constraint-row"><span class="type-tag check">CHECK</span><div class="desc"><code>delegations_scope_consistency</code> · all_series면 series_ids NULL, specific이면 NN+비어있지 않음</div></div>
+    <div class="constraint-row"><span class="type-tag check">CHECK</span><div class="desc"><code>delegations_must_include_submit_review</code> · <strong>P-6</strong> · submit_review 반드시 포함</div></div>
+    <div class="constraint-row"><span class="type-tag check">CHECK</span><div class="desc"><code>delegations_no_self_delegation</code> · 자기 자신 위임 불가 (CP 마스터 예외)</div></div>
+    <div class="constraint-row"><span class="type-tag check">CHECK</span><div class="desc"><code>delegations_revoked_consistency</code> · 회수 상태 일관성</div></div>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:16px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">인덱스 (성능 + 권한 검증 최적화)</h4>
+    <div class="constraint-row"><span class="type-tag idx">IDX</span><div class="desc"><code>delegations_issuer_active_idx</code> · 발급자 + valid_to (B2 발급 목록)</div></div>
+    <div class="constraint-row"><span class="type-tag idx">IDX</span><div class="desc"><code>delegations_receiver_active_idx</code> · 수령자 + valid_to (D2 받은 목록)</div></div>
+    <div class="constraint-row"><span class="type-tag idx">IDX</span><div class="desc"><code>delegations_expiring_soon_idx</code> · valid_to · 자동 만료 cron용</div></div>
+    <div class="constraint-row"><span class="type-tag gin">GIN</span><div class="desc"><code>delegations_series_ids_gin</code> · 작품 ID 배열 검색 (권한 검증 핵심)</div></div>
+    <div class="constraint-row"><span class="type-tag gin">GIN</span><div class="desc"><code>delegations_action_types_gin</code> · 액션 배열 검색</div></div>
+  </div>
+</div>
+
+<!-- F2. DELEGATION_REQUESTS -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge lavender">F2</span>
+    <span class="name">delegation_requests</span>
+    <span class="ko">팀원 → 팀장 위임 요청</span>
+    <span class="source">진입 경로 ③</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">팀원이 검수 제출을 시도할 때 권한이 없으면 [팀장에게 위임 요청]을 발송. 팀장이 알림을 받으면 발급 폼이 자동으로 채워진 상태로 시작 (위임 SB C1 참조).</div>
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:25%">타입</th><th>설명</th></tr>
+      <tr><td class="col">id<span class="pk-mark">PK</span></td><td class="type">BIGSERIAL</td><td></td></tr>
+      <tr><td class="col">requester_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td>요청자 (팀원)</td></tr>
+      <tr><td class="col">target_owner_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td>대상 팀장</td></tr>
+      <tr><td class="col">team_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td>관련 팀</td></tr>
+      <tr><td class="col">requested_series_ids · requested_actions</td><td class="type">BIGINT[] · ENUM[]</td><td>희망 범위·액션 (선택)</td></tr>
+      <tr><td class="col">request_message</td><td class="type">TEXT</td><td>요청 메시지</td></tr>
+      <tr><td class="col">status</td><td class="type">VARCHAR(20)</td><td>pending/approved/rejected/expired</td></tr>
+      <tr><td class="col">resulting_delegation_id<span class="fk-mark">FK</span></td><td class="type">VARCHAR(20)</td><td>승인 시 발급된 위임 ID</td></tr>
+      <tr><td class="col">expires_at</td><td class="type">TIMESTAMPTZ NN</td><td>7일 후 만료 (default)</td></tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ─── G 콘텐츠 · 검수 · 발행 5종 ─── -->
+<div class="chapter-divider" id="content-tables">
+  <span class="num">G</span>
+  <span class="title">콘텐츠 · 검수 · 발행 5종</span>
+  <span class="sub">005_review_publish.sql</span>
+</div>
+
+<!-- G1. CONTENT_UPLOADS -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge maroon">G1</span>
+    <span class="name">content_uploads</span>
+    <span class="ko">업로드 이력 (Author vs Uploader 분리)</span>
+    <span class="source">P-4 · 계정 V1.1.0 4-11절</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">P-4(Author 불변) 원칙을 데이터 모델로 강제하는 핵심 테이블. <code>author_id</code>(작품의 작가, 외부 노출)와 <code>uploaded_by_id</code>(실제 업로드 수행자)를 별도 컬럼으로 분리.</div>
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:25%">타입</th><th>설명</th></tr>
+      <tr><td class="col">upload_id<span class="pk-mark">PK</span></td><td class="type">BIGSERIAL</td><td></td></tr>
+      <tr><td class="col">content_type · content_id</td><td class="type">VARCHAR(20) · BIGINT</td><td>'series' 또는 'episode' + 해당 ID</td></tr>
+      <tr><td class="col">series_id</td><td class="type">BIGINT NN</td><td>모든 업로드는 series에 종속</td></tr>
+      <tr><td class="col" style="background:var(--brand-red-soft);">author_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td><strong>P-4: 팀장 고정, 외부 노출, 변경 불가</strong></td></tr>
+      <tr><td class="col" style="background:var(--lavender-soft);">uploaded_by_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td><strong>실제 업로드 수행자 (대리면 author와 다름)</strong></td></tr>
+      <tr><td class="col">team_id · cp_id</td><td class="type">BIGINT</td><td>팀·CP 컨텍스트</td></tr>
+      <tr><td class="col">upload_mode</td><td class="type">upload_mode NN</td><td>self · delegated · cp_master</td></tr>
+      <tr><td class="col">delegation_id<span class="fk-mark">FK</span></td><td class="type">VARCHAR(20)</td><td>delegated 모드일 때 NN</td></tr>
+      <tr><td class="col">version</td><td class="type">VARCHAR(20)</td><td>v1.0 · v1.1 ...</td></tr>
+      <tr><td class="col">review_status</td><td class="type">review_status</td><td>draft → submitted → reviewing → approved/rejected/onhold</td></tr>
+      <tr><td class="col">submit_memo · submit_attachment_url</td><td class="type">TEXT · VARCHAR</td><td>검수 메모 (검수·발행 SB C3)</td></tr>
+      <tr><td class="col">reviewed_by_id · reviewer_name</td><td class="type">BIGINT · VARCHAR</td><td>어드민 정보 캐시</td></tr>
+    </table>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:16px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">CHECK 제약 (P-4 강제)</h4>
+    <div class="constraint-row"><span class="type-tag check">CHECK</span><div class="desc"><code>content_uploads_delegation_consistency</code> · upload_mode=delegated면 delegation_id 필수</div></div>
+    <div class="constraint-row"><span class="type-tag check">CHECK</span><div class="desc"><code>content_uploads_self_mode_consistency</code> · self 모드면 author_id = uploaded_by_id 일치</div></div>
+  </div>
+</div>
+
+<!-- G2~G5 압축 -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">G2</span>
+    <span class="name">review_rejections</span>
+    <span class="ko">반려 사유 + 재제출 추적</span>
+    <span class="source">검수·발행 SB D1</span>
+  </div>
+  <div class="table-card-body">
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:25%">타입</th><th>설명</th></tr>
+      <tr><td class="col">upload_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td>대상 업로드</td></tr>
+      <tr><td class="col">category</td><td class="type">rejection_category</td><td>8종 카테고리</td></tr>
+      <tr><td class="col">rejection_message · guide_url</td><td class="type">TEXT · VARCHAR</td><td>사유 + 정책 가이드</td></tr>
+      <tr><td class="col">rejected_by_id · rejected_by_name</td><td class="type">BIGINT · VARCHAR</td><td>어드민 정보</td></tr>
+      <tr><td class="col">resubmit_count · resubmitted_at</td><td class="type">INTEGER · TIMESTAMPTZ</td><td>재제출 추적</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">G3</span>
+    <span class="name">review_onhold_messages</span>
+    <span class="ko">보류 채팅 (어드민 ↔ 작가)</span>
+    <span class="source">검수·발행 SB D2</span>
+  </div>
+  <div class="table-card-body">
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:25%">타입</th><th>설명</th></tr>
+      <tr><td class="col">upload_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td></td></tr>
+      <tr><td class="col">sender_id · sender_type · sender_name</td><td class="type">BIGINT · VARCHAR · VARCHAR</td><td>'admin' | 'author' CHECK</td></tr>
+      <tr><td class="col">message · attachment_url</td><td class="type">TEXT NN · VARCHAR</td><td>메시지 본문</td></tr>
+      <tr><td class="col">sent_at · read_at</td><td class="type">TIMESTAMPTZ</td><td>읽음 처리</td></tr>
+    </table>
+    <div class="constraint-row" style="margin-top:8px;"><span class="type-tag idx">IDX</span><div class="desc"><code>review_onhold_unread_idx</code> · partial WHERE read_at IS NULL</div></div>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">G4</span>
+    <span class="name">publish_schedules</span>
+    <span class="ko">예약 공개 큐</span>
+    <span class="source">검수·발행 SB E</span>
+  </div>
+  <div class="table-card-body">
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:25%">타입</th><th>설명</th></tr>
+      <tr><td class="col">upload_id<span class="fk-mark">FK</span> · episode_id · series_id</td><td class="type">BIGINT NN</td><td></td></tr>
+      <tr><td class="col">scheduled_at</td><td class="type">TIMESTAMPTZ NN</td><td>공개 일시 (KST)</td></tr>
+      <tr><td class="col">status</td><td class="type">publish_status</td><td>pending · published · cancelled</td></tr>
+      <tr><td class="col">notify_followers · notification_sent_at</td><td class="type">BOOLEAN · TIMESTAMPTZ</td><td>D-1 푸시 추적</td></tr>
+      <tr><td class="col">scheduled_by_id · scheduled_by_mode · delegation_id</td><td class="type">BIGINT · upload_mode · VARCHAR</td><td>대리 예약 처리</td></tr>
+      <tr><td class="col">published_at · cancelled_at · cancelled_reason</td><td class="type">TIMESTAMPTZ · TEXT</td><td>처리 결과</td></tr>
+    </table>
+    <div class="constraint-row" style="margin-top:8px;"><span class="type-tag check">CHECK</span><div class="desc"><code>publish_schedules_max_lead_time</code> · 최대 3개월 후까지만 예약 가능</div></div>
+    <div class="constraint-row"><span class="type-tag idx">IDX</span><div class="desc"><code>publish_schedules_notify_window_idx</code> · partial · D-1 푸시 cron용</div></div>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">G5</span>
+    <span class="name">publish_histories</span>
+    <span class="ko">발행 이력 + 버전 관리</span>
+    <span class="source">검수·발행 SB F · P-4</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">발행된 모든 회차의 버전 이력. <code>is_current</code>는 한 에피소드에 1개만 (partial unique).</div>
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:25%">타입</th><th>설명</th></tr>
+      <tr><td class="col">episode_id · series_id · upload_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td></td></tr>
+      <tr><td class="col">version</td><td class="type">VARCHAR(20)</td><td>v1.0 · v1.1 ...</td></tr>
+      <tr><td class="col">is_current</td><td class="type">BOOLEAN</td><td><strong>partial UNIQ per episode</strong></td></tr>
+      <tr><td class="col">change_summary · change_type · diff_data</td><td class="type">TEXT · VARCHAR · JSONB</td><td>변경 정보</td></tr>
+      <tr><td class="col" style="background:var(--brand-red-soft);">author_id<span class="fk-mark">FK</span></td><td class="type">BIGINT NN</td><td><strong>P-4: 변경 불가 외부 노출</strong></td></tr>
+      <tr><td class="col" style="background:var(--lavender-soft);">changed_by_id<span class="fk-mark">FK</span> · change_mode</td><td class="type">BIGINT · upload_mode</td><td>실제 수행자</td></tr>
+    </table>
+    <div class="constraint-row" style="margin-top:8px;"><span class="type-tag uniq">UNIQ</span><div class="desc"><code>publish_histories_current_uniq</code> · episode_id WHERE is_current=TRUE (트리거 자동 갱신)</div></div>
+  </div>
+</div>
+
+
+<!-- ─── H Audit Log ─── -->
+<div class="chapter-divider" id="audit-table">
+  <span class="num">H</span>
+  <span class="title">Audit Log</span>
+  <span class="sub">006_audit_log.sql · P-5 영구 보존</span>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge dark">H</span>
+    <span class="name">auth_audit_logs</span>
+    <span class="ko">모든 감사 이벤트 (23종)</span>
+    <span class="source">P-5 이력 추적</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">계정 생성·로그인·위임·콘텐츠·CP 정책 변경 등 모든 중요 이벤트를 영구 저장. 23종 <code>audit_event_type</code> ENUM으로 분류. JSONB <code>event_data</code>에 이벤트별 추가 정보 (이전값/새값/사유) 저장.</div>
+    <table class="cols-table">
+      <tr><th style="width:25%">컬럼</th><th style="width:25%">타입</th><th>설명</th></tr>
+      <tr><td class="col">id<span class="pk-mark">PK</span></td><td class="type">BIGSERIAL</td><td></td></tr>
+      <tr><td class="col">event_type</td><td class="type">audit_event_type NN</td><td>23종 이벤트 분류</td></tr>
+      <tr><td class="col">user_id · author_id · actor_db</td><td class="type">BIGINT · VARCHAR</td><td>주체 (user/author/admin/system)</td></tr>
+      <tr><td class="col">target_type · target_id</td><td class="type">VARCHAR(30) · VARCHAR(40)</td><td>대상 객체 (D-XXXX 또는 BIGINT)</td></tr>
+      <tr><td class="col">event_data</td><td class="type">JSONB</td><td>이벤트별 추가 정보</td></tr>
+      <tr><td class="col">event_message</td><td class="type">TEXT</td><td>사람이 읽을 수 있는 메시지</td></tr>
+      <tr><td class="col">ip_address · user_agent · session_id</td><td class="type">INET · TEXT · VARCHAR</td><td>환경 정보</td></tr>
+      <tr><td class="col">result</td><td class="type">VARCHAR(20)</td><td>success / failure / pending</td></tr>
+      <tr><td class="col">occurred_at</td><td class="type">TIMESTAMPTZ NN</td><td>발생 시각 (insert only · 수정 불가)</td></tr>
+    </table>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:16px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">인덱스 (조회 성능 + 권한별 필터)</h4>
+    <div class="constraint-row"><span class="type-tag idx">IDX</span><div class="desc"><code>audit_logs_user_idx</code> / <code>audit_logs_author_idx</code> · 주체별 + 시간 역순</div></div>
+    <div class="constraint-row"><span class="type-tag idx">IDX</span><div class="desc"><code>audit_logs_event_type_idx</code> · 이벤트 종류별 필터</div></div>
+    <div class="constraint-row"><span class="type-tag idx">IDX</span><div class="desc"><code>audit_logs_target_idx</code> · (target_type, target_id) — 위임 D-XXXX 관련 이력</div></div>
+    <div class="constraint-row"><span class="type-tag idx">IDX</span><div class="desc"><code>audit_logs_delegation_events_idx</code> · partial · 위임 5종 이벤트 전용</div></div>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:16px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">파티셔닝 권장</h4>
+    <div class="sql-block"><span class="cm">-- 운영 1년 후 월별 파티셔닝 권장 (데이터 증가량 큼)</span>
+<span class="kw">CREATE TABLE</span> auth_audit_logs_y2026m06 <span class="kw">PARTITION OF</span> auth_audit_logs
+  <span class="kw">FOR VALUES FROM</span> (<span class="str">'2026-06-01'</span>) <span class="kw">TO</span> (<span class="str">'2026-07-01'</span>);</div>
+  </div>
+</div>
+
+<!-- ─── I 저장 함수 · 트리거 ─── -->
+<div class="chapter-divider" id="functions">
+  <span class="num">I</span>
+  <span class="title">저장 함수 · 트리거</span>
+  <span class="sub">007_functions.sql · 006_audit_log.sql</span>
+</div>
+
+<section class="section-intro">
+  <h2>비즈니스 로직의 DB 내장</h2>
+  <p>위임 SB H3의 권한 검증 알고리즘을 PostgreSQL 저장 함수로 구현. 애플리케이션 레이어에서 호출 한 번으로 self/delegated/cp_master 모드 결정이 끝난다.</p>
+</section>
+
+<!-- I1. verify_delegation_permission -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">I1</span>
+    <span class="name">verify_delegation_permission()</span>
+    <span class="ko">권한 검증 — 위임 SB H3 알고리즘</span>
+    <span class="source">5단계 검증</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">발급자 자격(P-2)·수령자 자격(P-3)·범위(P-6)·기간(P-1)을 모두 확인한 뒤, 본인/위임/CP 마스터 중 어떤 모드인지 반환. 권한 없으면 reason과 함께 실패.</div>
+    <div class="sql-block"><span class="kw">SELECT</span> * <span class="kw">FROM</span> verify_delegation_permission(
+  p_actor_id    => <span class="num">123</span>,
+  p_action      => <span class="str">'submit_review'</span>,
+  p_series_id   => <span class="num">456</span>
+);
+<span class="cm">-- 반환: (ok, mode, delegation_id, reason)</span>
+<span class="cm">--   ok=TRUE, mode='delegated', delegation_id='D-2432', reason=NULL</span></div>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:16px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">알고리즘 5단계</h4>
+    <table class="cols-table">
+      <tr><th style="width:10%">Step</th><th style="width:30%">검증</th><th>결과</th></tr>
+      <tr><td class="col">1</td><td>작품의 author 조회</td><td>없으면 reason='series_not_found'</td></tr>
+      <tr><td class="col">2</td><td>본인이 author인가?</td><td>맞으면 mode='self' 즉시 반환</td></tr>
+      <tr><td class="col">3</td><td>활성 위임 매칭 (receiver + action + scope + valid_to)</td><td>있으면 mode='delegated' + delegation_id</td></tr>
+      <tr><td class="col">4</td><td>CP 마스터 + 회사 정책 ON 확인</td><td>모두 충족 시 mode='cp_master'</td></tr>
+      <tr><td class="col">5</td><td>모두 실패</td><td>ok=FALSE, reason='no_permission'</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- I2. issue_delegation -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">I2</span>
+    <span class="name">issue_delegation()</span>
+    <span class="ko">위임 발급 헬퍼 (P-2 · P-3 자동 검증)</span>
+    <span class="source">위임 SB C5</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">P-2 발급자 자격(팀장/CP 마스터)과 P-3 수령자 자격(같은 팀 active 멤버)을 함수 내에서 검증 후 INSERT. RAISE EXCEPTION으로 위반 시 트랜잭션 롤백.</div>
+    <div class="sql-block"><span class="kw">SELECT</span> issue_delegation(
+  p_issuer_id     => <span class="num">123</span>,
+  p_receiver_id   => <span class="num">456</span>,
+  p_team_id       => <span class="num">10</span>,
+  p_scope         => <span class="str">'specific_series'</span>,
+  p_series_ids    => <span class="kw">ARRAY</span>[<span class="num">100</span>, <span class="num">101</span>],
+  p_action_types  => <span class="kw">ARRAY</span>[<span class="str">'submit_review'</span>]::delegation_action_type[],
+  p_valid_from    => <span class="fn">NOW</span>(),
+  p_valid_to      => <span class="fn">NOW</span>() + <span class="kw">INTERVAL</span> <span class="str">'7 days'</span>,
+  p_issued_reason => <span class="str">'해외 출장 (5/30~6/5)'</span>
+);
+<span class="cm">-- 반환: 'D-2432' (자동 생성된 외부 ID)</span></div>
+  </div>
+</div>
+
+<!-- I3. revoke_delegation -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge">I3</span>
+    <span class="name">revoke_delegation()</span>
+    <span class="ko">위임 회수 (B3 4-Step의 처리부)</span>
+    <span class="source">권한 검증 포함</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">발급자 본인 또는 CP 마스터만 회수 가능. status=revoked + Audit Log 자동 기록.</div>
+    <div class="sql-block"><span class="kw">SELECT</span> revoke_delegation(
+  p_delegation_id => <span class="str">'D-2432'</span>,
+  p_revoker_id    => <span class="num">123</span>,
+  p_reason        => <span class="str">'출장 취소'</span>
+);</div>
+  </div>
+</div>
+
+<!-- I4. expire_delegations + 트리거 일괄 -->
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge dark">I4</span>
+    <span class="name">expire_delegations() · 자동 트리거 13종</span>
+    <span class="ko">자동 만료 + updated_at + 자동 회수</span>
+    <span class="source">운영 자동화</span>
+  </div>
+  <div class="table-card-body">
+    <table class="cols-table">
+      <tr><th style="width:30%">함수/트리거</th><th style="width:25%">유형</th><th>역할</th></tr>
+      <tr><td class="col">expire_delegations()</td><td class="type">함수 (cron)</td><td>매분 호출 · valid_to 지난 active 위임을 expired로 전환 + Audit Log</td></tr>
+      <tr><td class="col">generate_delegation_id()</td><td class="type">BEFORE INSERT 트리거</td><td>D-XXXX 자동 생성</td></tr>
+      <tr><td class="col">set_updated_at()</td><td class="type">BEFORE UPDATE × 10</td><td>모든 주요 테이블의 updated_at 자동 갱신</td></tr>
+      <tr><td class="col">increment_delegation_usage()</td><td class="type">AFTER INSERT 트리거</td><td>content_uploads에 위임 사용 시 usage_count++ + Audit Log</td></tr>
+      <tr><td class="col">update_current_publish_version()</td><td class="type">AFTER INSERT/UPDATE 트리거</td><td>publish_histories의 is_current 자동 갱신 (한 에피소드 1개만)</td></tr>
+      <tr><td class="col">auto_revoke_on_team_leave()</td><td class="type">AFTER UPDATE 트리거</td><td>멤버 탈퇴 시 받은 위임 자동 회수 + Audit Log</td></tr>
+    </table>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:16px 0 8px;letter-spacing:0.06em;text-transform:uppercase;">expire_delegations cron 등록 예시</h4>
+    <div class="sql-block"><span class="cm">-- pg_cron 확장 사용 시</span>
+<span class="kw">SELECT</span> cron.schedule(
+  <span class="str">'expire-delegations'</span>,
+  <span class="str">'* * * * *'</span>,  <span class="cm">-- 매분</span>
+  <span class="str">'SELECT expire_delegations();'</span>
+);</div>
+  </div>
+</div>
+
+
+<!-- ─── J 정책 매핑 ─── -->
+<div class="chapter-divider" id="policy-map">
+  <span class="num">J</span>
+  <span class="title">정책 ↔ DDL 매핑</span>
+  <span class="sub">13개 정책의 데이터 모델 구현 위치</span>
+</div>
+
+<section class="section-intro">
+  <h2>모든 정책이 DB 레벨에서 강제됨</h2>
+  <p>계정 V1.1.0의 7개 정책(Q1~Q7), 위임 SB의 6개 원칙(P-1~P-6), 6개 운영 정책 결정(D-1~D-만료후)이 각각 어디서 어떻게 DDL/트리거/함수로 구현되었는지의 매핑.</p>
+</section>
+
+<h3 style="font-size:14px;font-weight:700;margin:20px 0 12px;">J1. 계정 시스템 7대 Q</h3>
+
+<div class="policy-card">
+  <span class="code">Q1</span>
+  <div class="title">같은 이메일이 USER·AUTHOR 다른 사람으로 존재 불가</div>
+  <div class="impl"><code>users.email</code> partial unique + <code>authors.email</code> partial unique + 회원가입 시 양쪽 DB 조회로 검증</div>
+</div>
+<div class="policy-card">
+  <span class="code">Q2</span>
+  <div class="title">양쪽 비밀번호 독립 관리</div>
+  <div class="impl"><code>password_reset_tokens.target_db</code> ENUM 분기 · users/authors 별도 password_hash 컬럼</div>
+</div>
+<div class="policy-card">
+  <span class="code">Q3</span>
+  <div class="title">같은 소셜 계정이 양쪽 가입 금지</div>
+  <div class="impl"><code>oauth_links.exclusive_target</code> CHECK 제약 (user_id XOR author_id) + <code>(provider, provider_user_id)</code> partial unique</div>
+</div>
+<div class="policy-card">
+  <span class="code">Q4</span>
+  <div class="title">연동 해제 가능 + 이력 보존</div>
+  <div class="impl"><code>linked_accounts.status = unlinked</code> 시 partial unique 제외 + unlinked_at/reason 기록</div>
+</div>
+<div class="policy-card">
+  <span class="code">Q5</span>
+  <div class="title">USER ↔ AUTHOR 1:1 매핑</div>
+  <div class="impl"><code>linked_accounts</code> 양쪽 partial unique on active — 활성 매핑은 양쪽 모두 최대 1개</div>
+</div>
+<div class="policy-card">
+  <span class="code">Q6</span>
+  <div class="title">파트너 어드민 = AUTHOR.role 확장</div>
+  <div class="impl"><code>author_role</code> ENUM (author/master/accounting) — 별도 DB 없이 AUTHOR DB로 통합</div>
+</div>
+<div class="policy-card">
+  <span class="code">Q7</span>
+  <div class="title">플랫폼 작가 프로필에서 USER 정보 미노출</div>
+  <div class="impl">별도 DB 자체로 분리 + <code>pen_name</code>(공개) ≠ <code>nickname</code>(USER 측) 컬럼명 분리</div>
+</div>
+
+
+<h3 style="font-size:14px;font-weight:700;margin:24px 0 12px;">J2. 위임 6대 원칙</h3>
+
+<div class="policy-card lavender">
+  <span class="code">P-1</span>
+  <div class="title">토큰형 권한 (시한·범위 한정)</div>
+  <div class="impl"><code>delegations.valid_to</code> + <code>status</code> ENUM + <code>expire_delegations()</code> cron 자동 만료</div>
+</div>
+<div class="policy-card lavender">
+  <span class="code">P-2</span>
+  <div class="title">발급자 제한 (팀장 + CP 마스터)</div>
+  <div class="impl"><code>issue_delegation()</code> 함수 내부 검증 · <code>teams.owner_author_id</code> 또는 <code>authors.role = 'master'</code> 확인</div>
+</div>
+<div class="policy-card lavender">
+  <span class="code">P-3</span>
+  <div class="title">수령자 제한 (같은 팀 active 멤버)</div>
+  <div class="impl"><code>issue_delegation()</code> 내부에서 <code>team_memberships</code> 조회 · CP 마스터는 회사 전체 우회</div>
+</div>
+<div class="policy-card lavender">
+  <span class="code">P-4</span>
+  <div class="title">Author 불변</div>
+  <div class="impl"><code>content_uploads.author_id</code> ≠ <code>uploaded_by_id</code> 별도 컬럼 + <code>publish_histories.author_id</code> 변경 불가 + <code>self_mode_consistency</code> CHECK</div>
+</div>
+<div class="policy-card lavender">
+  <span class="code">P-5</span>
+  <div class="title">이력 추적 (영구 보존)</div>
+  <div class="impl"><code>auth_audit_logs</code> 전체 + 트리거 자동 기록 (issue/revoke/used/expire) + delete 불가</div>
+</div>
+<div class="policy-card lavender">
+  <span class="code">P-6</span>
+  <div class="title">액션 범위 명시 (일괄 권한 아님)</div>
+  <div class="impl"><code>delegations.action_types[]</code> 배열 + <code>must_include_submit_review</code> CHECK + <code>delegation_action_type</code> ENUM 4종</div>
+</div>
+
+
+<h3 style="font-size:14px;font-weight:700;margin:24px 0 12px;">J3. 운영 정책 결정</h3>
+
+<div class="policy-card maroon">
+  <span class="code">D-1</span>
+  <div class="title">CP 마스터 무위임 업로드 기본값 OFF</div>
+  <div class="impl"><code>cp_companies.master_uploads_without_delegation BOOLEAN DEFAULT FALSE</code> · 정책 변경 시 audit log 기록</div>
+</div>
+<div class="policy-card maroon">
+  <span class="code">D-2</span>
+  <div class="title">위임 무기한 불허 (최대 365일)</div>
+  <div class="impl"><code>delegations_max_duration</code> CHECK · <code>valid_to ≤ valid_from + 365 days</code></div>
+</div>
+<div class="policy-card maroon">
+  <span class="code">D-3</span>
+  <div class="title">대리 업로드 외부 비공개 (author만 노출)</div>
+  <div class="impl">외부 API 응답에서 <code>content_uploads.uploaded_by_id</code> 제외 · <code>publish_histories.author_id</code>만 노출</div>
+</div>
+
+
+<!-- ─── K 운영 ─── -->
+<div class="chapter-divider" id="operations">
+  <span class="num">K</span>
+  <span class="title">운영 권장 사항</span>
+  <span class="sub">cron · 파티셔닝 · 백업 · 모니터링</span>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge dark">K1</span>
+    <span class="name">cron 작업 등록</span>
+    <span class="ko">pg_cron 권장</span>
+  </div>
+  <div class="table-card-body">
+    <table class="cols-table">
+      <tr><th>이름</th><th>주기</th><th>역할</th></tr>
+      <tr><td class="col">expire-delegations</td><td>* * * * * (매분)</td><td>valid_to 지난 위임 자동 만료</td></tr>
+      <tr><td class="col">notify-d3-expiring</td><td>0 0 * * * (매일 00시)</td><td>D-3 만료 임박 위임에 알림 발송</td></tr>
+      <tr><td class="col">notify-d1-publish</td><td>0 * * * * (매시간)</td><td>예약 공개 D-1 푸시 알림</td></tr>
+      <tr><td class="col">cleanup-old-tokens</td><td>0 4 * * * (매일 04시)</td><td>만료된 reset_token / invitation 삭제</td></tr>
+      <tr><td class="col">audit-log-partition</td><td>월 1회</td><td>다음 달 파티션 미리 생성</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge dark">K2</span>
+    <span class="name">파티셔닝 권장 (1년 이후)</span>
+    <span class="ko">auth_audit_logs</span>
+  </div>
+  <div class="table-card-body">
+    <div class="desc">운영 6~12개월 이후 <code>auth_audit_logs</code>의 데이터 증가량이 큰 경우 월별 RANGE 파티셔닝 권장. 현재 마이그레이션은 단일 테이블이며, 별도 마이그레이션으로 전환.</div>
+    <div class="sql-block"><span class="cm">-- 기존 단일 테이블 → 파티션 테이블로 전환 (별도 마이그레이션)</span>
+<span class="kw">ALTER TABLE</span> auth_audit_logs <span class="kw">RENAME TO</span> auth_audit_logs_archive;
+
+<span class="kw">CREATE TABLE</span> auth_audit_logs (
+  <span class="cm">-- 동일 컬럼 정의...</span>
+) <span class="kw">PARTITION BY RANGE</span> (occurred_at);
+
+<span class="kw">CREATE TABLE</span> auth_audit_logs_y2026m06 <span class="kw">PARTITION OF</span> auth_audit_logs
+  <span class="kw">FOR VALUES FROM</span> (<span class="str">'2026-06-01'</span>) <span class="kw">TO</span> (<span class="str">'2026-07-01'</span>);</div>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge dark">K3</span>
+    <span class="name">백업 정책</span>
+    <span class="ko">데이터 손실 방지</span>
+  </div>
+  <div class="table-card-body">
+    <ul style="font-size:13px;color:var(--text-sub);line-height:1.8;padding-left:20px;">
+      <li>일일 전체 백업 (00:00 KST · 별도 시스템)</li>
+      <li>WAL 아카이브로 PITR 가능하게 구성</li>
+      <li>주요 이벤트(위임 발급/회수·CP 정책 변경) 발생 후 즉시 백업</li>
+      <li>audit_log 테이블은 별도 백업 (법적 분쟁 대비)</li>
+      <li>월 1회 백업 복원 테스트 (DR 시나리오 검증)</li>
+    </ul>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="table-card-header">
+    <span class="badge dark">K4</span>
+    <span class="name">모니터링 쿼리 예시</span>
+    <span class="ko">대시보드 SQL</span>
+  </div>
+  <div class="table-card-body">
+    <div class="sql-block"><span class="cm">-- 만료 임박 위임 (D-3 알림 대상)</span>
+<span class="kw">SELECT</span> delegation_id, issuer_id, receiver_id, valid_to
+<span class="kw">FROM</span> delegations
+<span class="kw">WHERE</span> status = <span class="str">'active'</span>
+  <span class="kw">AND</span> valid_to <span class="kw">BETWEEN</span> <span class="fn">NOW</span>() <span class="kw">AND</span> <span class="fn">NOW</span>() + <span class="kw">INTERVAL</span> <span class="str">'3 days'</span>;
+
+<span class="cm">-- CP 정책 변경 이력 (감사 대상)</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> auth_audit_logs
+<span class="kw">WHERE</span> event_type = <span class="str">'cp_policy_changed'</span>
+<span class="kw">ORDER BY</span> occurred_at <span class="kw">DESC LIMIT</span> <span class="num">50</span>;
+
+<span class="cm">-- 대리 업로드 비율 (운영 지표)</span>
+<span class="kw">SELECT</span> upload_mode, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> cnt,
+  <span class="fn">ROUND</span>(<span class="fn">COUNT</span>(*) * <span class="num">100.0</span> / <span class="fn">SUM</span>(<span class="fn">COUNT</span>(*)) <span class="kw">OVER</span> (), <span class="num">1</span>) <span class="kw">AS</span> pct
+<span class="kw">FROM</span> content_uploads
+<span class="kw">WHERE</span> uploaded_at >= <span class="fn">NOW</span>() - <span class="kw">INTERVAL</span> <span class="str">'30 days'</span>
+<span class="kw">GROUP BY</span> upload_mode;
+
+<span class="cm">-- 위임 사용률 (사용된 위임 / 발급된 위임)</span>
+<span class="kw">SELECT</span>
+  <span class="fn">COUNT</span>(*) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> usage_count > <span class="num">0</span>) <span class="kw">AS</span> used,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> total,
+  <span class="fn">ROUND</span>(<span class="fn">COUNT</span>(*) <span class="kw">FILTER</span> (<span class="kw">WHERE</span> usage_count > <span class="num">0</span>) * <span class="num">100.0</span> / <span class="fn">COUNT</span>(*), <span class="num">1</span>) <span class="kw">AS</span> usage_rate
+<span class="kw">FROM</span> delegations
+<span class="kw">WHERE</span> created_at >= <span class="fn">NOW</span>() - <span class="kw">INTERVAL</span> <span class="str">'30 days'</span>;</div>
+  </div>
+</div>
+
+
+<!-- ─── 종료 / 다음 작업 ─── -->
+<div class="chapter-divider">
+  <span class="num">⊕</span>
+  <span class="title">다음 작업 (P0 5)</span>
+  <span class="sub">어드민 ↔ 워크스페이스 API 명세</span>
+</div>
+
+<section class="section-intro">
+  <h2>P0 마지막 단계로 이어집니다</h2>
+  <p>본 마이그레이션에서 정의한 19개 테이블과 7개 저장 함수를 바탕으로, 어드민과 워크스페이스 간의 REST API 명세를 OpenAPI 3.0 형식으로 작성한다. 각 엔드포인트의 요청·응답 스키마, 인증 방식(JWT), 권한 분기(role/membership/delegation), 에러 코드 표준이 다음 산출물의 범위.</p>
+  <div class="pills">
+    <span class="pill red">OpenAPI 3.0</span>
+    <span class="pill lavender">JWT 인증</span>
+    <span class="pill green">권한 분기 표준</span>
+    <span class="pill coral">~50개 엔드포인트</span>
+  </div>
+</section>
+
+</main>
+
+</div>
+
+<footer class="doc-footer">
+  <strong>PlayToon</strong>V1.2.1 DB 마이그레이션 · 2026.05.29
+  <div class="meta-line">19 테이블 · 74 인덱스 · 17 ENUM · 7 함수 · 13 트리거 · 1,425줄 SQL</div>
+</footer>
+
+<script>
+const links = document.querySelectorAll('.sidebar a');
+const sections = document.querySelectorAll('[id]');
+function activate() {
+  let current = '';
+  sections.forEach(s => {
+    if (s.getBoundingClientRect().top < 200) current = s.id;
+  });
+  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+}
+window.addEventListener('scroll', activate);
+links.forEach(l => l.addEventListener('click', e => {
+  const t = document.querySelector(l.getAttribute('href'));
+  if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+}));
+</script>
+
+</body>
+</html>

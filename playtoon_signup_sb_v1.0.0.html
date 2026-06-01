@@ -1,0 +1,2298 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>플레이툰 회원가입 SB · V1.1.0 부속 (실제 디자인 시스템 정합 V2)</title>
+<meta name="viewport" content="width=1280">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+:root {
+  /* 워크스페이스 실제 컬러 시스템 (dev.app.playtoon.studio 추출) */
+  --brand-red: #DC3545;
+  --brand-red-dark: #B82838;
+  --brand-red-soft: #FCE7E9;
+  --maroon: #6B1F1F;
+  --maroon-light: #8B2929;
+  --lavender: #A99DE4;
+  --lavender-dark: #8E80D3;
+  --lavender-soft: #EEEBF9;
+  --yellow: #FACC15;
+  --yellow-soft: #FFFBE6;
+  --success: #10B981;
+  --success-soft: #D1FAE5;
+  --warn: #F59E0B;
+  --warn-soft: #FEF3C7;
+  --error: #EF4444;
+  --error-soft: #FEE2E2;
+  --info: #3B82F6;
+  --info-soft: #DBEAFE;
+
+  --text: #111827;
+  --text-sub: #6B7280;
+  --text-muted: #9CA3AF;
+  --bg: #FFFFFF;
+  --bg-soft: #F8F9FA;
+  --bg-softer: #F3F4F6;
+  --border: #E5E7EB;
+  --border-soft: #F3F4F6;
+
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+  --shadow-faint: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, sans-serif;
+  background: var(--bg-soft);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── 다크 알림 배너 (워크스페이스 실제 톤) ─── */
+.alert-banner {
+  background: #1F1F1F;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.alert-banner .pill {
+  background: var(--brand-red);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.alert-banner .cta {
+  background: white;
+  color: var(--text);
+  padding: 4px 12px;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ─── 문서 헤더 ─── */
+.doc-header {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 28px 48px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.doc-header .logo {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.doc-header .title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.doc-header .meta {
+  margin-left: auto;
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-sub);
+}
+.doc-header .meta span strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ─── 레이아웃 ─── */
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  max-width: 1680px;
+  margin: 0 auto;
+}
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  background: white;
+  border-right: 1px solid var(--border);
+  padding: 24px 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar h3 {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  padding: 0 24px 8px;
+  margin-top: 20px;
+}
+.sidebar h3:first-of-type { margin-top: 0; }
+.sidebar a {
+  display: block;
+  padding: 7px 24px 7px 36px;
+  font-size: 13px;
+  color: var(--text-sub);
+  text-decoration: none;
+  position: relative;
+  transition: background 0.1s;
+}
+.sidebar a:hover { background: var(--bg-soft); color: var(--text); }
+.sidebar a.active {
+  color: var(--brand-red);
+  font-weight: 600;
+  background: var(--brand-red-soft);
+}
+.sidebar a.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--brand-red);
+}
+.sidebar a .num {
+  display: inline-block;
+  width: 28px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-left: -22px;
+}
+.sidebar a.active .num { color: var(--brand-red); }
+
+/* ─── 메인 콘텐츠 ─── */
+.main {
+  padding: 32px 48px 80px;
+  max-width: 1340px;
+}
+
+/* ─── 챕터 디바이더 ─── */
+.chapter-divider {
+  margin: 48px 0 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--text);
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+.chapter-divider:first-of-type { margin-top: 0; }
+.chapter-divider .num {
+  font-size: 64px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+.chapter-divider .title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.chapter-divider .sub {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ─── 섹션 인트로 ─── */
+.section-intro {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+}
+.section-intro h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.section-intro .url {
+  display: inline-block;
+  background: var(--bg-soft);
+  color: var(--text-sub);
+  padding: 3px 10px;
+  border-radius: var(--r-sm);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+.section-intro p {
+  color: var(--text-sub);
+  font-size: 13px;
+  margin-top: 6px;
+}
+.section-intro .pills {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--bg-soft);
+  color: var(--text-sub);
+}
+.pill.red { background: var(--brand-red-soft); color: var(--brand-red-dark); }
+.pill.lavender { background: var(--lavender-soft); color: var(--lavender-dark); }
+.pill.yellow { background: var(--yellow-soft); color: #92400E; }
+.pill.green { background: var(--success-soft); color: #065F46; }
+
+/* ─── Step 카드 ─── */
+.step-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 20px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 440px 1fr;
+}
+
+.step-header {
+  grid-column: 1 / -1;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.step-header .badge {
+  background: var(--brand-red);
+  color: white;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+}
+.step-header .title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.step-header .desc {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-left: auto;
+}
+
+.step-card.scenario .step-header {
+  background: #1F1F1F;
+}
+.step-card.scenario .step-header .badge {
+  background: var(--lavender);
+  color: white;
+}
+.step-card.scenario .step-header .title { color: white; }
+.step-card.scenario .step-header .desc { color: rgba(255,255,255,0.6); }
+
+/* ─── 모형 영역 ─── */
+.mockup {
+  background: var(--bg-soft);
+  padding: 28px 20px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.mockup-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  align-self: flex-start;
+  letter-spacing: 0.03em;
+}
+
+/* ─── 워크스페이스 스타일 폼 ─── */
+.form-window {
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 32px 28px;
+  font-size: 13px;
+}
+.form-window.compact { padding: 24px 22px; }
+
+.m-logo {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+
+.m-h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.025em;
+  margin-top: 8px;
+  margin-bottom: 6px;
+  line-height: 1.25;
+}
+.m-h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.015em;
+  margin: 14px 0 6px;
+}
+.m-sub {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+
+.m-field {
+  margin-bottom: 14px;
+}
+.m-label {
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.m-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--text);
+  background: white;
+  font-family: inherit;
+}
+.m-input:focus {
+  outline: none;
+  border-color: var(--brand-red);
+}
+.m-input.readonly { background: var(--bg-soft); color: var(--text-sub); }
+.m-input.placeholder { color: var(--text-muted); }
+
+/* 워크스페이스 실제 버튼 스타일 (큰 라벤더 또는 빨강) */
+.m-btn {
+  width: 100%;
+  background: var(--brand-red);
+  color: white;
+  border: none;
+  border-radius: var(--r-md);
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 4px;
+  font-family: inherit;
+  letter-spacing: -0.01em;
+}
+.m-btn:hover { background: var(--brand-red-dark); }
+
+.m-btn.lavender {
+  background: var(--lavender);
+  color: white;
+}
+.m-btn.lavender:hover { background: var(--lavender-dark); }
+
+.m-btn.secondary {
+  background: white;
+  color: var(--text);
+  border: 1px solid var(--border);
+  margin-top: 8px;
+  font-weight: 500;
+}
+.m-btn.secondary:hover {
+  background: var(--bg-soft);
+}
+
+.m-btn.outline-red {
+  background: white;
+  color: var(--brand-red);
+  border: 1px solid var(--brand-red);
+}
+
+.m-btn.danger {
+  background: var(--error);
+  color: white;
+}
+
+.m-divider {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 16px 0;
+  position: relative;
+}
+.m-divider::before, .m-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 38%;
+  height: 1px;
+  background: var(--border);
+}
+.m-divider::before { left: 0; }
+.m-divider::after { right: 0; }
+
+.m-social {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.m-social .m-soc {
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 10px;
+  font-size: 12px;
+  text-align: center;
+  color: var(--text);
+  background: white;
+  font-weight: 500;
+}
+.m-social .m-soc.kakao {
+  background: #FEE500;
+  border-color: #FEE500;
+}
+.m-social .m-soc.naver {
+  background: #03C75A;
+  border-color: #03C75A;
+  color: white;
+}
+
+/* 실제 워크스페이스 dev 환경의 소셜 버튼 스타일 — pill 가로형 */
+.m-social-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.m-soc-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  background: #F4F2F8;
+  border-radius: var(--r-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+}
+.m-soc-pill .ic {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+  color: white;
+}
+.m-soc-pill .ic.g { background: #DB4437; }
+.m-soc-pill .ic.k { background: #FEE500; color: #3C1E1E; }
+.m-soc-pill .ic.a { background: #000000; }
+.m-soc-pill .ic.n { background: #03C75A; }
+.m-soc-pill .arrow {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: 16px;
+}
+
+/* 로그인 모달 (E1 슬라이드 패널 스타일) */
+.login-frame {
+  width: 100%;
+  max-width: 700px;
+  background: white;
+  border-radius: var(--r-lg);
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--border);
+}
+.login-frame .hero {
+  background: linear-gradient(135deg, #FFC5C5 0%, #FF8B8B 100%);
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+.login-frame .hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), transparent 60%);
+}
+.login-frame .hero .work-card {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  color: white;
+}
+.login-frame .hero .work-card .tag {
+  background: var(--brand-red);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 700;
+}
+.login-frame .hero .work-card .name {
+  font-size: 16px;
+  font-weight: 800;
+  margin-top: 6px;
+  color: white;
+}
+.login-frame .hero .work-card .name em {
+  color: var(--brand-red);
+  font-style: normal;
+}
+.login-frame .hero .work-card .desc {
+  font-size: 10px;
+  margin-top: 2px;
+  opacity: 0.9;
+}
+.login-frame .panel {
+  padding: 36px 32px;
+  position: relative;
+}
+.login-frame .close-x {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--bg-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--text-sub);
+  cursor: pointer;
+}
+.login-frame .panel-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  text-align: center;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+.login-frame .panel-sub {
+  font-size: 12px;
+  color: var(--text-sub);
+  text-align: center;
+  margin-bottom: 20px;
+}
+.login-frame .reset-link {
+  text-align: right;
+  font-size: 11px;
+  color: var(--text-sub);
+  margin-top: -8px;
+  margin-bottom: 12px;
+}
+.login-frame .reset-link a { color: var(--text-sub); text-decoration: none; }
+.login-frame .footer-link {
+  font-size: 12px;
+  color: var(--text-sub);
+  text-align: center;
+  margin-top: 14px;
+}
+.login-frame .footer-link a { color: var(--brand-red); font-weight: 600; text-decoration: none; }
+
+.m-link {
+  font-size: 12px;
+  color: var(--text-sub);
+  text-align: center;
+  margin-top: 14px;
+}
+.m-link a {
+  color: var(--brand-red);
+  font-weight: 600;
+  text-decoration: none;
+}
+.m-link a:hover { text-decoration: underline; }
+
+.m-checkbox {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+.m-checkbox .box {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  background: white;
+}
+.m-checkbox.checked .box {
+  background: var(--brand-red);
+  border-color: var(--brand-red);
+  position: relative;
+}
+.m-checkbox.checked .box::after {
+  content: '✓';
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.m-radio {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+.m-radio .dot {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: white;
+}
+.m-radio.checked .dot {
+  border-color: var(--brand-red);
+  border-width: 5px;
+}
+
+.m-toggle {
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  background: var(--border);
+  position: relative;
+  flex-shrink: 0;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.m-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  transition: all 0.2s;
+}
+.m-toggle.on { background: var(--brand-red); }
+.m-toggle.on::after { left: 18px; }
+
+.m-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.m-callout {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--text-sub);
+  line-height: 1.6;
+  margin: 12px 0;
+}
+.m-callout strong {
+  display: block;
+  color: var(--text);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.m-callout.red {
+  background: var(--brand-red-soft);
+  border-color: var(--brand-red-soft);
+  color: var(--brand-red-dark);
+}
+.m-callout.red strong { color: var(--brand-red-dark); }
+.m-callout.lavender {
+  background: var(--lavender-soft);
+  border-color: var(--lavender-soft);
+  color: var(--lavender-dark);
+}
+.m-callout.lavender strong { color: var(--lavender-dark); }
+.m-callout.yellow {
+  background: var(--yellow-soft);
+  border-color: var(--yellow-soft);
+  color: #92400E;
+}
+.m-callout.yellow strong { color: #92400E; }
+.m-callout.green {
+  background: var(--success-soft);
+  border-color: var(--success-soft);
+  color: #065F46;
+}
+.m-callout.green strong { color: #065F46; }
+
+.m-benefit {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-sub);
+  margin: 6px 0;
+}
+.m-benefit .ck {
+  color: var(--success);
+  font-weight: 700;
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+.m-progress {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+.m-progress .dot {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+}
+.m-progress .dot.active { background: var(--brand-red); }
+.m-progress .dot.done { background: var(--text); }
+
+.m-step-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+
+.m-success-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--success-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 12px auto 20px;
+  font-size: 32px;
+  color: var(--success);
+  font-weight: 700;
+}
+
+.m-warning-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--warn-soft);
+  color: var(--warn);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.m-summary {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+  margin: 12px 0;
+  font-size: 13px;
+}
+.m-summary .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+.m-summary .row .k { color: var(--text-sub); }
+.m-summary .row .v { color: var(--text); font-weight: 600; }
+
+.m-modal {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 24px 22px;
+  box-shadow: var(--shadow);
+}
+
+/* ─── 명세 영역 ─── */
+.spec {
+  padding: 28px 32px;
+  font-size: 13px;
+}
+.spec h4 {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--brand-red);
+  margin-bottom: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.spec h4:not(:first-child) { margin-top: 22px; }
+
+.spec table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.spec table th {
+  text-align: left;
+  background: var(--bg-soft);
+  color: var(--text);
+  padding: 8px 10px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+.spec table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+  color: var(--text-sub);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.spec table td.label {
+  font-weight: 600;
+  color: var(--text);
+  width: 30%;
+}
+
+.spec code {
+  background: var(--bg-soft);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 11px;
+  color: var(--brand-red-dark);
+}
+
+.spec ul { list-style: none; padding: 0; }
+.spec ul li {
+  font-size: 12px;
+  color: var(--text-sub);
+  padding: 4px 0 4px 14px;
+  position: relative;
+  line-height: 1.6;
+}
+.spec ul li::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  color: var(--brand-red);
+  font-weight: 800;
+}
+
+.branch-box {
+  background: var(--bg-soft);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  margin: 8px 0;
+  border-left: 3px solid var(--brand-red);
+}
+.branch-box.muted { border-left-color: var(--text-muted); }
+.branch-box.lavender { border-left-color: var(--lavender); }
+.branch-box.error { border-left-color: var(--error); }
+.branch-box.warn { border-left-color: var(--warn); }
+.branch-box .case {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.branch-box .result {
+  font-size: 11px;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+
+/* ─── 디자인 시스템 가이드 카드 ─── */
+.ds-section {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 28px 32px;
+  margin-bottom: 20px;
+}
+.ds-section h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.ds-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.ds-color {
+  border-radius: var(--r-md);
+  padding: 14px;
+  color: white;
+  font-size: 12px;
+}
+.ds-color .name { font-size: 13px; font-weight: 700; }
+.ds-color .hex {
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0.85;
+  margin-top: 4px;
+  font-size: 11px;
+}
+.ds-color.light { color: var(--text); border: 1px solid var(--border); }
+
+/* ─── 푸터 ─── */
+.doc-footer {
+  background: var(--text);
+  color: white;
+  padding: 24px 48px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.9;
+}
+.doc-footer strong { color: var(--brand-red); margin-right: 4px; }
+
+.doc-footer .meta-line {
+  margin-top: 6px;
+  font-size: 11px;
+  opacity: 0.65;
+}
+
+@media print {
+  .sidebar, .alert-banner { display: none; }
+  .layout { grid-template-columns: 1fr; }
+  .step-card { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<div class="alert-banner">
+  <span class="pill">NEW</span>
+  <span>회원가입 SB가 디자인팀 검토용 정식 출발점</span>
+  <span class="cta">V1.0.0</span>
+</div>
+
+<header class="doc-header">
+  <div class="logo">PlayToon</div>
+  <div class="title">회원가입 SB · V1.0.0</div>
+  <div class="meta">
+    <span><strong>계정 시스템 V1.1.0</strong> 부속</span>
+    <span><strong>2026.05.29</strong></span>
+    <span>디자인팀 전달용</span>
+  </div>
+</header>
+
+<div class="layout">
+
+<nav class="sidebar">
+  <h3>워크스페이스 가입</h3>
+  <a href="#ws-overview" class="active"><span class="num">A</span>개요</a>
+  <a href="#ws-step1"><span class="num">A1</span>가입 방식 선택</a>
+  <a href="#ws-step2"><span class="num">A2</span>작가 정보 입력</a>
+  <a href="#ws-step3"><span class="num">A3</span>옵션 연동</a>
+  <a href="#ws-step4"><span class="num">A4</span>완료·인증</a>
+  <a href="#ws-team"><span class="num">A+</span>팀 가입 분기</a>
+
+  <h3>플랫폼 가입</h3>
+  <a href="#pf-overview"><span class="num">B</span>개요</a>
+  <a href="#pf-step1"><span class="num">B1</span>가입 방식 선택</a>
+  <a href="#pf-step2"><span class="num">B2</span>독자 정보 입력</a>
+  <a href="#pf-step3"><span class="num">B3</span>작가 활동 안내</a>
+
+  <h3>분기 시나리오</h3>
+  <a href="#sc-dupe"><span class="num">C1</span>이메일 중복</a>
+  <a href="#sc-link"><span class="num">C2</span>사후 연동</a>
+  <a href="#sc-unlink"><span class="num">C3</span>연동 해제</a>
+
+  <h3>디자인 시스템</h3>
+  <a href="#ds"><span class="num">D</span>컬러·컴포넌트</a>
+
+  <h3>로그인 SB</h3>
+  <a href="#login-overview"><span class="num">E</span>개요</a>
+  <a href="#login-modal"><span class="num">E1</span>로그인 모달 (WS)</a>
+  <a href="#login-platform"><span class="num">E2</span>로그인 (플랫폼)</a>
+  <a href="#login-reset"><span class="num">E3</span>비밀번호 재설정</a>
+  <a href="#ds-dark"><span class="num">E+</span>다크 모드 토큰</a>
+</nav>
+
+<main class="main">
+
+<div class="chapter-divider">
+  <span class="num">A</span>
+  <span class="title">워크스페이스 가입 (작가 진입)</span>
+  <span class="sub">workspace.playtoon.io/signup · 4-Step</span>
+</div>
+
+<section class="section-intro" id="ws-overview">
+  <h2>워크스페이스 가입 흐름 개요</h2>
+  <span class="url">workspace.playtoon.io/signup</span>
+  <p>작가가 워크스페이스에 처음 진입할 때 사용하는 4-Step 가입 흐름. AUTHOR DB에 신규 계정이 생성되며, Step 3의 옵션 연동을 통해 플랫폼(USER DB) 계정을 동시에 생성할 수 있다.</p>
+  <div class="pills">
+    <span class="pill red">AUTHOR DB 신규 생성</span>
+    <span class="pill lavender">옵션: USER DB 동시 생성</span>
+    <span class="pill green">이메일 인증 필수</span>
+  </div>
+</section>
+
+<!-- ─── A1. 가입 방식 선택 ─── -->
+<article class="step-card" id="ws-step1">
+  <div class="step-header">
+    <span class="badge">A1</span>
+    <span class="title">가입 방식 선택</span>
+    <span class="desc">이메일 입력 + 중복 체크</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">workspace.playtoon.io/signup</div>
+    <div class="form-window">
+      <div class="m-progress">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="m-step-label">STEP 1 / 4</div>
+      <div class="m-logo">PlayToon</div>
+      <div class="m-h1">작가로 시작하기</div>
+      <div class="m-sub">인터랙티브 웹툰의<br>새로운 가능성을 함께 만들어요</div>
+      <div class="m-field">
+        <div class="m-label">이메일 주소</div>
+        <input class="m-input" placeholder="name@example.com">
+      </div>
+      <button class="m-btn">다음</button>
+      <div class="m-divider">또는</div>
+      <div class="m-social-list">
+        <div class="m-soc-pill"><span class="ic g">G</span>Google로 계속하기<span class="arrow">›</span></div>
+        <div class="m-soc-pill"><span class="ic k">K</span>Kakao로 계속하기<span class="arrow">›</span></div>
+        <div class="m-soc-pill"><span class="ic a">⌘</span>Apple로 계속하기<span class="arrow">›</span></div>
+      </div>
+      <div class="m-link">이미 계정이 있으신가요? <a>로그인</a></div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>UI 요소</h4>
+    <table>
+      <tr><th>요소</th><th>copy · 동작</th></tr>
+      <tr><td class="label">로고</td><td>PlayToon · 검정 800 · letter-spacing -0.03em</td></tr>
+      <tr><td class="label">타이틀</td><td>[작가로 시작하기] · 26px · 800 · 검정</td></tr>
+      <tr><td class="label">서브텍스트</td><td>[인터랙티브 웹툰의 새로운 가능성을 함께 만들어요] · 13px · 회색</td></tr>
+      <tr><td class="label">이메일 입력</td><td>placeholder: name@example.com · 필수 · RFC 5322 검증</td></tr>
+      <tr><td class="label">다음 버튼</td><td>이메일 입력 시 활성화 · 클릭 시 <code>POST /auth/email-check</code> · Primary Red</td></tr>
+      <tr><td class="label">소셜 가속화 (3종)</td><td><strong>Google · Kakao · Apple</strong> — 실제 워크스페이스 dev 환경 기준</td></tr>
+      <tr><td class="label">하단 링크</td><td>[이미 계정이 있으신가요? 로그인] → /login</td></tr>
+    </table>
+
+    <h4>중복 체크 분기</h4>
+    <div class="branch-box">
+      <div class="case">① 양쪽 DB(USER · AUTHOR) 모두 없음</div>
+      <div class="result">→ Step A2로 진행</div>
+    </div>
+    <div class="branch-box error">
+      <div class="case">② AUTHOR DB에 이미 존재</div>
+      <div class="result">→ [이미 작가 계정으로 등록되어 있어요] + [로그인하기 →] · 워크스페이스 로그인으로 리다이렉트</div>
+    </div>
+    <div class="branch-box lavender">
+      <div class="case">③ USER DB에 존재 (AUTHOR는 없음)</div>
+      <div class="result">→ 본인 확인 모달 (C1 참조) → 본인 확인 후 Step A2 진행 + LINKED_ACCOUNT 사전 매핑</div>
+    </div>
+
+    <h4>유의사항</h4>
+    <ul>
+      <li>같은 이메일이 USER · AUTHOR에 다른 사람으로 존재 불가 (Q1)</li>
+      <li>OAuth identifier가 양쪽 DB의 한 곳에만 매핑됨 (Q3)</li>
+      <li>이메일 인증은 Step A4 완료 후 발송 · 24시간 만료</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ─── A2. 작가 정보 입력 ─── -->
+<article class="step-card" id="ws-step2">
+  <div class="step-header">
+    <span class="badge">A2</span>
+    <span class="title">작가 정보 입력</span>
+    <span class="desc">필명·실명·연락처·작가 유형</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">workspace.playtoon.io/signup/profile</div>
+    <div class="form-window compact">
+      <div class="m-progress">
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="m-step-label">STEP 2 / 4</div>
+      <div class="m-h1">작가 정보</div>
+      <div class="m-sub">정산과 계약을 위한 정보가 포함됩니다.</div>
+      <div class="m-field">
+        <div class="m-label">이메일</div>
+        <input class="m-input readonly" value="momo@example.com" readonly>
+      </div>
+      <div class="m-field">
+        <div class="m-label">비밀번호</div>
+        <input class="m-input placeholder" value="8자 이상, 영문+숫자+특수">
+      </div>
+      <div class="m-field">
+        <div class="m-label">필명 (플랫폼 공개)</div>
+        <input class="m-input placeholder" value="작품에 표시될 이름">
+      </div>
+      <div class="m-field">
+        <div class="m-label">실명 (비공개·정산용)</div>
+        <input class="m-input">
+      </div>
+      <div class="m-field">
+        <div class="m-label">휴대폰 번호 (SMS 인증)</div>
+        <input class="m-input">
+      </div>
+      <div class="m-field">
+        <div class="m-label">작가 유형</div>
+        <div class="m-radio checked"><span class="dot"></span> 개인 작가</div>
+        <div class="m-radio"><span class="dot"></span> 팀 (대표·팀장)</div>
+      </div>
+      <div class="m-field">
+        <div class="m-label">CP사·스튜디오 소속</div>
+        <div class="m-radio checked"><span class="dot"></span> 아니요 (개인 활동)</div>
+        <div class="m-radio"><span class="dot"></span> 예 (CP 초대 코드)</div>
+      </div>
+      <div class="m-callout" style="margin-bottom:16px;">
+        <strong>약관 동의</strong>
+        <div class="m-checkbox checked"><span class="box"></span> 이용약관 (필수)</div>
+        <div class="m-checkbox checked"><span class="box"></span> 개인정보 처리방침 (필수)</div>
+        <div class="m-checkbox"><span class="box"></span> 마케팅 수신 (선택)</div>
+      </div>
+      <button class="m-btn">다음</button>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>UI 요소</h4>
+    <table>
+      <tr><th>요소</th><th>검증 · copy</th></tr>
+      <tr><td class="label">이메일 (readonly)</td><td>Step A1 입력값 · 회색 배경</td></tr>
+      <tr><td class="label">비밀번호</td><td>8자 이상 · 영문+숫자+특수 조합</td></tr>
+      <tr><td class="label">필명</td><td>최대 50자 · 중복 허용 · 작품 author 표기 기본값</td></tr>
+      <tr><td class="label">실명</td><td>최대 50자 · 비공개 · 정산·계약용</td></tr>
+      <tr><td class="label">휴대폰</td><td>한국 010 형식 · SMS 인증 필수</td></tr>
+      <tr><td class="label">작가 유형</td><td>default: 개인 / 팀 선택 시 A2.5에서 팀 정보 추가</td></tr>
+      <tr><td class="label">CP 초대 코드</td><td>예 선택 시 6~10자 영숫자 코드 입력 → CP_COMPANY 조회 → 매칭 시 cp_id 부여</td></tr>
+      <tr><td class="label">약관</td><td>이용약관 + 개인정보 처리방침 필수 동의</td></tr>
+    </table>
+
+    <h4>저장되는 AUTHOR 컬럼 (이 단계 직후)</h4>
+    <table>
+      <tr><td><code>email</code>, <code>password_hash</code>, <code>pen_name</code>, <code>real_name</code>, <code>phone</code>, <code>author_type</code>, <code>cp_id</code> (선택), <code>role</code>=author, <code>status</code>=pending</td></tr>
+    </table>
+
+    <h4>유의사항</h4>
+    <ul>
+      <li><code>email_verified_at</code>은 NULL (Step A4 인증 후 채워짐)</li>
+      <li>CP 마스터의 승인이 필요한 경우 status=pending_cp_approval로 저장</li>
+      <li>정산담당·CP 마스터 역할 가입 시 2FA 강제</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ─── A3. 옵션 연동 ─── -->
+<article class="step-card" id="ws-step3">
+  <div class="step-header">
+    <span class="badge">A3</span>
+    <span class="title">옵션 연동 — 플랫폼 계정 동시 생성</span>
+    <span class="desc">한 번에 양쪽 가입 (선택)</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">workspace.playtoon.io/signup/link</div>
+    <div class="form-window">
+      <div class="m-progress">
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="m-step-label">STEP 3 / 4</div>
+      <div class="m-h1">플랫폼 계정도<br>함께 만드시겠어요?</div>
+      <div class="m-sub">플레이툰에서 다른 작가들의 작품을 독자로 즐기고 싶다면, 지금 같은 이메일로 플랫폼 계정도 함께 생성할 수 있어요.</div>
+      <div class="m-callout lavender">
+        <div class="m-benefit"><span class="ck" style="color:var(--lavender-dark);">✓</span><span>별도 가입 절차 없이 즉시 사용</span></div>
+        <div class="m-benefit"><span class="ck" style="color:var(--lavender-dark);">✓</span><span>작가/독자 계정 데이터 분리</span></div>
+        <div class="m-benefit"><span class="ck" style="color:var(--lavender-dark);">✓</span><span>언제든 연동 해제 가능</span></div>
+      </div>
+      <div class="m-field">
+        <div class="m-label">독자로 사용할 닉네임</div>
+        <input class="m-input placeholder" value="3~30자, 작가 필명과 달라도 OK">
+      </div>
+      <div class="m-toggle-row">
+        <span>같은 이메일로 플랫폼 계정 생성</span>
+        <span class="m-toggle"></span>
+      </div>
+      <button class="m-btn lavender">양쪽 계정 모두 만들기</button>
+      <button class="m-btn secondary">나중에 연동하기 (작가 가입만)</button>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>UI 요소</h4>
+    <table>
+      <tr><th>요소</th><th>copy · 동작</th></tr>
+      <tr><td class="label">타이틀</td><td>[플랫폼 계정도 함께 만드시겠어요?]</td></tr>
+      <tr><td class="label">설명</td><td>플랫폼 계정의 가치 + 데이터 분리 원칙 안내</td></tr>
+      <tr><td class="label">혜택 안내</td><td>3개 체크 항목 · 라벤더 callout 배경</td></tr>
+      <tr><td class="label">닉네임 입력</td><td>USER 측 nickname · UNIQUE · 3~30자 · 토글 ON일 때만 활성</td></tr>
+      <tr><td class="label">연동 토글</td><td>default: OFF · 명시적으로 ON 해야 LINKED_ACCOUNT 생성</td></tr>
+      <tr><td class="label">Primary 버튼</td><td>토글 ON일 때만 활성 · <strong>Lavender (보조 액션 컬러)</strong></td></tr>
+      <tr><td class="label">Secondary 버튼</td><td>[나중에 연동하기] · AUTHOR만 생성 · 사후 연동(C2) 가능</td></tr>
+    </table>
+
+    <h4>분기 처리</h4>
+    <div class="branch-box muted">
+      <div class="case">토글 OFF (default) · "나중에 연동하기"</div>
+      <div class="result">→ AUTHOR만 생성 · LINKED_ACCOUNT 미생성 · Step A4로 이동</div>
+    </div>
+    <div class="branch-box lavender">
+      <div class="case">토글 ON · "양쪽 계정 모두 만들기"</div>
+      <div class="result">→ AUTHOR + USER 동시 생성 (트랜잭션) · LINKED_ACCOUNT(link_method=signup_option) 매핑 · Step A4 이동</div>
+    </div>
+
+    <h4>왜 Primary가 Lavender인가</h4>
+    <ul>
+      <li>워크스페이스 디자인 시스템상 라벤더는 "선택적 액션·다음 단계" 컬러</li>
+      <li>빨강은 "신규 작성·실행" 컬러 (CTA의 기본)</li>
+      <li>연동은 선택 가능한 다음 단계이므로 라벤더 채택 (실제 설정 페이지의 [저장] 버튼과 동일 컬러)</li>
+    </ul>
+
+    <h4>유의사항</h4>
+    <ul>
+      <li>두 계정의 비밀번호는 동일 입력값으로 시작하지만 이후 독립 관리 (Q2)</li>
+      <li>닉네임은 작가 필명과 분리하는 것을 권장 (Q7 정체성 분리)</li>
+      <li>사후 연동은 워크스페이스 [설정 > 연결된 계정]에서 가능</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ─── A4. 완료·인증 ─── -->
+<article class="step-card" id="ws-step4">
+  <div class="step-header">
+    <span class="badge">A4</span>
+    <span class="title">가입 완료 + 이메일 인증</span>
+    <span class="desc">최종 단계</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">workspace.playtoon.io/signup/done</div>
+    <div class="form-window">
+      <div class="m-progress">
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+      </div>
+      <div class="m-step-label">STEP 4 / 4</div>
+      <div class="m-success-icon">✓</div>
+      <div class="m-h1" style="text-align:center;">가입 완료!</div>
+      <div class="m-sub" style="text-align:center;">작가 + 플랫폼 계정이 모두 생성되었어요</div>
+      <div class="m-summary">
+        <div class="row"><span class="k">작가 계정</span><span class="v">모모 (작가)</span></div>
+        <div class="row"><span class="k">플랫폼 계정</span><span class="v">@momo_reader</span></div>
+        <div class="row"><span class="k">이메일</span><span class="v">momo@example.com</span></div>
+      </div>
+      <div class="m-callout yellow">
+        <strong>📧 이메일 인증을 완료해주세요</strong>
+        24시간 이내에 받은 메일의 인증 링크를 클릭해주세요.
+      </div>
+      <button class="m-btn">워크스페이스 시작하기</button>
+      <div class="m-link" style="margin-top:10px;">메일이 안 왔나요? <a>재발송</a></div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>완료 메시지 분기</h4>
+    <div class="branch-box">
+      <div class="case">Step A3 토글 OFF (AUTHOR만)</div>
+      <div class="result">메시지: [작가 계정이 생성되었습니다] · 요약: 작가 계정만 표시</div>
+    </div>
+    <div class="branch-box lavender">
+      <div class="case">Step A3 토글 ON (AUTHOR + USER)</div>
+      <div class="result">메시지: [가입 완료! 작가 + 플랫폼 계정이 모두 생성되었어요] · 양쪽 계정 정보 모두 표시</div>
+    </div>
+
+    <h4>UI 요소</h4>
+    <table>
+      <tr><th>요소</th><th>copy · 동작</th></tr>
+      <tr><td class="label">완료 아이콘</td><td>녹색 체크 64px (success 톤)</td></tr>
+      <tr><td class="label">요약 카드</td><td>가입된 계정 정보 표시 (이메일 + 필명 + 닉네임)</td></tr>
+      <tr><td class="label">인증 안내</td><td>옐로우 callout · 24시간 만료 명시</td></tr>
+      <tr><td class="label">CTA 버튼</td><td>[워크스페이스 시작하기] · Red · 인증 미완료 상태로도 일부 기능 사용 가능</td></tr>
+      <tr><td class="label">재발송 링크</td><td>5분 쿨다운 · 일 5회 제한</td></tr>
+    </table>
+
+    <h4>인증 메일 본문</h4>
+    <div class="branch-box muted">
+      <div class="result">제목: [PlayToon] 작가 계정 이메일 인증을 완료해주세요<br>발신: no-reply@playtoon.io<br>본문: 인증 링크 (24h 만료) · 비밀번호 변경 안내 · 고객센터 연락처</div>
+    </div>
+
+    <h4>인증 후 처리</h4>
+    <ul>
+      <li>AUTHOR.email_verified_at = NOW() · status = active 전환</li>
+      <li>연동된 경우 USER.email_verified_at도 동시 갱신</li>
+      <li>환영 메일 추가 발송 (워크스페이스 사용 가이드 링크)</li>
+      <li>24시간 미인증 시 pending 유지 · 7일 후 자동 정리</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ─── A+. 팀 가입 분기 ─── -->
+<article class="step-card" id="ws-team">
+  <div class="step-header">
+    <span class="badge" style="background:var(--maroon);">A2.5</span>
+    <span class="title">팀 가입 분기</span>
+    <span class="desc">Step A2에서 "팀" 선택 시 · 팀 정보 + 팀원 초대</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">A2 → 팀 선택 → 팀 정보</div>
+    <div class="form-window">
+      <div class="m-step-label">STEP 2.5 · 팀 정보</div>
+      <div class="m-h1">팀 정보 입력</div>
+      <div class="m-sub">팀 작가는 본인이 팀장이 됩니다.<br>작품의 작가 표기는 본인 필명으로 고정됩니다.</div>
+      <div class="m-field">
+        <div class="m-label">팀명</div>
+        <input class="m-input placeholder" value="예: 격투연대기팀">
+      </div>
+      <div class="m-field">
+        <div class="m-label">팀 소개 (선택)</div>
+        <input class="m-input">
+      </div>
+
+      <div class="m-h2">팀원 초대 (선택, 최대 5명)</div>
+      <div class="m-callout">
+        팀원에게 가입 초대 메일이 발송됩니다. 팀원은 본인이 직접 워크스페이스에 가입해야 합니다.
+      </div>
+      <div class="m-field">
+        <div class="m-label">팀원 이메일 #1 · 권한</div>
+        <input class="m-input placeholder" value="member1@email.com">
+        <div class="m-radio checked" style="margin-top:8px;"><span class="dot"></span> Editor (제작·에셋 업로드)</div>
+        <div class="m-radio"><span class="dot"></span> Commenter</div>
+        <div class="m-radio"><span class="dot"></span> Viewer</div>
+      </div>
+      <div class="m-link" style="text-align:left;"><a>+ 팀원 추가</a></div>
+      <button class="m-btn">다음 (Step A3 옵션 연동)</button>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>UI 요소</h4>
+    <table>
+      <tr><th>요소</th><th>검증 · copy</th></tr>
+      <tr><td class="label">팀명</td><td>최대 100자 · 워크스페이스 내 unique (필수 아님)</td></tr>
+      <tr><td class="label">팀 소개</td><td>최대 200자 · 선택</td></tr>
+      <tr><td class="label">팀원 초대</td><td>이메일 N개 (최대 5명) · 각자 권한 지정 가능</td></tr>
+      <tr><td class="label">권한 옵션</td><td>Editor / Commenter / Viewer (Owner는 본인 고정)</td></tr>
+      <tr><td class="label">안내문</td><td>"팀원은 이메일 초대를 받고 본인이 직접 가입해야 합니다"</td></tr>
+    </table>
+
+    <h4>저장되는 데이터</h4>
+    <table>
+      <tr><td class="label">TEAM</td><td>team_name · owner_author_id(본인) · cp_id(있으면) · status=active</td></tr>
+      <tr><td class="label">TEAM_MEMBERSHIP</td><td>본인=owner · 초대 팀원=pending</td></tr>
+      <tr><td class="label">TEAM_INVITATION</td><td>이메일별 토큰 발급 · 7일 만료</td></tr>
+    </table>
+
+    <h4>유의사항</h4>
+    <ul>
+      <li>팀원 초대받은 사람이 가입 시 → 자동으로 팀 합류 + 지정 권한 부여</li>
+      <li>팀장 1인 = 작품의 author = 변경 불가 (계정 V1.1.0 정합)</li>
+      <li>팀원 초대는 가입 시 안 해도 됨 — 가입 후 ⑤ 팀·멤버 관리 메뉴에서 가능</li>
+    </ul>
+  </div>
+</article>
+
+<div class="chapter-divider">
+  <span class="num">B</span>
+  <span class="title">플랫폼 가입 (독자 진입)</span>
+  <span class="sub">playtoon.com/signup · 3-Step</span>
+</div>
+
+<section class="section-intro" id="pf-overview">
+  <h2>플랫폼 가입 흐름 개요</h2>
+  <span class="url">playtoon.com/signup</span>
+  <p>독자가 플레이툰을 통해 인터랙티브 웹툰을 즐기기 위해 가입하는 3-Step 흐름. USER DB에 신규 계정이 생성된다. Step 3에서 작가 활동 의향이 있다면 워크스페이스 가입 흐름으로 분기 가능.</p>
+  <div class="pills">
+    <span class="pill red">USER DB 신규 생성</span>
+    <span class="pill lavender">옵션: 작가 가입 분기</span>
+    <span class="pill green">SB V1.0.0 ⑥ 화면 확장</span>
+  </div>
+</section>
+
+<!-- ─── B1. 가입 방식 선택 ─── -->
+<article class="step-card" id="pf-step1">
+  <div class="step-header">
+    <span class="badge">B1</span>
+    <span class="title">가입 방식 선택</span>
+    <span class="desc">이메일 입력 + 중복 체크</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">playtoon.com/signup</div>
+    <div class="form-window">
+      <div class="m-progress">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="m-step-label">STEP 1 / 3</div>
+      <div class="m-logo">PlayToon</div>
+      <div class="m-h1">회원가입</div>
+      <div class="m-sub">인터랙티브 웹툰의 세계로 오세요</div>
+      <div class="m-field">
+        <div class="m-label">이메일 주소</div>
+        <input class="m-input" placeholder="name@example.com">
+      </div>
+      <button class="m-btn">다음</button>
+      <div class="m-divider">또는</div>
+      <div class="m-social">
+        <div class="m-soc kakao">카카오</div>
+        <div class="m-soc naver">네이버</div>
+        <div class="m-soc">Google</div>
+        <div class="m-soc">Apple</div>
+      </div>
+      <div class="m-link">이미 계정이 있으신가요? <a>로그인</a></div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>UI 요소</h4>
+    <table>
+      <tr><th>요소</th><th>copy · 동작</th></tr>
+      <tr><td class="label">타이틀</td><td>[회원가입] · A1보다 가벼운 톤</td></tr>
+      <tr><td class="label">서브텍스트</td><td>[인터랙티브 웹툰의 세계로 오세요]</td></tr>
+      <tr><td class="label">이메일 입력</td><td>placeholder: name@example.com · 필수</td></tr>
+      <tr><td class="label">다음 버튼</td><td>이메일 입력 시 활성화 · <code>POST /auth/email-check</code></td></tr>
+      <tr><td class="label">소셜 우선순위</td><td>한국 독자 우선 — Kakao → Naver → Google → Apple</td></tr>
+    </table>
+
+    <h4>중복 체크 분기</h4>
+    <div class="branch-box">
+      <div class="case">① 양쪽 DB 모두 없음 → Step B2 진행</div>
+    </div>
+    <div class="branch-box error">
+      <div class="case">② USER DB에 이미 존재</div>
+      <div class="result">→ [이미 가입된 계정입니다] + [로그인하기] · 플랫폼 로그인 리다이렉트</div>
+    </div>
+    <div class="branch-box lavender">
+      <div class="case">③ AUTHOR DB에 존재 (USER는 없음)</div>
+      <div class="result">→ 본인 확인 모달 (C1) → 본인 확인 후 Step B2 진행 + LINKED_ACCOUNT 사전 매핑</div>
+    </div>
+
+    <h4>플랫폼 SB V1.0.0의 ⑥ 화면과의 관계</h4>
+    <ul>
+      <li>기존 SB의 ⑥ 회원가입 화면을 본 SB의 B1으로 대체</li>
+      <li>소셜 4종 동일 유지 (Kakao/Naver/Google/Apple)</li>
+      <li>중복 체크 분기 신규 추가 (계정 V1.1.0 Q1 정합)</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ─── B2. 독자 정보 입력 ─── -->
+<article class="step-card" id="pf-step2">
+  <div class="step-header">
+    <span class="badge">B2</span>
+    <span class="title">독자 정보 입력</span>
+    <span class="desc">닉네임·연령·약관</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">playtoon.com/signup/profile</div>
+    <div class="form-window">
+      <div class="m-progress">
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="m-step-label">STEP 2 / 3</div>
+      <div class="m-h1">독자 정보</div>
+      <div class="m-sub">간단한 정보만 입력하면 바로 시작할 수 있어요.</div>
+      <div class="m-field">
+        <div class="m-label">이메일</div>
+        <input class="m-input readonly" value="reader@example.com" readonly>
+      </div>
+      <div class="m-field">
+        <div class="m-label">비밀번호</div>
+        <input class="m-input placeholder" value="8자 이상">
+      </div>
+      <div class="m-field">
+        <div class="m-label">닉네임 (3~30자)</div>
+        <input class="m-input placeholder" value="댓글·프로필에 표시">
+      </div>
+      <div class="m-field">
+        <div class="m-label">출생년도 (선택)</div>
+        <input class="m-input placeholder" value="성인 콘텐츠 필터링용">
+      </div>
+      <div class="m-callout">
+        <strong>약관 동의</strong>
+        <div class="m-checkbox checked"><span class="box"></span> 이용약관 (필수)</div>
+        <div class="m-checkbox checked"><span class="box"></span> 개인정보 처리방침 (필수)</div>
+        <div class="m-checkbox"><span class="box"></span> 마케팅 수신 (선택)</div>
+      </div>
+      <button class="m-btn">다음</button>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>UI 요소</h4>
+    <table>
+      <tr><th>요소</th><th>검증 · copy</th></tr>
+      <tr><td class="label">이메일 (readonly)</td><td>Step B1 입력값</td></tr>
+      <tr><td class="label">비밀번호</td><td>8자 이상 (워크스페이스보다 약한 정책)</td></tr>
+      <tr><td class="label">닉네임</td><td>3~30자 · UNIQUE · 댓글·프로필 표시</td></tr>
+      <tr><td class="label">출생년도</td><td>선택 · 성인 콘텐츠 필터링 활용</td></tr>
+      <tr><td class="label">약관</td><td>이용약관 + 개인정보 처리방침 필수 동의</td></tr>
+    </table>
+
+    <h4>워크스페이스 가입과의 차이</h4>
+    <table>
+      <tr><th>항목</th><th>워크스페이스 (A2)</th><th>플랫폼 (B2)</th></tr>
+      <tr><td class="label">실명</td><td>필수</td><td>미요청</td></tr>
+      <tr><td class="label">휴대폰</td><td>SMS 인증 필수</td><td>미요청</td></tr>
+      <tr><td class="label">정산정보</td><td>필수</td><td>미요청</td></tr>
+      <tr><td class="label">2FA</td><td>권장 (정산담당 강제)</td><td>선택</td></tr>
+      <tr><td class="label">평균 가입 시간</td><td>5~8분</td><td>1~2분</td></tr>
+    </table>
+
+    <h4>저장되는 USER 컬럼</h4>
+    <table>
+      <tr><td><code>email</code>, <code>password_hash</code>, <code>nickname</code>, <code>birth_year</code> (선택), <code>marketing_opt_in</code>, <code>status</code>=pending</td></tr>
+    </table>
+  </div>
+</article>
+
+<!-- ─── B3. 작가 활동 안내 ─── -->
+<article class="step-card" id="pf-step3">
+  <div class="step-header">
+    <span class="badge">B3</span>
+    <span class="title">작가 활동 안내</span>
+    <span class="desc">독자 → 작가 분기 진입점</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">playtoon.com/signup/author-option</div>
+    <div class="form-window">
+      <div class="m-progress">
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+      </div>
+      <div class="m-step-label">STEP 3 / 3</div>
+      <div class="m-h1">작가 활동도<br>하시나요?</div>
+      <div class="m-sub">직접 인터랙티브 웹툰을 만들어 발행하고 싶다면, 워크스페이스에서 작가 계정도 만들 수 있어요.</div>
+      <div class="m-callout lavender">
+        <div class="m-benefit"><span class="ck" style="color:var(--lavender-dark);">✓</span><span>같은 이메일로 양쪽 모두 가입 가능</span></div>
+        <div class="m-benefit"><span class="ck" style="color:var(--lavender-dark);">✓</span><span>작가/독자 계정 데이터 분리</span></div>
+        <div class="m-benefit"><span class="ck" style="color:var(--lavender-dark);">✓</span><span>워크스페이스 가입은 실명·연락처 등 추가 정보 필요</span></div>
+      </div>
+      <button class="m-btn">일단 독자로 시작하기</button>
+      <button class="m-btn secondary">작가 계정도 만들기</button>
+      <div class="m-link" style="margin-top:10px;">언제든 마이페이지에서 작가 계정을 추가할 수 있어요.</div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>UI 요소</h4>
+    <table>
+      <tr><th>요소</th><th>copy · 동작</th></tr>
+      <tr><td class="label">타이틀</td><td>[작가 활동도 하시나요?]</td></tr>
+      <tr><td class="label">설명</td><td>워크스페이스 가입 가치 + 가입 무게 차이 안내</td></tr>
+      <tr><td class="label">Primary 버튼</td><td>[일단 독자로 시작하기] · 가장 흔한 경우로 가정 · Red</td></tr>
+      <tr><td class="label">Secondary 버튼</td><td>[작가 계정도 만들기] · 워크스페이스 A2로 이동, 이메일 자동 채움</td></tr>
+      <tr><td class="label">하단 링크</td><td>사후 가입 가능 안내 (탈출구 제공)</td></tr>
+    </table>
+
+    <h4>분기 처리</h4>
+    <div class="branch-box">
+      <div class="case">선택지 1 — 독자로만 시작</div>
+      <div class="result">→ USER만 생성 · 인증 메일 발송 · 플랫폼 메인 리다이렉트 + 환영 모달</div>
+    </div>
+    <div class="branch-box lavender">
+      <div class="case">선택지 2 — 작가 계정도</div>
+      <div class="result">→ USER는 일단 생성 (status=pending) · 워크스페이스 A2로 이동 · 이메일 자동 채움 · A4 완료 후 LINKED_ACCOUNT(link_method=signup_option) 매핑 · 양쪽 active 전환</div>
+    </div>
+
+    <h4>왜 한 번에 통합 가입을 만들지 않았나</h4>
+    <ul>
+      <li>워크스페이스 가입에 필요한 정보(실명·연락처·작가 유형·CP 코드·약관)가 독자 가입보다 무거움</li>
+      <li>"한 클릭으로 양쪽" 흐름을 만들면 가벼운 독자 가입의 UX 가치가 손상됨</li>
+      <li>실제로는 독자 → 작가 전환 비율이 낮을 것으로 예상 — 분리 흐름이 합리적</li>
+    </ul>
+  </div>
+</article>
+
+<div class="chapter-divider">
+  <span class="num">C</span>
+  <span class="title">분기 시나리오</span>
+  <span class="sub">중복 · 사후 연동 · 해제</span>
+</div>
+
+<!-- ─── C1. 이메일 중복 처리 ─── -->
+<article class="step-card scenario" id="sc-dupe">
+  <div class="step-header">
+    <span class="badge">C1</span>
+    <span class="title">이메일 중복 처리 모달</span>
+    <span class="desc">A1 / B1에서 다음 클릭 시</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">A1·B1 → 다음 클릭 → 분기 모달</div>
+    <div class="m-modal" style="max-width:380px;width:100%;">
+      <div style="text-align:center;font-size:36px;margin-bottom:8px;">🔎</div>
+      <div class="m-h2" style="margin:0;text-align:center;">이메일을 확인했어요</div>
+      <div class="m-sub" style="text-align:center;margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:12px;">momo@example.com</div>
+      <div class="m-callout lavender">
+        <strong>이미 다른 종류의 계정이 있습니다</strong>
+        이 이메일로 <strong>플랫폼 독자 계정</strong>이 등록되어 있어요. 본인이 맞다면 작가 계정과 연동하실 수 있어요.
+      </div>
+      <button class="m-btn lavender">본인입니다 · 연동하기</button>
+      <button class="m-btn secondary">다른 이메일 사용</button>
+      <div class="m-link">의심스러운 활동이라면? <a>고객센터 문의</a></div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>모달 트리거</h4>
+    <table>
+      <tr><th>진입 컨텍스트</th><th>발견된 계정</th><th>표시 내용</th></tr>
+      <tr><td class="label">워크스페이스 가입 (A1)</td><td>USER DB에 동일 이메일</td><td>"플랫폼 독자 계정이 있어요. 작가 계정 연동?"</td></tr>
+      <tr><td class="label">플랫폼 가입 (B1)</td><td>AUTHOR DB에 동일 이메일</td><td>"작가 계정이 있어요. 독자 계정 연동?"</td></tr>
+    </table>
+
+    <h4>본인 확인 흐름</h4>
+    <div class="branch-box lavender">
+      <div class="case">[본인입니다 · 연동하기] 클릭</div>
+      <div class="result">→ 기존 계정의 이메일로 인증 메일 발송 → 사용자가 메일 링크 클릭 → 본인 확인 완료 → Step 2로 진행 + LINKED_ACCOUNT 매핑 사전 예약 (link_method=post_signup) → 가입 완료 시점에 매핑 활성화</div>
+    </div>
+    <div class="branch-box muted">
+      <div class="case">[다른 이메일 사용] 클릭</div>
+      <div class="result">→ A1/B1 화면으로 복귀 · 이메일 입력 필드 비움</div>
+    </div>
+    <div class="branch-box error">
+      <div class="case">사회공학 공격 의심 (타인이 이메일 알고 가입 시도)</div>
+      <div class="result">→ 기존 계정에 "다른 종류의 계정 가입 시도 알림" 메일 발송 (본인이 아니라면 비밀번호 변경 권고) → 인증 링크 클릭 없으면 매핑 미생성</div>
+    </div>
+
+    <h4>유의사항</h4>
+    <ul>
+      <li>사후 연동도 가입 단계와 동일한 신뢰 수준 요구 — 이메일 인증 필수 (Q4 해제 가능성 고려)</li>
+      <li>본인 확인 인증 24시간 만료 · 미완료 시 가입은 진행되지만 매핑은 미생성</li>
+      <li>인증 메일 발송 빈도 제한 — 5분에 1회, 일 5회</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ─── C2. 사후 연동 ─── -->
+<article class="step-card scenario" id="sc-link">
+  <div class="step-header">
+    <span class="badge">C2</span>
+    <span class="title">사후 연동 흐름</span>
+    <span class="desc">이미 한쪽만 가입된 상태에서 연동</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">⑦ 설정 → 연결된 계정</div>
+    <div class="form-window">
+      <div class="m-step-label">설정 > 연결된 계정</div>
+      <div class="m-h2" style="margin-top:0;">연결된 플랫폼 계정</div>
+      <div class="m-callout yellow">
+        <strong>현재 연결된 계정이 없어요</strong>
+        플랫폼 계정을 연동하면 작가/독자 활동을 한 이메일로 관리할 수 있어요.
+      </div>
+      <button class="m-btn lavender">지금 연동하기</button>
+
+      <div style="border-top:1px solid var(--border);margin:24px -28px 16px;"></div>
+      <div class="m-step-label">[연동하기 클릭 시 → 모달]</div>
+
+      <div class="m-modal" style="margin-top:8px;padding:20px 22px;">
+        <div class="m-h2" style="margin-top:0;">플랫폼 계정 연동</div>
+        <div class="m-field">
+          <div class="m-label">기존 플랫폼 계정 이메일</div>
+          <input class="m-input" placeholder="reader@example.com">
+        </div>
+        <div class="m-field">
+          <div class="m-label">플랫폼 계정 비밀번호</div>
+          <input class="m-input" type="password" placeholder="••••••••">
+        </div>
+        <div class="m-callout">
+          연동 확인을 위해 양쪽 계정 모두에 본인 확인 메일이 발송됩니다.
+        </div>
+        <button class="m-btn lavender">연동 요청</button>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>진입 경로</h4>
+    <ul>
+      <li>워크스페이스 → ⑦ 설정 → 연결된 계정 (실제 dev 화면의 탭 그대로)</li>
+      <li>플랫폼 → 마이페이지 → 내정보관리 → 연동된 계정</li>
+      <li>가입 시 C1 본인 확인을 거치지 않고 진행한 경우의 사후 처리</li>
+    </ul>
+
+    <h4>연동 처리 5단계</h4>
+    <table>
+      <tr><th>Step</th><th>처리 내용</th></tr>
+      <tr><td class="label">1. 입력</td><td>상대편 이메일 + 비밀번호 입력 · 본인이 양쪽 모두 알고 있어야 가능</td></tr>
+      <tr><td class="label">2. 1차 검증</td><td>상대편 DB 인증 시도 · 통과 시 다음 단계</td></tr>
+      <tr><td class="label">3. 양쪽 본인 확인 메일</td><td>양쪽 이메일로 동시 "연동 요청" 메일 발송 · 양쪽 모두 클릭해야 활성화</td></tr>
+      <tr><td class="label">4. 매핑 생성</td><td>LINKED_ACCOUNT(link_method=post_signup, status=active) 생성</td></tr>
+      <tr><td class="label">5. 완료 알림</td><td>양쪽 계정에 "연동 완료" 알림 + 해제 방법 안내</td></tr>
+    </table>
+
+    <h4>실패 케이스</h4>
+    <div class="branch-box error">
+      <div class="case">상대편 이메일·비밀번호 불일치</div>
+      <div class="result">→ 일반 인증 실패 메시지 · 5회 실패 시 10분 잠금</div>
+    </div>
+    <div class="branch-box error">
+      <div class="case">상대편 계정이 이미 다른 계정과 연동됨</div>
+      <div class="result">→ [이미 다른 계정과 연동되어 있어요. 먼저 기존 연동을 해제해야 합니다.] (Q5 1:1 정책)</div>
+    </div>
+    <div class="branch-box warn">
+      <div class="case">본인 확인 미완료 (24시간 만료)</div>
+      <div class="result">→ 연동 요청 자동 취소 · 1차 검증 결과 무효화</div>
+    </div>
+  </div>
+</article>
+
+<!-- ─── C3. 연동 해제 ─── -->
+<article class="step-card scenario" id="sc-unlink">
+  <div class="step-header">
+    <span class="badge">C3</span>
+    <span class="title">연동 해제 흐름</span>
+    <span class="desc">4단계 신중 처리</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">설정 → 연결된 계정 → 해제 4단계</div>
+    <div class="form-window">
+      <div class="m-step-label">[1] 연동 상태 확인</div>
+      <div class="m-summary">
+        <div class="row"><span class="k">상대편 이메일</span><span class="v">re***@example.com</span></div>
+        <div class="row"><span class="k">상대편 닉네임</span><span class="v">@momo_reader</span></div>
+        <div class="row"><span class="k">연동일</span><span class="v">2026.05.29</span></div>
+      </div>
+      <button class="m-btn danger">연동 해제</button>
+
+      <div style="border-top:1px solid var(--border);margin:24px -28px 16px;"></div>
+      <div class="m-step-label">[2] 확인 다이얼로그</div>
+
+      <div class="m-modal" style="padding:22px;margin-top:8px;">
+        <div class="m-warning-icon">!</div>
+        <div class="m-h2" style="margin-top:0;text-align:center;">연동을 해제하시겠어요?</div>
+        <div class="m-callout yellow">
+          <strong>해제 시 알아둘 점</strong>
+          · 양쪽 계정의 데이터는 그대로 유지됩니다<br>
+          · 다시 연동하려면 본인 확인 절차가 필요해요<br>
+          · 양쪽 계정에 알림이 발송됩니다
+        </div>
+        <div class="m-field">
+          <div class="m-label">비밀번호 확인 (현재 계정)</div>
+          <input class="m-input" type="password" placeholder="••••••••">
+        </div>
+        <button class="m-btn danger">해제 확인</button>
+        <button class="m-btn secondary">취소</button>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>해제 4단계</h4>
+    <table>
+      <tr><th>Step</th><th>처리 내용</th></tr>
+      <tr><td class="label">1. 상태 확인</td><td>현재 연동된 상대편 계정 정보 표시 (이메일 마스킹) + 연동일</td></tr>
+      <tr><td class="label">2. 확인 다이얼로그</td><td>해제 결과 안내 + 비밀번호 재입력 (사회공학 공격 방지)</td></tr>
+      <tr><td class="label">3. 해제 처리</td><td>LINKED_ACCOUNT.status = unlinked, unlinked_at = NOW(), unlinked_reason 저장</td></tr>
+      <tr><td class="label">4. 완료 알림</td><td>양쪽 계정 이메일 알림 · "본인이 한 해제가 아니라면 비밀번호 변경 권고"</td></tr>
+    </table>
+
+    <h4>해제 후 상태</h4>
+    <ul>
+      <li>USER · AUTHOR 데이터 모두 그대로 유지 (구매 이력 · 작품 · 잔액 등)</li>
+      <li>LINKED_ACCOUNT 레코드는 status=unlinked로 남아 이력 보존</li>
+      <li>로그인은 양쪽 모두 그대로 작동 (각자 독립 비밀번호이므로 Q2)</li>
+      <li>다시 연동하려면 C2 사후 연동 흐름 재실행</li>
+    </ul>
+
+    <h4>UX 측면 유의사항</h4>
+    <ul>
+      <li>해제는 신중한 액션 — Primary가 아닌 Danger 색상 (Error Red)</li>
+      <li>데이터가 유지됨을 명확히 안내 (사용자 안심)</li>
+      <li>운영자 측에서 모든 해제 이력이 audit log로 추적됨</li>
+      <li>같은 계정 쌍의 잦은 연동/해제 반복은 시스템 알림 발동</li>
+    </ul>
+
+    <h4>실패·예외</h4>
+    <div class="branch-box error">
+      <div class="case">비밀번호 재입력 실패</div>
+      <div class="result">→ 5회 실패 시 10분 잠금 · 이메일로 보안 경고</div>
+    </div>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════════════ -->
+<!--  D. 디자인 시스템                                  -->
+<!-- ════════════════════════════════════════════════ -->
+
+<div class="chapter-divider" id="ds">
+  <span class="num">D</span>
+  <span class="title">디자인 시스템 · 컴포넌트</span>
+  <span class="sub">실제 dev.app.playtoon.studio 추출</span>
+</div>
+
+<section class="section-intro">
+  <h2>디자인 시스템 출처</h2>
+  <p>본 SB는 실제 워크스페이스 dev 환경에서 추출한 디자인 토큰을 사용합니다. 모형 부분의 모든 컬러·간격·radius·폰트가 dev 환경 룩앤필과 일치하도록 작성되었습니다.</p>
+</section>
+
+<div class="ds-section">
+  <h3>D1. 컬러 팔레트</h3>
+
+  <h4 style="color:var(--brand-red);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">Primary · Brand</h4>
+  <div class="ds-grid">
+    <div class="ds-color" style="background:#DC3545;"><div class="name">Brand Red</div><div class="hex">#DC3545</div></div>
+    <div class="ds-color" style="background:#B82838;"><div class="name">Red Dark</div><div class="hex">#B82838</div></div>
+    <div class="ds-color" style="background:#6B1F1F;"><div class="name">Maroon</div><div class="hex">#6B1F1F</div></div>
+    <div class="ds-color light" style="background:#FCE7E9;"><div class="name">Red Soft</div><div class="hex">#FCE7E9</div></div>
+  </div>
+
+  <h4 style="color:var(--lavender-dark);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin:18px 0 10px;">Accent · Status</h4>
+  <div class="ds-grid">
+    <div class="ds-color" style="background:#A99DE4;"><div class="name">Lavender</div><div class="hex">#A99DE4</div></div>
+    <div class="ds-color" style="background:#FACC15;color:#5B3F00;"><div class="name">Yellow</div><div class="hex" style="color:#5B3F00;">#FACC15</div></div>
+    <div class="ds-color" style="background:#10B981;"><div class="name">Success</div><div class="hex">#10B981</div></div>
+    <div class="ds-color" style="background:#EF4444;"><div class="name">Error</div><div class="hex">#EF4444</div></div>
+  </div>
+
+  <h4 style="color:var(--text-sub);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin:18px 0 10px;">Neutral</h4>
+  <div class="ds-grid">
+    <div class="ds-color" style="background:#111827;"><div class="name">Text</div><div class="hex">#111827</div></div>
+    <div class="ds-color" style="background:#6B7280;"><div class="name">Text Sub</div><div class="hex">#6B7280</div></div>
+    <div class="ds-color light" style="background:#E5E7EB;"><div class="name">Border</div><div class="hex">#E5E7EB</div></div>
+    <div class="ds-color light" style="background:#F8F9FA;"><div class="name">BG Soft</div><div class="hex">#F8F9FA</div></div>
+  </div>
+</div>
+
+<div class="ds-section">
+  <h3>D2. 타이포그래피</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:var(--bg-soft);"><th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">역할</th><th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">폰트</th><th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">크기 · 굵기</th></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">Display (페이지 제목)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">Pretendard Variable</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">36~64px · 800~900 · letter-spacing -0.03em</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">H1 (가입 화면 제목)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">Pretendard Variable</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">26px · 800 · -0.025em</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">H2 (섹션 제목)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">Pretendard Variable</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">18px · 700 · -0.015em</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">본문</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">Pretendard Variable</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">13~14px · 400</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">레이블·캡션</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">Pretendard Variable</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">11~12px · 500~600</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">코드·URL</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">JetBrains Mono</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">11~12px</td></tr>
+  </table>
+</div>
+
+<div class="ds-section">
+  <h3>D3. 폼 컴포넌트 표준</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:var(--bg-soft);"><th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">요소</th><th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">스펙</th></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">Input</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">height ~40px · border 1px #E5E7EB · radius 6px · focus border-color #DC3545 (outline 없음)</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">Primary Button (Red)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">background #DC3545 · color white · radius 6px · padding 12px · font-weight 600 · hover #B82838</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">Lavender Button</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">background #A99DE4 · color white · "다음 단계 · 저장" 같은 보조 액션 · hover #8E80D3</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">Secondary Button</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">background white · border 1px #E5E7EB · color #111827 · font-weight 500</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">Danger Button</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">background #EF4444 · color white · "해제·삭제" 같은 위험한 액션</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">Checkbox</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">16x16px · radius 3px · checked color #DC3545</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">Radio</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">16x16px · 원형 · checked는 #DC3545 색 5px 두께 보더</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">Toggle</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">36x20px · OFF #E5E7EB / ON #DC3545 · 핸들 16px white</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">Callout</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">background 종류별 (default/red/lavender/yellow) · border-radius 6px · padding 12~14px</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">Modal</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">background white · border 1px #E5E7EB · radius 8px · shadow 0 2px 8px rgba(0,0,0,0.06)</td></tr>
+  </table>
+</div>
+
+<div class="ds-section">
+  <h3>D4. 레이아웃·여백</h3>
+  <ul style="list-style:none;padding:0;">
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> 가입 폼 컨테이너 폭: 360~400px (mobile-first → desktop)</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> 폼 좌우 패딩: 24~28px · 상하 패딩: 28~32px</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> 필드 간 간격: 14px</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> Border-radius: input/button 6px · card 8px · pill 12px</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> 그림자: 매우 약함 (0 1~2px 4~8px rgba(0,0,0,0.04~0.06))</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> 다크 알림 배너: 페이지 최상단 · 배경 #1F1F1F · 빨간 [NEW/TIP/EVENT] 배지 + CTA 버튼</li>
+  </ul>
+</div>
+
+<div class="ds-section">
+  <h3>D5. 모션 가이드</h3>
+  <ul style="list-style:none;padding:0;">
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> Step 전환: 150ms ease-out · 좌→우 슬라이드</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> 버튼 hover: 100ms · 색상 transition</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> 모달 등장: 200ms ease-out · scale 0.96→1.0 + opacity</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> 에러 표시: shake 80ms × 3</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> Progress dot 채워짐: 200ms · 다음 단계 진행 시</li>
+  </ul>
+</div>
+
+<div class="chapter-divider">
+  <span class="num">E</span>
+  <span class="title">로그인 SB</span>
+  <span class="sub">모달 패턴 · 실제 dev 환경 정합</span>
+</div>
+
+<section class="section-intro" id="login-overview">
+  <h2>로그인 흐름 개요</h2>
+  <p>회원가입 SB와 짝을 이루는 로그인 흐름. 실제 dev.app.playtoon.studio 환경에서는 로그인이 <strong>우측 슬라이드 패널 모달</strong> 형태로 구현되어 있다. 좌측에 작품 일러스트 배경, 우측에 로그인 폼이 배치된다.</p>
+  <div class="pills">
+    <span class="pill red">모달 패턴 (Slide Panel)</span>
+    <span class="pill lavender">3-Social + Email</span>
+    <span class="pill green">실제 dev 환경 정합</span>
+  </div>
+</section>
+
+<!-- ─── E1. 로그인 모달 ─── -->
+<article class="step-card" id="login-modal">
+  <div class="step-header">
+    <span class="badge">E1</span>
+    <span class="title">로그인 모달 (워크스페이스)</span>
+    <span class="desc">우측 슬라이드 패널 · 좌측 일러스트</span>
+  </div>
+  <div class="mockup" style="padding:32px 16px;">
+    <div class="mockup-label">workspace.playtoon.io → 로그인 모달 진입</div>
+    <div class="login-frame">
+      <div class="hero">
+        <div class="work-card">
+          <span class="tag">로맨스</span>
+          <div class="name">백일의 <em>나홍이</em></div>
+          <div class="desc">100일의 시간, 두 사람의 감정을 따라가는 로맨스</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="close-x">✕</div>
+        <div class="panel-title">Playtoon에 오신 것을<br>환영합니다</div>
+        <div class="panel-sub">가입하여 모든 기능 체험</div>
+        <div class="m-social-list">
+          <div class="m-soc-pill"><span class="ic g">G</span>Google로 계속하기<span class="arrow">›</span></div>
+          <div class="m-soc-pill"><span class="ic k">K</span>Kakao로 계속하기<span class="arrow">›</span></div>
+          <div class="m-soc-pill"><span class="ic a">⌘</span>Apple로 계속하기<span class="arrow">›</span></div>
+        </div>
+        <div class="m-divider">또는</div>
+        <div class="m-field">
+          <input class="m-input placeholder" value="이메일 주소 입력">
+        </div>
+        <div class="m-field">
+          <input class="m-input placeholder" value="비밀번호">
+        </div>
+        <div class="reset-link"><a>비밀번호 찾기</a></div>
+        <button class="m-btn">로그인</button>
+        <div class="footer-link">계정이 없으신가요? <a>회원가입</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>레이아웃 구성</h4>
+    <table>
+      <tr><th>영역</th><th>역할</th></tr>
+      <tr><td class="label">좌측 일러스트 (~40%)</td><td>현재 추천 작품의 키비주얼 + 작품 태그·제목·설명 오버레이</td></tr>
+      <tr><td class="label">우측 폼 패널 (~60%)</td><td>로그인 폼 영역. 우상단 X 닫기 버튼</td></tr>
+      <tr><td class="label">진입 트리거</td><td>로그인 미인증 상태에서 워크스페이스 접근 시 자동 모달 / 또는 [로그인] 클릭</td></tr>
+      <tr><td class="label">백그라운드</td><td>다크 오버레이 (rgba(0,0,0,0.6))</td></tr>
+    </table>
+
+    <h4>UI 요소</h4>
+    <table>
+      <tr><th>요소</th><th>copy · 동작</th></tr>
+      <tr><td class="label">닫기 (X)</td><td>우상단 26px 원형 · 회색 배경 · 클릭 시 모달 닫기 + 메인 페이지 유지</td></tr>
+      <tr><td class="label">타이틀</td><td>[Playtoon에 오신 것을 환영합니다] · 20px · 800 · 중앙 정렬</td></tr>
+      <tr><td class="label">서브</td><td>[가입하여 모든 기능 체험] · 12px · 회색</td></tr>
+      <tr><td class="label">소셜 버튼 (3종)</td><td><strong>Google · Kakao · Apple</strong> · pill 가로형 · 좌측 아이콘 · 우측 화살표</td></tr>
+      <tr><td class="label">이메일 input</td><td>placeholder: [이메일 주소 입력] · underline 또는 약한 보더</td></tr>
+      <tr><td class="label">비밀번호 input</td><td>placeholder: [비밀번호] · type=password</td></tr>
+      <tr><td class="label">비밀번호 찾기</td><td>우측 정렬 · 작은 회색 텍스트 · → /reset</td></tr>
+      <tr><td class="label">로그인 버튼</td><td>Primary Red · 굵게 · 입력값 검증 후 활성</td></tr>
+      <tr><td class="label">회원가입 링크</td><td>[계정이 없으신가요? <strong>회원가입</strong>] · 회원가입은 빨간색 강조</td></tr>
+    </table>
+
+    <h4>좌측 일러스트 정책</h4>
+    <ul>
+      <li>현재 추천/큐레이션된 작품의 키비주얼 (운영팀이 주기적으로 교체)</li>
+      <li>로맨스/액션/판타지 등 다양한 장르를 노출하여 작가 유입 유도</li>
+      <li>작품명·태그·짧은 설명 오버레이로 작품에 대한 호기심 유발</li>
+      <li>모바일에서는 일러스트 영역 숨김 (폼만 표시)</li>
+    </ul>
+
+    <h4>분기 처리</h4>
+    <div class="branch-box">
+      <div class="case">소셜 로그인 클릭</div>
+      <div class="result">→ OAuth 흐름 → 콜백 → AUTHOR DB 조회 → 매칭 시 워크스페이스 진입 / 없으면 회원가입 흐름으로</div>
+    </div>
+    <div class="branch-box">
+      <div class="case">이메일 + 비밀번호 입력 후 로그인</div>
+      <div class="result">→ <code>POST /auth/login</code> · 성공 시 워크스페이스 진입 / 실패 시 에러 메시지</div>
+    </div>
+    <div class="branch-box error">
+      <div class="case">미인증 계정으로 로그인 시도</div>
+      <div class="result">→ [이메일 인증을 완료해주세요] + 인증 메일 재발송 버튼</div>
+    </div>
+    <div class="branch-box error">
+      <div class="case">5회 비밀번호 실패</div>
+      <div class="result">→ 10분 잠금 + 이메일로 보안 경고 발송</div>
+    </div>
+  </div>
+</article>
+
+<!-- ─── E2. 플랫폼 로그인 ─── -->
+<article class="step-card" id="login-platform">
+  <div class="step-header">
+    <span class="badge">E2</span>
+    <span class="title">로그인 (플랫폼 측)</span>
+    <span class="desc">전체 페이지 · 소셜 4종 + 이메일</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">playtoon.com/login</div>
+    <div class="form-window">
+      <div class="m-logo">PlayToon</div>
+      <div class="m-h1">로그인</div>
+      <div class="m-sub">플레이툰에 오신 것을 환영합니다</div>
+      <div class="m-social-list">
+        <div class="m-soc-pill"><span class="ic k">K</span>Kakao로 계속하기<span class="arrow">›</span></div>
+        <div class="m-soc-pill"><span class="ic n">N</span>Naver로 계속하기<span class="arrow">›</span></div>
+        <div class="m-soc-pill"><span class="ic g">G</span>Google로 계속하기<span class="arrow">›</span></div>
+        <div class="m-soc-pill"><span class="ic a">⌘</span>Apple로 계속하기<span class="arrow">›</span></div>
+      </div>
+      <div class="m-divider">또는</div>
+      <div class="m-field">
+        <div class="m-label">이메일</div>
+        <input class="m-input" placeholder="name@example.com">
+      </div>
+      <div class="m-field">
+        <div class="m-label">비밀번호</div>
+        <input class="m-input" type="password" placeholder="••••••••">
+      </div>
+      <div class="reset-link" style="text-align:right;margin:-4px 0 12px;"><a style="color:var(--text-sub);font-size:11px;">비밀번호 찾기</a></div>
+      <button class="m-btn">로그인</button>
+      <div class="m-link">계정이 없으신가요? <a>회원가입</a></div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>워크스페이스 로그인과의 차이</h4>
+    <table>
+      <tr><th>항목</th><th>워크스페이스 (E1)</th><th>플랫폼 (E2)</th></tr>
+      <tr><td class="label">화면 형태</td><td>모달 (Slide Panel)</td><td>전체 페이지 (Full Page)</td></tr>
+      <tr><td class="label">소셜 종류</td><td>3종 (G·K·A)</td><td><strong>4종 (K·N·G·A)</strong> — Naver 포함</td></tr>
+      <tr><td class="label">소셜 우선순위</td><td>Google → Kakao → Apple</td><td>Kakao → Naver → Google → Apple (한국 독자 우선)</td></tr>
+      <tr><td class="label">좌측 일러스트</td><td>있음 (작품 큐레이션)</td><td>없음 또는 단순 배경</td></tr>
+      <tr><td class="label">진입</td><td>워크스페이스 접근 시 모달</td><td>독립 URL · 단독 화면</td></tr>
+    </table>
+
+    <h4>왜 워크스페이스만 Naver 없나</h4>
+    <ul>
+      <li>작가 페르소나는 한국 외 시장도 잠재 고객 (글로벌 작가 진입 가능)</li>
+      <li>Google·Apple은 글로벌 표준, Kakao는 한국 작가 편의 — 충분한 커버리지</li>
+      <li>Naver는 한국 독자 채널로 더 적합하다고 판단</li>
+      <li>실제 dev 환경의 로그인 모달에서 Naver가 빠진 것 확인</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ─── E3. 비밀번호 재설정 ─── -->
+<article class="step-card" id="login-reset">
+  <div class="step-header">
+    <span class="badge">E3</span>
+    <span class="title">비밀번호 재설정</span>
+    <span class="desc">독립 비밀번호 · DB별 처리 (Q2)</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">로그인 → [비밀번호 찾기] 클릭</div>
+    <div class="form-window">
+      <div class="m-h1">비밀번호 재설정</div>
+      <div class="m-sub">가입하신 이메일을 입력하시면<br>재설정 링크를 보내드립니다.</div>
+      <div class="m-callout yellow">
+        <strong>⚠ 어느 계정의 비밀번호인가요?</strong>
+        같은 이메일로 작가/독자 계정 양쪽이 있다면 둘은 독립된 비밀번호입니다. 현재 페이지가 어느 쪽 로그인인지 확인하세요.
+      </div>
+      <div class="m-field">
+        <div class="m-label">이메일</div>
+        <input class="m-input" placeholder="name@example.com">
+      </div>
+      <button class="m-btn">재설정 링크 발송</button>
+      <div class="m-link">로그인으로 돌아가기 <a>← 로그인</a></div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>중요 — 독립 비밀번호 정책 (Q2)</h4>
+    <p style="font-size:13px;color:var(--text-sub);margin-bottom:12px;">USER DB와 AUTHOR DB는 비밀번호가 독립적으로 관리된다. 같은 이메일로 양쪽 가입한 사용자라도 양쪽 비밀번호가 다를 수 있으며, 재설정은 진입 페이지(워크스페이스/플랫폼)에 따라 분기된다.</p>
+
+    <h4>분기 처리</h4>
+    <table>
+      <tr><th>진입</th><th>대상 DB</th><th>재설정 메일 제목</th></tr>
+      <tr><td class="label">workspace.playtoon.io/reset</td><td>AUTHOR</td><td>[Playtoon] <strong>작가</strong> 계정 비밀번호 재설정</td></tr>
+      <tr><td class="label">playtoon.com/reset</td><td>USER</td><td>[Playtoon] <strong>독자</strong> 계정 비밀번호 재설정</td></tr>
+    </table>
+
+    <h4>처리 단계</h4>
+    <table>
+      <tr><th>Step</th><th>처리</th></tr>
+      <tr><td class="label">1. 이메일 입력</td><td>가입된 이메일 입력 · 양쪽 DB에 없어도 일관된 응답 (사용자 존재 노출 방지)</td></tr>
+      <tr><td class="label">2. 토큰 발급</td><td>PASSWORD_RESET_TOKEN (target_db: user 또는 author) · 1시간 만료</td></tr>
+      <tr><td class="label">3. 메일 발송</td><td>재설정 링크 + DB 식별 명시</td></tr>
+      <tr><td class="label">4. 사용자 재설정</td><td>새 비밀번호 입력 · 강도 검증 · 해당 DB의 password_hash 갱신</td></tr>
+      <tr><td class="label">5. 완료 알림</td><td>변경 완료 메일 발송 + 모든 세션 무효화</td></tr>
+    </table>
+
+    <h4>유의사항</h4>
+    <ul>
+      <li>이메일이 양쪽 DB에 모두 존재하는 경우, 진입한 페이지의 DB만 재설정 (다른 쪽은 영향 없음)</li>
+      <li>토큰은 1회만 사용 가능 · 발급 후 1시간 만료</li>
+      <li>재설정 후 모든 활성 세션 강제 종료 + 알림</li>
+      <li>재설정 메일 발송은 5분 쿨다운 · 일 5회 제한</li>
+    </ul>
+
+    <h4>"어느 계정인지 모르겠어요" 케이스</h4>
+    <div class="branch-box lavender">
+      <div class="case">사용자가 양쪽 계정 중 어느 쪽 비밀번호를 잊었는지 불명</div>
+      <div class="result">→ 양쪽 페이지(workspace · platform)의 [비밀번호 찾기] 진입점에 안내문 노출 → 사용자가 현재 페이지의 종류를 인지하고 진행</div>
+    </div>
+  </div>
+</article>
+
+<!-- ─── D+ 다크 모드 ─── -->
+<div class="ds-section" id="ds-dark">
+  <h3 style="display:flex;align-items:center;gap:10px;">
+    <span style="background:#111;color:white;padding:3px 10px;border-radius:4px;font-size:11px;letter-spacing:0.04em;">D+</span>
+    다크 모드 (Dark Theme) 토큰
+  </h3>
+  <p style="font-size:13px;color:var(--text-sub);margin-bottom:14px;">실제 워크스페이스 dev 환경은 라이트/다크 양쪽을 지원한다 (헤더 우상단 ☾ 토글). 다크 모드의 디자인 토큰은 다음과 같다.</p>
+
+  <h4 style="color:var(--text);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">Dark · Backgrounds</h4>
+  <div class="ds-grid">
+    <div class="ds-color" style="background:#0A0A0A;"><div class="name">Page BG</div><div class="hex">#0A0A0A</div></div>
+    <div class="ds-color" style="background:#141414;"><div class="name">Sidebar BG</div><div class="hex">#141414</div></div>
+    <div class="ds-color" style="background:#1F1F1F;"><div class="name">Card BG</div><div class="hex">#1F1F1F</div></div>
+    <div class="ds-color" style="background:#262626;"><div class="name">Card Hover</div><div class="hex">#262626</div></div>
+  </div>
+
+  <h4 style="color:var(--text);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin:18px 0 10px;">Dark · Text & Border</h4>
+  <div class="ds-grid">
+    <div class="ds-color" style="background:#FFFFFF;color:#111;"><div class="name">Text</div><div class="hex" style="color:#5B5B5B;">#FFFFFF</div></div>
+    <div class="ds-color" style="background:#A3A3A3;"><div class="name">Text Sub</div><div class="hex">#A3A3A3</div></div>
+    <div class="ds-color" style="background:#2A2A2A;"><div class="name">Border</div><div class="hex">#2A2A2A</div></div>
+    <div class="ds-color" style="background:#3A3A3A;"><div class="name">Border Hover</div><div class="hex">#3A3A3A</div></div>
+  </div>
+
+  <h4 style="color:var(--brand-red);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin:18px 0 10px;">Dark · Brand (Red 유지)</h4>
+  <div class="ds-grid">
+    <div class="ds-color" style="background:#DC3545;"><div class="name">Brand Red</div><div class="hex">#DC3545</div></div>
+    <div class="ds-color" style="background:#4A1515;"><div class="name">Maroon Dark</div><div class="hex">#4A1515</div></div>
+    <div class="ds-color" style="background:#5E1717;"><div class="name">Maroon Card</div><div class="hex">#5E1717</div></div>
+    <div class="ds-color" style="background:#A99DE4;"><div class="name">Lavender (유지)</div><div class="hex">#A99DE4</div></div>
+  </div>
+
+  <h4 style="color:var(--text-sub);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin:20px 0 10px;">다크 모드 운영 원칙</h4>
+  <ul>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> Brand Red는 다크 모드에서도 동일하게 유지 (브랜드 일관성)</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> Maroon 카드 배경은 다크 모드에서 더 어둡게 (#5E1717 → #4A1515)</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> Lavender는 다크에서도 동일 (Q3 정책 일관성)</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> 회원가입 화면은 <strong>라이트 모드 default</strong> 권장 (가입 시점은 진입자의 첫 접점이므로 밝은 톤이 신뢰감)</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> 단, 사용자 OS 설정이 다크 모드이고 명시적 라이트 선택이 없다면 다크 모드로 진입 가능 (시스템 설정 존중)</li>
+    <li style="font-size:13px;color:var(--text-sub);padding:6px 0 6px 14px;position:relative;"><span style="position:absolute;left:4px;color:var(--brand-red);font-weight:800;">·</span> 로그인 모달의 좌측 일러스트 영역은 다크 모드에서도 동일한 컬러 노출 (콘텐츠 자체가 색감을 가지므로 영향 없음)</li>
+  </ul>
+</div>
+
+<div class="ds-section">
+  <h3>D6. 다양한 알림 배너 변형</h3>
+  <p style="font-size:13px;color:var(--text-sub);margin-bottom:14px;">실제 워크스페이스는 컨텍스트별로 알림 배너 색상을 달리한다. 회원가입 직후 워크스페이스 진입 시 환영 알림 등에 활용 가능.</p>
+
+  <div style="display:flex;flex-direction:column;gap:12px;margin-top:14px;">
+    <div style="background:#1F1F1F;color:white;padding:10px 16px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;">
+      <span style="background:var(--brand-red);padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;">NEW</span>
+      <span>Playtoon AI 채색 도구 오픈 베타 — 자동 채색으로 제작 시간 50% 단축하세요</span>
+      <button style="background:white;color:var(--text);padding:4px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:700;border:none;cursor:pointer;">자세히 보기</button>
+    </div>
+
+    <div style="background:#6B1F1F;color:white;padding:10px 16px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;">
+      <span style="background:var(--brand-red);padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;">EVENT</span>
+      <span>크리에이터 공모전 D-14 — 총 상금 500만원, 지금 참가 신청하세요</span>
+      <button style="background:white;color:var(--text);padding:4px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:700;border:none;cursor:pointer;">참가 신청</button>
+    </div>
+
+    <div style="background:#1F1F1F;color:white;padding:10px 16px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;">
+      <span style="background:var(--brand-red);padding:2px 8px;border-radius:3px;font-size:11px;font-weight:700;">TIP</span>
+      <span>팀 콜라보에서 실시간 공동 편집이 가능해졌어요! 지금 팀원을 초대해 보세요</span>
+      <button style="background:white;color:var(--text);padding:4px 12px;border-radius:var(--r-sm);font-size:12px;font-weight:700;border:none;cursor:pointer;">팀 초대</button>
+    </div>
+  </div>
+
+  <table style="margin-top:18px;width:100%;border-collapse:collapse;font-size:13px;">
+    <tr style="background:var(--bg-soft);"><th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">배지</th><th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">배경</th><th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">용도</th></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">NEW</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">다크 #1F1F1F</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">신규 기능·공지</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">EVENT</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">마룬 #6B1F1F</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">공모전·캠페인·이벤트</td></tr>
+    <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">TIP</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">다크 #1F1F1F</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">사용 팁·온보딩 안내</td></tr>
+  </table>
+</div>
+
+</main>
+
+</div>
+
+<footer class="doc-footer">
+  <strong>PlayToon</strong>회원가입 SB V1.0.0 · 계정 시스템 V1.1.0 부속 · 2026.05.29
+  <div class="meta-line">실제 워크스페이스(dev.app.playtoon.studio) 디자인 시스템 정합</div>
+</footer>
+
+<script>
+const links = document.querySelectorAll('.sidebar a');
+const sections = document.querySelectorAll('[id]');
+function activateLink() {
+  let current = '';
+  sections.forEach(sec => {
+    const top = sec.getBoundingClientRect().top;
+    if (top < 200) current = sec.id;
+  });
+  links.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
+}
+window.addEventListener('scroll', activateLink);
+links.forEach(l => l.addEventListener('click', e => {
+  const id = l.getAttribute('href');
+  const target = document.querySelector(id);
+  if (target) {
+    e.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}));
+</script>
+
+</body>
+</html>

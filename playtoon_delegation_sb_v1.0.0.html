@@ -1,0 +1,2588 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>플레이툰 발행 권한 위임 SB · V1.0.0 (워크스페이스 V1.2.1 부속)</title>
+<meta name="viewport" content="width=1280">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+:root {
+  --brand-red: #DC3545;
+  --brand-red-dark: #B82838;
+  --brand-red-soft: #FCE7E9;
+  --maroon: #6B1F1F;
+  --maroon-light: #8B2929;
+  --lavender: #A99DE4;
+  --lavender-dark: #8E80D3;
+  --lavender-soft: #EEEBF9;
+  --yellow: #FACC15;
+  --yellow-soft: #FFFBE6;
+  --success: #10B981;
+  --success-soft: #D1FAE5;
+  --warn: #F59E0B;
+  --warn-soft: #FEF3C7;
+  --error: #EF4444;
+  --error-soft: #FEE2E2;
+  --info: #3B82F6;
+  --info-soft: #DBEAFE;
+  --coral: #FB923C;
+  --coral-soft: #FFEDD5;
+
+  --text: #111827;
+  --text-sub: #6B7280;
+  --text-muted: #9CA3AF;
+  --bg: #FFFFFF;
+  --bg-soft: #F8F9FA;
+  --bg-softer: #F3F4F6;
+  --border: #E5E7EB;
+  --border-soft: #F3F4F6;
+
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+  --shadow-faint: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, sans-serif;
+  background: var(--bg-soft);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── 다크 알림 배너 ─── */
+.alert-banner {
+  background: #1F1F1F;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.alert-banner .pill {
+  background: var(--brand-red);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.alert-banner .cta {
+  background: white;
+  color: var(--text);
+  padding: 4px 12px;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ─── 문서 헤더 ─── */
+.doc-header {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 28px 48px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.doc-header .logo {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.doc-header .title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.doc-header .meta {
+  margin-left: auto;
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-sub);
+}
+.doc-header .meta span strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* ─── 레이아웃 ─── */
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  max-width: 1680px;
+  margin: 0 auto;
+}
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  background: white;
+  border-right: 1px solid var(--border);
+  padding: 24px 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar h3 {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  padding: 0 24px 8px;
+  margin-top: 20px;
+}
+.sidebar h3:first-of-type { margin-top: 0; }
+.sidebar a {
+  display: block;
+  padding: 7px 24px 7px 36px;
+  font-size: 13px;
+  color: var(--text-sub);
+  text-decoration: none;
+  position: relative;
+  transition: background 0.1s;
+}
+.sidebar a:hover { background: var(--bg-soft); color: var(--text); }
+.sidebar a.active {
+  color: var(--brand-red);
+  font-weight: 600;
+  background: var(--brand-red-soft);
+}
+.sidebar a.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--brand-red);
+}
+.sidebar a .num {
+  display: inline-block;
+  width: 28px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-left: -22px;
+}
+.sidebar a.active .num { color: var(--brand-red); }
+
+/* ─── 메인 콘텐츠 ─── */
+.main {
+  padding: 32px 48px 80px;
+  max-width: 1340px;
+}
+
+/* ─── 챕터 디바이더 ─── */
+.chapter-divider {
+  margin: 48px 0 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--text);
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+.chapter-divider:first-of-type { margin-top: 0; }
+.chapter-divider .num {
+  font-size: 64px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+.chapter-divider .title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.chapter-divider .sub {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ─── 섹션 인트로 ─── */
+.section-intro {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+}
+.section-intro h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+.section-intro .url {
+  display: inline-block;
+  background: var(--bg-soft);
+  color: var(--text-sub);
+  padding: 3px 10px;
+  border-radius: var(--r-sm);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+.section-intro p {
+  color: var(--text-sub);
+  font-size: 13px;
+  margin-top: 6px;
+}
+.section-intro .pills {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--bg-soft);
+  color: var(--text-sub);
+}
+.pill.red { background: var(--brand-red-soft); color: var(--brand-red-dark); }
+.pill.lavender { background: var(--lavender-soft); color: var(--lavender-dark); }
+.pill.yellow { background: var(--yellow-soft); color: #92400E; }
+.pill.green { background: var(--success-soft); color: #065F46; }
+.pill.coral { background: var(--coral-soft); color: #9A3412; }
+
+/* ─── Step / Section 카드 ─── */
+.step-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.step-card.split { display: grid; grid-template-columns: 540px 1fr; }
+.step-card.split-narrow { display: grid; grid-template-columns: 440px 1fr; }
+
+.step-header {
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.step-card.split .step-header,
+.step-card.split-narrow .step-header {
+  grid-column: 1 / -1;
+}
+.step-header .badge {
+  background: var(--brand-red);
+  color: white;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+}
+.step-header .badge.lavender { background: var(--lavender); }
+.step-header .badge.maroon { background: var(--maroon); }
+.step-header .badge.dark { background: var(--text); }
+.step-header .title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.step-header .desc {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-left: auto;
+}
+
+/* ─── 모형 영역 ─── */
+.mockup {
+  background: var(--bg-soft);
+  padding: 24px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.mockup-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.03em;
+}
+
+/* ─── 워크스페이스 화면 모형 ─── */
+.ws-frame {
+  background: white;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  font-size: 11px;
+  min-height: 420px;
+}
+.ws-frame .ws-side {
+  background: white;
+  border-right: 1px solid var(--border);
+  padding: 12px 0;
+  font-size: 10px;
+}
+.ws-frame .ws-side .ws-grp {
+  font-size: 8px;
+  color: var(--text-muted);
+  padding: 0 12px 4px;
+  margin-top: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.ws-frame .ws-side .ws-grp:first-child { margin-top: 0; }
+.ws-frame .ws-side .ws-item {
+  padding: 4px 12px 4px 14px;
+  font-size: 10px;
+  color: var(--text-sub);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ws-frame .ws-side .ws-item.active {
+  color: var(--brand-red);
+  font-weight: 700;
+  background: var(--brand-red-soft);
+  border-left: 2px solid var(--brand-red);
+  padding-left: 12px;
+}
+.ws-frame .ws-side .ws-item .ic {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.4;
+}
+.ws-frame .ws-side .ws-item.active .ic { opacity: 1; }
+.ws-frame .ws-main {
+  padding: 14px 16px;
+  background: white;
+  overflow: hidden;
+}
+.ws-frame .ws-h {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 9px;
+}
+.ws-frame .ws-h .crumb {
+  color: var(--text-muted);
+}
+.ws-frame .ws-h .crumb b { color: var(--text); font-weight: 700; }
+
+/* ─── 검수·발행 영역 컴포넌트 ─── */
+.rv-tabs {
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+  font-size: 10px;
+}
+.rv-tabs .tab {
+  padding: 4px 0;
+  color: var(--text-sub);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.rv-tabs .tab.active {
+  color: var(--brand-red);
+  border-bottom-color: var(--brand-red);
+  font-weight: 700;
+}
+.rv-tabs .tab .count {
+  background: var(--brand-red-soft);
+  color: var(--brand-red);
+  padding: 0 4px;
+  border-radius: 6px;
+  font-size: 8px;
+  margin-left: 3px;
+  font-weight: 700;
+}
+
+.rv-filter {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+  font-size: 9px;
+  flex-wrap: wrap;
+}
+.rv-filter .chip {
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--bg-soft);
+  color: var(--text-sub);
+  border: 1px solid var(--border);
+}
+.rv-filter .chip.on {
+  background: var(--text);
+  color: white;
+  border-color: var(--text);
+}
+
+.rv-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.rv-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.rv-grid.list { grid-template-columns: 1fr; }
+
+.ep-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 8px;
+  font-size: 9px;
+}
+.ep-card .ep-thumb {
+  background: var(--bg-soft);
+  border-radius: 3px;
+  height: 50px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 800;
+}
+.ep-card .ep-thumb.gradient {
+  background: linear-gradient(135deg, #FFA8A8 0%, #FF6B6B 100%);
+  color: white;
+}
+.ep-card .ep-thumb.gradient2 {
+  background: linear-gradient(135deg, #A8C5FF 0%, #6B8BFF 100%);
+  color: white;
+}
+.ep-card .ep-thumb.gradient3 {
+  background: linear-gradient(135deg, #C7A8FF 0%, #8B6BFF 100%);
+  color: white;
+}
+.ep-card .ep-name {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 10px;
+  margin-bottom: 2px;
+}
+.ep-card .ep-sub {
+  color: var(--text-muted);
+  font-size: 9px;
+  margin-bottom: 4px;
+}
+.ep-card .ep-status {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 8px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.ep-card .ep-act {
+  background: var(--brand-red);
+  color: white;
+  padding: 3px 0;
+  border-radius: 3px;
+  text-align: center;
+  font-size: 8px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+.ep-card .ep-act.lav { background: var(--lavender); }
+.ep-card .ep-act.dark { background: var(--text); }
+.ep-card .ep-act.ghost {
+  background: transparent;
+  color: var(--brand-red);
+  border: 1px solid var(--brand-red);
+}
+
+/* 상태별 컬러 */
+.status-draft { background: var(--bg-softer); color: var(--text-sub); }
+.status-waiting { background: var(--bg-softer); color: var(--text-sub); }
+.status-reviewing { background: var(--yellow-soft); color: #92400E; }
+.status-approved { background: var(--success-soft); color: #065F46; }
+.status-rejected { background: var(--error-soft); color: #8B1F1F; }
+.status-onhold { background: var(--coral-soft); color: #9A3412; }
+.status-scheduled { background: var(--info-soft); color: #1E40AF; }
+.status-published { background: var(--lavender-soft); color: var(--lavender-dark); }
+
+/* ─── 모달 (검수 제출 다이얼로그) ─── */
+.review-modal {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 22px;
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 420px;
+}
+.review-modal .step-progress {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+.review-modal .step-progress .dot {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border);
+}
+.review-modal .step-progress .dot.done { background: var(--text); }
+.review-modal .step-progress .dot.active { background: var(--brand-red); }
+.review-modal .step-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+.review-modal .step-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.015em;
+  margin-bottom: 6px;
+}
+.review-modal .step-desc {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin-bottom: 14px;
+}
+
+/* ─── 폼 컴포넌트 (회원가입 SB 재사용) ─── */
+.m-field { margin-bottom: 12px; }
+.m-label {
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.m-input, .m-textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--text);
+  background: white;
+  font-family: inherit;
+}
+.m-input:focus, .m-textarea:focus {
+  outline: none;
+  border-color: var(--brand-red);
+}
+.m-input.placeholder, .m-textarea.placeholder { color: var(--text-muted); }
+.m-input.readonly { background: var(--bg-soft); color: var(--text-sub); }
+.m-textarea {
+  min-height: 60px;
+  resize: vertical;
+  line-height: 1.5;
+}
+.m-btn {
+  background: var(--brand-red);
+  color: white;
+  border: none;
+  border-radius: var(--r-md);
+  padding: 9px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: -0.01em;
+  display: inline-block;
+}
+.m-btn.full { width: 100%; padding: 10px; }
+.m-btn:hover { background: var(--brand-red-dark); }
+.m-btn.lavender { background: var(--lavender); }
+.m-btn.lavender:hover { background: var(--lavender-dark); }
+.m-btn.dark { background: var(--text); }
+.m-btn.secondary {
+  background: white;
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-weight: 500;
+}
+.m-btn.secondary:hover { background: var(--bg-soft); }
+.m-btn.danger { background: var(--error); color: white; }
+.m-btn.ghost {
+  background: transparent;
+  color: var(--brand-red);
+  border: 1px solid var(--brand-red);
+}
+
+.m-btn-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.m-btn-row .m-btn { flex: 1; }
+
+.m-callout {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+  font-size: 11px;
+  color: var(--text-sub);
+  line-height: 1.6;
+  margin: 10px 0;
+}
+.m-callout strong {
+  display: block;
+  color: var(--text);
+  margin-bottom: 3px;
+  font-weight: 700;
+  font-size: 12px;
+}
+.m-callout.red { background: var(--brand-red-soft); border-color: var(--brand-red-soft); color: var(--brand-red-dark); }
+.m-callout.red strong { color: var(--brand-red-dark); }
+.m-callout.lavender { background: var(--lavender-soft); border-color: var(--lavender-soft); color: var(--lavender-dark); }
+.m-callout.lavender strong { color: var(--lavender-dark); }
+.m-callout.yellow { background: var(--yellow-soft); border-color: var(--yellow-soft); color: #92400E; }
+.m-callout.yellow strong { color: #92400E; }
+.m-callout.error { background: var(--error-soft); border-color: var(--error-soft); color: #8B1F1F; }
+.m-callout.error strong { color: #8B1F1F; }
+.m-callout.green { background: var(--success-soft); border-color: var(--success-soft); color: #065F46; }
+.m-callout.green strong { color: #065F46; }
+.m-callout.coral { background: var(--coral-soft); border-color: var(--coral-soft); color: #9A3412; }
+.m-callout.coral strong { color: #9A3412; }
+
+.m-summary {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+  margin: 10px 0;
+  font-size: 11px;
+}
+.m-summary .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+}
+.m-summary .row .k { color: var(--text-sub); }
+.m-summary .row .v { color: var(--text); font-weight: 600; }
+
+.m-radio {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.m-radio .dot {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: white;
+}
+.m-radio.checked .dot {
+  border-color: var(--brand-red);
+  border-width: 4px;
+}
+
+/* 발행 이력 / 업로드 이력 테이블 */
+.history-table {
+  font-size: 11px;
+  width: 100%;
+  border-collapse: collapse;
+}
+.history-table th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-sub);
+  padding: 6px 8px;
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+}
+.history-table td {
+  padding: 8px;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 11px;
+  vertical-align: top;
+}
+.history-table .ver {
+  font-weight: 700;
+  color: var(--text);
+}
+.history-table .meta-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 600;
+}
+.history-table .meta-tag.del {
+  background: var(--coral-soft);
+  color: #9A3412;
+}
+.history-table .meta-tag.self {
+  background: var(--success-soft);
+  color: #065F46;
+}
+.history-table .meta-tag.cp {
+  background: var(--lavender-soft);
+  color: var(--lavender-dark);
+}
+.history-table .author-fix {
+  background: var(--bg-soft);
+  padding: 4px 8px;
+  border-radius: var(--r-sm);
+  font-size: 10px;
+  color: var(--text-sub);
+  margin-bottom: 10px;
+}
+.history-table .author-fix strong { color: var(--text); }
+
+/* 예약 공개 캘린더 */
+.cal-row {
+  display: flex;
+  gap: 4px;
+  font-size: 10px;
+}
+.cal-cell {
+  flex: 1;
+  text-align: center;
+  padding: 6px 2px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-sub);
+}
+.cal-cell.selected {
+  background: var(--brand-red);
+  color: white;
+  border-color: var(--brand-red);
+  font-weight: 700;
+}
+
+/* ─── 명세 영역 ─── */
+.spec {
+  padding: 28px 32px;
+  font-size: 13px;
+}
+.spec h4 {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--brand-red);
+  margin-bottom: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.spec h4:not(:first-child) { margin-top: 22px; }
+.spec table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.spec table th {
+  text-align: left;
+  background: var(--bg-soft);
+  color: var(--text);
+  padding: 8px 10px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+.spec table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+  color: var(--text-sub);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.spec table td.label {
+  font-weight: 600;
+  color: var(--text);
+  width: 28%;
+}
+.spec code {
+  background: var(--bg-soft);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 11px;
+  color: var(--brand-red-dark);
+}
+.spec ul { list-style: none; padding: 0; }
+.spec ul li {
+  font-size: 12px;
+  color: var(--text-sub);
+  padding: 4px 0 4px 14px;
+  position: relative;
+  line-height: 1.6;
+}
+.spec ul li::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  color: var(--brand-red);
+  font-weight: 800;
+}
+.branch-box {
+  background: var(--bg-soft);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  margin: 8px 0;
+  border-left: 3px solid var(--brand-red);
+}
+.branch-box.muted { border-left-color: var(--text-muted); }
+.branch-box.lavender { border-left-color: var(--lavender); }
+.branch-box.error { border-left-color: var(--error); }
+.branch-box.warn { border-left-color: var(--warn); }
+.branch-box.green { border-left-color: var(--success); }
+.branch-box.coral { border-left-color: var(--coral); }
+.branch-box .case {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.branch-box .result {
+  font-size: 11px;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+
+/* 상태 배지 풀 사이즈 */
+.status-badge-lg {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.status-badge-lg .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.section-body {
+  padding: 24px 28px;
+  font-size: 13px;
+  color: var(--text-sub);
+}
+
+/* ─── 푸터 ─── */
+.doc-footer {
+  background: var(--text);
+  color: white;
+  padding: 24px 48px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.9;
+}
+.doc-footer strong { color: var(--brand-red); margin-right: 4px; }
+.doc-footer .meta-line { margin-top: 6px; font-size: 11px; opacity: 0.65; }
+
+@media print {
+  .sidebar, .alert-banner { display: none; }
+  .layout { grid-template-columns: 1fr; }
+  .step-card { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<div class="alert-banner">
+  <span class="pill">NEW</span>
+  <span>발행 권한 위임(DELEGATION) SB가 워크스페이스 V1.2.1의 부속 문서로 작성되었습니다</span>
+  <span class="cta">V1.0.0</span>
+</div>
+
+<header class="doc-header">
+  <div class="logo">PlayToon</div>
+  <div class="title">발행 권한 위임 SB · V1.0.0</div>
+  <div class="meta">
+    <span><strong>워크스페이스 V1.2.1</strong> 부속</span>
+    <span><strong>2026.05.29</strong></span>
+    <span>디자인팀 · 개발팀 전달용</span>
+  </div>
+</header>
+
+<div class="layout">
+
+<nav class="sidebar">
+  <h3>개요</h3>
+  <a href="#overview" class="active"><span class="num">A</span>영역 구조 · 원칙</a>
+
+  <h3>발급자 측 화면 (팀장)</h3>
+  <a href="#main-screen"><span class="num">B1</span>위임 메인 (3-탭)</a>
+  <a href="#issued-list"><span class="num">B2</span>발급 목록 테이블</a>
+  <a href="#revoke-flow"><span class="num">B3</span>위임 회수 흐름</a>
+
+  <h3>발급 폼 5-Step</h3>
+  <a href="#form-flow"><span class="num">C</span>발급 폼 시퀀스</a>
+  <a href="#form-1"><span class="num">C1</span>수령자 선택</a>
+  <a href="#form-2"><span class="num">C2</span>범위 선택 (작품)</a>
+  <a href="#form-3"><span class="num">C3</span>액션 선택</a>
+  <a href="#form-4"><span class="num">C4</span>기간 · 사유</a>
+  <a href="#form-5"><span class="num">C5</span>발급 확인</a>
+
+  <h3>수령자 측 화면 (팀원)</h3>
+  <a href="#receiver-notify"><span class="num">D1</span>위임 받음 알림</a>
+  <a href="#receiver-list"><span class="num">D2</span>받은 권한 목록</a>
+  <a href="#receiver-use"><span class="num">D3</span>사용 컨텍스트</a>
+
+  <h3>CP 마스터 케이스</h3>
+  <a href="#cp-master"><span class="num">E1</span>CP 마스터 발급</a>
+  <a href="#cp-policy"><span class="num">E2</span>CP 무위임 업로드</a>
+
+  <h3>이력 · 감사</h3>
+  <a href="#audit-log"><span class="num">F</span>위임 이력 (Audit Log)</a>
+
+  <h3>부록</h3>
+  <a href="#decisions"><span class="num">G</span>정책 결정 항목</a>
+  <a href="#api"><span class="num">H</span>API · 데이터 모델</a>
+</nav>
+
+<main class="main">
+
+<div class="chapter-divider">
+  <span class="num">A</span>
+  <span class="title">영역 구조 · 6대 원칙</span>
+  <span class="sub">workspace.playtoon.io/team/delegation</span>
+</div>
+
+<section class="section-intro" id="overview">
+  <h2>발행 권한 위임이란</h2>
+  <span class="url">워크스페이스 V1.2.1 IA의 ⑤ 팀·멤버 관리 > 발행 권한 위임 서브영역</span>
+  <p>팀장이 부재하거나 직접 검수 제출이 어려울 때, 팀원에게 발행 관련 액션 권한을 한시적·범위 제한적으로 위임하는 영역. 작품의 author는 팀장 고정으로 유지되고, 위임받은 팀원은 "토큰"의 형태로 위임 권한을 수령한다.</p>
+  <div class="pills">
+    <span class="pill red">신규 영역 (V1.2.1)</span>
+    <span class="pill lavender">4개 서브항목</span>
+    <span class="pill green">Author 불변 원칙</span>
+    <span class="pill coral">CP 마스터 케이스 포함</span>
+  </div>
+</section>
+
+<!-- ─── A1. 6대 원칙 ─── -->
+<article class="step-card">
+  <div class="step-header">
+    <span class="badge">A1</span>
+    <span class="title">위임 모델의 6대 원칙</span>
+    <span class="desc">모든 화면과 흐름의 기반 정책</span>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:14px;">본 SB의 모든 화면은 다음 6개 원칙을 기반으로 설계되었다. 한 원칙이 어떻게 UI로 표현되는지 각 챕터에서 다룬다.</p>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin:14px 0 20px;">
+      <div style="display:flex;gap:14px;padding:14px 16px;border-left:3px solid var(--brand-red);background:var(--bg-soft);border-radius:var(--r-md);">
+        <div style="background:var(--brand-red);color:white;width:32px;height:32px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0;">P-1</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">토큰형 권한</div>
+          <div style="font-size:12px;color:var(--text-sub);line-height:1.6;">위임은 "권한 부여"가 아닌 <strong>시한·범위가 있는 토큰</strong>. 회수·만료 가능. 작품을 "양도"하지 않는다.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;padding:14px 16px;border-left:3px solid var(--brand-red);background:var(--bg-soft);border-radius:var(--r-md);">
+        <div style="background:var(--brand-red);color:white;width:32px;height:32px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0;">P-2</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">발급자 제한</div>
+          <div style="font-size:12px;color:var(--text-sub);line-height:1.6;">팀장(<code>team.owner_author_id</code>) 본인. CP 소속 팀의 경우 <strong>CP 마스터</strong>(<code>AUTHOR.role=master</code>)도 발급 가능 (E1 참조).</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;padding:14px 16px;border-left:3px solid var(--lavender);background:var(--bg-soft);border-radius:var(--r-md);">
+        <div style="background:var(--lavender);color:white;width:32px;height:32px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0;">P-3</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">수령자 제한</div>
+          <div style="font-size:12px;color:var(--text-sub);line-height:1.6;">같은 팀의 active 멤버에게만 위임 가능. 팀 외부 작가나 익명에게는 위임 불가. 멤버 권한(Owner/Editor/Commenter/Viewer)과 무관하게 수령 가능.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;padding:14px 16px;border-left:3px solid var(--maroon);background:var(--bg-soft);border-radius:var(--r-md);">
+        <div style="background:var(--maroon);color:white;width:32px;height:32px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0;">P-4</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">Author 불변</div>
+          <div style="font-size:12px;color:var(--text-sub);line-height:1.6;">위임받은 팀원이 업로드해도 작품의 author는 <strong>팀장 고정</strong>. 외부(독자) 표기는 변하지 않는다. uploader 정보는 어드민·팀 내부에서만 추적 가능.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;padding:14px 16px;border-left:3px solid var(--brand-red);background:var(--bg-soft);border-radius:var(--r-md);">
+        <div style="background:var(--brand-red);color:white;width:32px;height:32px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0;">P-5</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">이력 추적</div>
+          <div style="font-size:12px;color:var(--text-sub);line-height:1.6;">발급·연장·회수·만료·사용의 모든 이벤트가 <code>AUTH_AUDIT_LOG</code>에 기록. 어드민에서 전체 이력 조회 가능. 작가는 본인 발급 이력만 (F 참조).</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;padding:14px 16px;border-left:3px solid var(--lavender);background:var(--bg-soft);border-radius:var(--r-md);">
+        <div style="background:var(--lavender);color:white;width:32px;height:32px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0;">P-6</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">액션 범위 명시</div>
+          <div style="font-size:12px;color:var(--text-sub);line-height:1.6;"><strong>일괄 권한 부여가 아님.</strong> submit_review · schedule_publish · edit_publish_history 등 액션 타입을 명시해서 발급. default는 submit_review만 (가장 빈번한 케이스).</div>
+        </div>
+      </div>
+    </div>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:24px 0 12px;letter-spacing:0.06em;text-transform:uppercase;">A2. 진입 경로 — 3가지</h4>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <tr style="background:var(--bg-soft);">
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">번호</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">진입</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">맥락</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">도착</th>
+      </tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">①</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">사이드바 직접 진입</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">⑤ 팀·멤버 관리 > 발행 권한 위임</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">메인 화면 (3-탭)</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">②</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">대시보드 위젯</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">"위임 만료 임박" 알림 → [위임 연장]</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">발급 폼 (기존 위임 연장 모드)</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">③</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">검수 제출 차단 시 (팀원)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">팀원이 검수 제출 시도 → 권한 없음 → [팀장에게 위임 요청] → 팀장이 알림 수신</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">발급 폼 (요청자 자동 선택)</td></tr>
+    </table>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:24px 0 12px;letter-spacing:0.06em;text-transform:uppercase;">A3. 4개 서브항목</h4>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <tr style="background:var(--bg-soft);">
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">No</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">서브항목</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">대상</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">본 SB 챕터</th>
+      </tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">1</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">위임 발급 (대상·범위·기간·사유)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">팀장 + CP 마스터</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">B2 · C</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">2</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">발급된 위임 목록 (활성/만료/회수)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">팀장 + CP 마스터</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">B1 · B2</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">3</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">위임 회수</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">팀장 + CP 마스터</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">B3</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">4</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">위임 이력 (Audit Log)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">팀장 + 어드민</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">F</td></tr>
+    </table>
+  </div>
+</article>
+
+<div class="chapter-divider">
+  <span class="num">B</span>
+  <span class="title">발급자 측 화면 (팀장)</span>
+  <span class="sub">메인 · 발급 목록 · 회수 흐름</span>
+</div>
+
+<!-- ─── B1. 메인 화면 ─── -->
+<article class="step-card split" id="main-screen">
+  <div class="step-header">
+    <span class="badge">B1</span>
+    <span class="title">위임 메인 화면 (3-탭)</span>
+    <span class="desc">발급 / 받음 / 이력</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">workspace.playtoon.io/team/delegation</div>
+    <div class="ws-frame">
+      <div class="ws-side">
+        <div class="ws-grp">워크스페이스</div>
+        <div class="ws-item"><span class="ic"></span>홈</div>
+        <div class="ws-grp">프로젝트</div>
+        <div class="ws-item"><span class="ic"></span>전체 프로젝트</div>
+        <div class="ws-item"><span class="ic"></span>검수·발행</div>
+        <div class="ws-grp">팀·멤버 관리</div>
+        <div class="ws-item"><span class="ic"></span>멤버 목록</div>
+        <div class="ws-item active"><span class="ic"></span>발행 권한 위임</div>
+        <div class="ws-item"><span class="ic"></span>CP 소속 정보</div>
+      </div>
+      <div class="ws-main">
+        <div class="ws-h">
+          <span class="crumb">팀·멤버 관리 / <b>발행 권한 위임</b></span>
+          <span style="margin-left:auto;font-size:8px;color:var(--text-muted);">2026.05.29</span>
+        </div>
+        <div class="rv-tabs">
+          <div class="tab active">발급한 위임 <span class="count">3</span></div>
+          <div class="tab">받은 위임 <span class="count">0</span></div>
+          <div class="tab">이력</div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div class="rv-filter" style="margin-bottom:0;">
+            <div class="chip on">전체 (3)</div>
+            <div class="chip">활성 (2)</div>
+            <div class="chip">만료 임박</div>
+            <div class="chip">만료/회수</div>
+          </div>
+          <div style="background:var(--brand-red);color:white;padding:4px 10px;border-radius:3px;font-size:9px;font-weight:700;">+ 위임 발급</div>
+        </div>
+
+        <div style="border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;font-size:9px;">
+          <div style="display:grid;grid-template-columns:60px 100px 1fr 100px 90px 80px;background:var(--bg-soft);padding:6px 10px;font-size:8px;font-weight:700;color:var(--text-sub);">
+            <span>ID</span><span>수령자</span><span>범위 · 액션</span><span>유효기간</span><span>상태</span><span>액션</span>
+          </div>
+          <div style="display:grid;grid-template-columns:60px 100px 1fr 100px 90px 80px;padding:8px 10px;border-top:1px solid var(--border-soft);align-items:center;">
+            <span style="font-family:monospace;color:var(--brand-red-dark);">D-2431</span>
+            <span style="font-weight:700;">김OO</span>
+            <span style="color:var(--text-sub);">어둠의 격투사 + 1건 · 검수 제출</span>
+            <span style="color:var(--warn);font-weight:700;">D-3</span>
+            <span><span class="ep-status status-approved" style="font-size:8px;">활성</span></span>
+            <span style="font-size:8px;color:var(--brand-red);font-weight:700;">[연장][회수]</span>
+          </div>
+          <div style="display:grid;grid-template-columns:60px 100px 1fr 100px 90px 80px;padding:8px 10px;border-top:1px solid var(--border-soft);align-items:center;">
+            <span style="font-family:monospace;color:var(--brand-red-dark);">D-2428</span>
+            <span style="font-weight:700;">이OO</span>
+            <span style="color:var(--text-sub);">모든 작품 · 검수+예약+이력</span>
+            <span style="color:var(--text-sub);">~ 6/12</span>
+            <span><span class="ep-status status-approved" style="font-size:8px;">활성</span></span>
+            <span style="font-size:8px;color:var(--brand-red);font-weight:700;">[연장][회수]</span>
+          </div>
+          <div style="display:grid;grid-template-columns:60px 100px 1fr 100px 90px 80px;padding:8px 10px;border-top:1px solid var(--border-soft);align-items:center;color:var(--text-muted);">
+            <span style="font-family:monospace;">D-2418</span>
+            <span style="font-weight:700;">박OO</span>
+            <span>어둠의 격투사 · 검수 제출</span>
+            <span>회수: 5/25</span>
+            <span><span class="ep-status status-rejected" style="font-size:8px;">회수됨</span></span>
+            <span style="font-size:8px;">[상세]</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>레이아웃 — 3-탭 구조</h4>
+    <table>
+      <tr><th>탭</th><th>대상</th><th>표시 내용</th></tr>
+      <tr><td class="label">① 발급한 위임</td><td>본인이 발급자</td><td>본인이 발급한 모든 위임 (활성·만료·회수 모두)</td></tr>
+      <tr><td class="label">② 받은 위임</td><td>본인이 수령자</td><td>본인이 받은 위임 — D 챕터에서 상세</td></tr>
+      <tr><td class="label">③ 이력 (Audit Log)</td><td>전체 이벤트</td><td>발급·연장·회수·만료·사용 모든 이벤트 — F 챕터에서 상세</td></tr>
+    </table>
+
+    <h4>탭 노출 조건</h4>
+    <ul>
+      <li>① 발급한 위임: 본인이 팀장(Owner) 또는 CP 마스터인 경우에만 노출</li>
+      <li>② 받은 위임: 본인이 1개 이상의 위임을 받은 경우에만 노출</li>
+      <li>③ 이력: 항상 노출 (본인 관련 이벤트만)</li>
+      <li>위 3개가 모두 해당 안 되면 [+ 위임 받기 요청] 빈 상태 화면 (D1에서 상세)</li>
+    </ul>
+
+    <h4>필터 칩</h4>
+    <table>
+      <tr><th>칩</th><th>조건</th></tr>
+      <tr><td class="label">전체</td><td>모든 상태</td></tr>
+      <tr><td class="label">활성</td><td>status=active AND valid_to > NOW()</td></tr>
+      <tr><td class="label">만료 임박</td><td>status=active AND valid_to - NOW() <= 3 days</td></tr>
+      <tr><td class="label">만료/회수</td><td>status IN (expired, revoked)</td></tr>
+    </table>
+
+    <h4>우상단 [+ 위임 발급] 버튼</h4>
+    <p style="font-size:12px;color:var(--text-sub);">Primary Red 버튼. 클릭 시 챕터 C의 발급 폼 (5-Step 모달) 시작.</p>
+  </div>
+</article>
+
+<!-- ─── B2. 발급 목록 테이블 (상세) ─── -->
+<article class="step-card split" id="issued-list">
+  <div class="step-header">
+    <span class="badge">B2</span>
+    <span class="title">발급 목록 테이블 — 컬럼 상세</span>
+    <span class="desc">발급한 위임의 운영 관리</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">B1 메인 화면의 위임 행 1개 — 펼친 상태</div>
+    <div style="background:white;border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;font-size:11px;">
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;">
+        <div>
+          <div style="font-family:monospace;font-size:12px;color:var(--brand-red-dark);font-weight:700;">D-2431</div>
+          <div style="font-size:13px;font-weight:800;color:var(--text);margin-top:4px;">김OO (Editor)</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">발급일: 2026-05-22 14:00</div>
+        </div>
+        <span class="ep-status status-approved" style="font-size:10px;">활성 · D-3 만료 임박</span>
+      </div>
+
+      <div class="m-summary" style="margin:10px 0;">
+        <div class="row"><span class="k">범위</span><span class="v">어둠의 격투사 · 마법사의 도시</span></div>
+        <div class="row"><span class="k">액션</span><span class="v">검수 제출 (submit_review)</span></div>
+        <div class="row"><span class="k">유효 기간</span><span class="v">2026-05-22 ~ 2026-06-01 (D-3)</span></div>
+        <div class="row"><span class="k">발급 사유</span><span class="v">해외 출장 (5/30~6/5)</span></div>
+        <div class="row"><span class="k">사용 횟수</span><span class="v">2회 (D-2431 사용 로그 보기)</span></div>
+      </div>
+
+      <div style="background:var(--warn-soft);border-radius:var(--r-md);padding:8px 10px;margin:10px 0;font-size:11px;color:#92400E;">
+        ⚠ D-3 후 자동 만료됩니다. 출장이 길어진다면 연장하세요.
+      </div>
+
+      <div style="display:flex;gap:6px;">
+        <button class="m-btn" style="flex:1;padding:8px;font-size:11px;">연장 (기간 추가)</button>
+        <button class="m-btn secondary" style="flex:1;padding:8px;font-size:11px;">범위·액션 변경</button>
+        <button class="m-btn danger" style="flex:1;padding:8px;font-size:11px;">회수</button>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>컬럼 정의</h4>
+    <table>
+      <tr><th>컬럼</th><th>내용</th></tr>
+      <tr><td class="label">ID</td><td><code>D-XXXX</code> 자동 발급 · 변경 불가</td></tr>
+      <tr><td class="label">수령자</td><td>팀원명 + 아바타 + 협업 권한 (Editor/Commenter/Viewer)</td></tr>
+      <tr><td class="label">범위</td><td>"모든 작품" 또는 "특정 N개 작품" (호버 시 작품 리스트 툴팁)</td></tr>
+      <tr><td class="label">액션</td><td>활성화된 액션 타입 (submit_review · schedule_publish · edit_publish_history)</td></tr>
+      <tr><td class="label">유효 기간</td><td>발급일 ~ 만료일 · D-N 카운트다운 (3일 이내 적색)</td></tr>
+      <tr><td class="label">상태</td><td>활성 (녹색) / 만료 임박 (황색) / 만료 (회색) / 회수됨 (적색)</td></tr>
+      <tr><td class="label">사용 횟수</td><td>이 위임으로 업로드된 횟수 · 클릭 시 사용 로그</td></tr>
+      <tr><td class="label">발급 사유</td><td>발급 시 입력한 사유 (200자 이내) · 외부 비공개 · Audit에 기록</td></tr>
+    </table>
+
+    <h4>행 액션 (활성 상태)</h4>
+    <table>
+      <tr><th>액션</th><th>동작</th></tr>
+      <tr><td class="label">[연장]</td><td>기간만 연장 (수령자·범위·액션 변경 없음) · 최대 90일까지 추가</td></tr>
+      <tr><td class="label">[범위·액션 변경]</td><td>발급 폼 재진입 · 기존 값 채워서 수정</td></tr>
+      <tr><td class="label">[회수]</td><td>즉시 무효화 · B3에서 상세</td></tr>
+      <tr><td class="label">[상세] (만료·회수 후)</td><td>읽기 전용 상세 + 사용 이력</td></tr>
+    </table>
+
+    <h4>호버 인터랙션</h4>
+    <ul>
+      <li>범위 셀 호버: 작품 리스트 툴팁 (모든 작품인 경우 [모든 작품])</li>
+      <li>액션 셀 호버: 액션별 설명 툴팁</li>
+      <li>유효기간 셀 호버: 발급일·만료일·D-N 정확한 일시</li>
+      <li>사용 횟수 셀 호버: 마지막 사용 시각 + 클릭 시 로그</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ─── B3. 위임 회수 흐름 ─── -->
+<article class="step-card split-narrow" id="revoke-flow">
+  <div class="step-header">
+    <span class="badge dark">B3</span>
+    <span class="title">위임 회수 흐름 (4-Step 모달)</span>
+    <span class="desc">신중한 동작 — 즉시 무효화</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">위임 행 [회수] 클릭 → 4-Step 확인 모달</div>
+    <div class="review-modal" style="padding:18px;">
+      <div class="step-progress">
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="step-label">STEP 2 / 4 · 회수 확인</div>
+      <div class="step-title">위임을 회수할까요?</div>
+
+      <div class="m-summary">
+        <div class="row"><span class="k">위임 ID</span><span class="v" style="font-family:monospace;">D-2431</span></div>
+        <div class="row"><span class="k">수령자</span><span class="v">김OO</span></div>
+        <div class="row"><span class="k">남은 유효기간</span><span class="v">D-3 (3일 후 자동 만료 예정)</span></div>
+        <div class="row"><span class="k">사용 횟수</span><span class="v">2회</span></div>
+      </div>
+
+      <div class="m-callout error">
+        <strong>⚠ 회수 후 알아둘 점</strong>
+        · 김OO 님은 즉시 이 권한을 잃습니다<br>
+        · 진행 중인 검수 제출은 영향 없음 (이미 제출된 건은 그대로 처리됨)<br>
+        · 회수 사실이 양쪽에 이메일·인앱 알림됨
+      </div>
+
+      <div class="m-field">
+        <div class="m-label">회수 사유 (선택, Audit Log 저장)</div>
+        <textarea class="m-textarea placeholder">예) 출장 일정 변경으로 위임이 더 이상 불필요</textarea>
+      </div>
+
+      <div class="m-btn-row">
+        <button class="m-btn secondary">취소</button>
+        <button class="m-btn danger" style="flex:2;">회수하기</button>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>회수 4-Step</h4>
+    <table>
+      <tr><th>Step</th><th>처리</th></tr>
+      <tr><td class="label">1. 회수 트리거</td><td>위임 행 [회수] 또는 위임 상세에서 [회수] 클릭</td></tr>
+      <tr><td class="label">2. 확인 모달</td><td>위임 정보 요약 + 회수 영향 안내 + 사유 입력</td></tr>
+      <tr><td class="label">3. 회수 처리</td><td><code>DELEGATION.status = revoked</code>, <code>revoked_at = NOW()</code>, <code>revoked_reason</code> 저장</td></tr>
+      <tr><td class="label">4. 완료 알림</td><td>발급자에게 완료 표시 · 수령자에게 즉시 이메일+인앱 알림</td></tr>
+    </table>
+
+    <h4>회수 후 상태 변화</h4>
+    <ul>
+      <li>수령자가 활성 검수 제출 모달을 열고 있다면 → 다음 액션 시점에 권한 검증 실패 → [위임이 회수되었습니다] 안내</li>
+      <li>수령자의 대시보드 "받은 권한" 위젯에서 해당 위임 제거</li>
+      <li>수령자의 [대리 발행] 탭에서 해당 작품 카드 자동 제거 (만료된 위임은 3일간 노출 후 삭제, 회수는 즉시)</li>
+      <li>이미 제출된 검수 건은 영향 없음 (위임으로 인한 액션은 이미 기록되어 있음)</li>
+      <li>Audit Log에 <code>delegation_revoked</code> 이벤트 기록</li>
+    </ul>
+
+    <h4>회수 시 알림 내용</h4>
+    <div class="branch-box">
+      <div class="case">수령자 (김OO)에게 발송</div>
+      <div class="result">"박OO님이 어둠의 격투사·마법사의 도시 작품의 발행 권한 위임을 회수했습니다. 회수 사유: {입력값}. 더 이상 해당 작품의 검수 제출이 불가능합니다."</div>
+    </div>
+    <div class="branch-box muted">
+      <div class="case">발급자 (박OO)에게는 알림 없음</div>
+      <div class="result">본인이 한 액션이므로 별도 알림 불필요. 위임 목록에서 즉시 상태 변경.</div>
+    </div>
+
+    <h4>특수 케이스 — 자동 회수</h4>
+    <table>
+      <tr><th>트리거</th><th>자동 회수 처리</th></tr>
+      <tr><td class="label">수령자가 팀 탈퇴</td><td>모든 활성 위임 자동 회수 · revoked_reason = "수령자 팀 탈퇴"</td></tr>
+      <tr><td class="label">발급자가 팀 탈퇴 (Owner 변경)</td><td>발급자가 발급한 모든 위임 회수 · 새 Owner에게 알림</td></tr>
+      <tr><td class="label">위임 액션이 더 이상 유효하지 않음 (예: 작품 삭제)</td><td>해당 작품 관련 위임 자동 만료</td></tr>
+    </table>
+  </div>
+</article>
+
+<div class="chapter-divider">
+  <span class="num">C</span>
+  <span class="title">발급 폼 5-Step 시퀀스</span>
+  <span class="sub">수령자 → 범위 → 액션 → 기간 → 확인</span>
+</div>
+
+<section class="section-intro" id="form-flow">
+  <h2>발급 폼 흐름 개요</h2>
+  <p>위임 발급은 5개의 단계로 구성된 모달 시퀀스다. 발급자가 선택해야 할 4가지 차원(수령자·범위·액션·기간)을 한 단계씩 결정한 뒤 최종 확인하고 발급한다. 잘못된 조합은 자동 검증·차단된다.</p>
+  <div class="pills">
+    <span class="pill red">Multi-step Modal</span>
+    <span class="pill lavender">자동 권한 검증</span>
+    <span class="pill green">발급자별 다른 옵션 (CP 마스터 케이스)</span>
+  </div>
+</section>
+
+<!-- ─── C1. 수령자 선택 ─── -->
+<article class="step-card split-narrow" id="form-1">
+  <div class="step-header">
+    <span class="badge">C1</span>
+    <span class="title">Step 1 — 수령자 선택</span>
+    <span class="desc">팀 멤버 다중 선택 가능</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">[+ 위임 발급] 클릭 후 첫 단계</div>
+    <div class="review-modal">
+      <div class="step-progress">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="step-label">STEP 1 / 5 · 수령자</div>
+      <div class="step-title">누구에게<br>위임할까요?</div>
+      <div class="step-desc">팀의 active 멤버에게만 위임할 수 있어요. 다중 선택 시 각자에게 별도 위임이 발급됩니다.</div>
+
+      <div style="background:var(--bg-soft);border-radius:var(--r-md);padding:6px 10px;margin-bottom:10px;font-size:11px;">
+        <input class="m-input" placeholder="🔎 멤버 이름으로 검색..." style="background:white;padding:6px 8px;font-size:11px;">
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:6px;max-height:240px;overflow:auto;margin-bottom:12px;">
+        <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--brand-red-soft);border:1px solid var(--brand-red);border-radius:var(--r-md);cursor:pointer;">
+          <div style="width:16px;height:16px;border:2px solid var(--brand-red);background:var(--brand-red);border-radius:3px;display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:700;">✓</div>
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--maroon);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">김</div>
+          <div style="flex:1;">
+            <div style="font-size:12px;font-weight:700;color:var(--text);">김OO</div>
+            <div style="font-size:10px;color:var(--text-sub);">Editor · 활성 멤버 · 가입 6개월</div>
+          </div>
+          <span style="font-size:9px;background:var(--lavender-soft);color:var(--lavender-dark);padding:1px 6px;border-radius:3px;">기존 위임 1개</span>
+        </label>
+
+        <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:white;border:1px solid var(--border);border-radius:var(--r-md);cursor:pointer;">
+          <div style="width:16px;height:16px;border:1.5px solid var(--border);background:white;border-radius:3px;flex-shrink:0;"></div>
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--lavender);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">이</div>
+          <div style="flex:1;">
+            <div style="font-size:12px;font-weight:700;color:var(--text);">이OO</div>
+            <div style="font-size:10px;color:var(--text-sub);">Commenter · 활성 멤버 · 가입 2주</div>
+          </div>
+        </label>
+
+        <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:white;border:1px solid var(--border);border-radius:var(--r-md);cursor:pointer;">
+          <div style="width:16px;height:16px;border:1.5px solid var(--border);background:white;border-radius:3px;flex-shrink:0;"></div>
+          <div style="width:28px;height:28px;border-radius:50%;background:#10B981;color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">박</div>
+          <div style="flex:1;">
+            <div style="font-size:12px;font-weight:700;color:var(--text);">박OO</div>
+            <div style="font-size:10px;color:var(--text-sub);">Viewer · 활성 멤버</div>
+          </div>
+        </label>
+
+        <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg-soft);border:1px solid var(--border-soft);border-radius:var(--r-md);opacity:0.5;cursor:not-allowed;">
+          <div style="width:16px;height:16px;border:1.5px solid var(--border);background:var(--bg-softer);border-radius:3px;flex-shrink:0;"></div>
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--text-muted);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">최</div>
+          <div style="flex:1;">
+            <div style="font-size:12px;font-weight:700;color:var(--text-muted);">최OO</div>
+            <div style="font-size:10px;color:var(--text-muted);">초대 대기 중 (미가입) · 위임 불가</div>
+          </div>
+        </label>
+      </div>
+
+      <div class="m-callout">
+        <strong>1명 선택됨</strong>
+        김OO 님에게 위임을 발급합니다. 다중 선택 시 각자에게 별도 위임 ID가 발급됩니다.
+      </div>
+
+      <div class="m-btn-row">
+        <button class="m-btn secondary">취소</button>
+        <button class="m-btn" style="flex:2;">다음 →</button>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>UI 요소</h4>
+    <table>
+      <tr><th>요소</th><th>copy · 동작</th></tr>
+      <tr><td class="label">검색</td><td>멤버 이름·이메일로 실시간 필터링</td></tr>
+      <tr><td class="label">멤버 카드</td><td>아바타 + 이름 + 협업 권한 + 추가 정보 (가입 기간 · 기존 위임)</td></tr>
+      <tr><td class="label">기존 위임 칩</td><td>해당 멤버에게 이미 발급된 활성 위임 수 표시 (라벤더 배지)</td></tr>
+      <tr><td class="label">미가입 멤버</td><td>초대만 받고 가입 안 한 멤버는 회색 disabled (위임 불가)</td></tr>
+      <tr><td class="label">다중 선택</td><td>여러 명 선택 가능 · 각자에게 별도 위임 ID 발급</td></tr>
+      <tr><td class="label">하단 callout</td><td>"N명 선택됨" 실시간 카운트</td></tr>
+      <tr><td class="label">다음 버튼</td><td>1명 이상 선택 시 활성</td></tr>
+    </table>
+
+    <h4>수령자 자격 검증 (P-3 원칙)</h4>
+    <table>
+      <tr><th>조건</th><th>위임 가능?</th></tr>
+      <tr><td class="label">같은 팀의 active 멤버</td><td>○</td></tr>
+      <tr><td class="label">같은 팀의 invited (미가입)</td><td>×</td></tr>
+      <tr><td class="label">다른 팀의 멤버</td><td>×</td></tr>
+      <tr><td class="label">팀 외부 작가</td><td>×</td></tr>
+      <tr><td class="label">본인 (자기 자신)</td><td>× (의미 없음)</td></tr>
+      <tr><td class="label">CP 마스터인 경우 — 회사 소속 모든 팀의 active 멤버</td><td>○ (E1 참조)</td></tr>
+    </table>
+
+    <h4>특수 케이스 — 진입 경로 ③</h4>
+    <p style="font-size:12px;color:var(--text-sub);">팀원이 검수 제출 시도 → 권한 없음 → [팀장에게 위임 요청] 발송 → 팀장이 알림 클릭 → 발급 폼 진입 시 <strong>요청자가 자동 체크된 상태</strong>로 시작.</p>
+  </div>
+</article>
+
+<!-- ─── C2. 범위 선택 ─── -->
+<article class="step-card split-narrow" id="form-2">
+  <div class="step-header">
+    <span class="badge">C2</span>
+    <span class="title">Step 2 — 위임 범위 선택</span>
+    <span class="desc">모든 작품 또는 특정 작품 선택</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">어떤 작품의 권한을 위임할지 결정</div>
+    <div class="review-modal">
+      <div class="step-progress">
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="step-label">STEP 2 / 5 · 범위</div>
+      <div class="step-title">어떤 작품을<br>위임할까요?</div>
+
+      <div style="margin-bottom:12px;">
+        <div class="m-radio"><span class="dot"></span> 모든 작품</div>
+        <div class="m-radio checked"><span class="dot"></span> 특정 작품 선택 <span style="margin-left:auto;font-size:10px;color:var(--text-sub);font-weight:600;">2개 선택됨</span></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+        <label class="ep-card" style="border:2px solid var(--brand-red);cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;">
+            <div style="width:14px;height:14px;background:var(--brand-red);border-radius:2px;display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">✓</div>
+            <div style="font-size:8px;color:var(--text-sub);">선택됨</div>
+          </div>
+          <div class="ep-thumb gradient">A</div>
+          <div class="ep-name">어둠의 격투사</div>
+          <div class="ep-sub">현재 회차 7 · 발행 5건</div>
+        </label>
+        <label class="ep-card" style="border:2px solid var(--brand-red);cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;">
+            <div style="width:14px;height:14px;background:var(--brand-red);border-radius:2px;display:flex;align-items:center;justify-content:center;color:white;font-size:9px;font-weight:700;">✓</div>
+            <div style="font-size:8px;color:var(--text-sub);">선택됨</div>
+          </div>
+          <div class="ep-thumb gradient2">B</div>
+          <div class="ep-name">마법사의 도시</div>
+          <div class="ep-sub">현재 회차 3 · 발행 2건</div>
+        </label>
+        <label class="ep-card" style="cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;">
+            <div style="width:14px;height:14px;background:white;border:1.5px solid var(--border);border-radius:2px;"></div>
+            <div style="font-size:8px;color:var(--text-muted);">미선택</div>
+          </div>
+          <div class="ep-thumb gradient3">C</div>
+          <div class="ep-name">거기서 만나요</div>
+          <div class="ep-sub">현재 회차 12 · 발행 11건</div>
+        </label>
+        <label class="ep-card" style="cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;">
+            <div style="width:14px;height:14px;background:white;border:1.5px solid var(--border);border-radius:2px;"></div>
+            <div style="font-size:8px;color:var(--text-muted);">미선택</div>
+          </div>
+          <div class="ep-thumb">D</div>
+          <div class="ep-name">백일의 나홍이</div>
+          <div class="ep-sub">현재 회차 1 · 작업중</div>
+        </label>
+      </div>
+
+      <div class="m-callout">
+        <strong>📌 선택 범위 안내</strong>
+        선택한 작품의 <strong>모든 회차 (기존 + 신규)</strong>에 대해 위임이 적용됩니다. 작품에 새 회차가 추가돼도 자동으로 포함돼요.
+      </div>
+
+      <div class="m-btn-row">
+        <button class="m-btn secondary">← 이전</button>
+        <button class="m-btn" style="flex:2;">다음 →</button>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>2가지 범위 옵션</h4>
+    <table>
+      <tr><th>옵션</th><th>저장 값</th><th>적용 범위</th></tr>
+      <tr><td class="label">모든 작품</td><td><code>scope = all_series</code></td><td>본인이 author인 모든 작품 + 향후 추가될 작품 자동 포함</td></tr>
+      <tr><td class="label">특정 작품</td><td><code>scope = specific_series</code> + <code>series_ids = [...]</code></td><td>선택된 작품만 · 신규 작품은 미포함</td></tr>
+    </table>
+    <p style="font-size:12px;color:var(--text-sub);margin-top:6px;">default: 특정 작품 (보수적 선택)</p>
+
+    <h4>작품 카드 표시</h4>
+    <ul>
+      <li>썸네일: 작품 키비주얼 또는 첫 글자</li>
+      <li>작품명 · 현재 회차 수 · 발행된 회차 수</li>
+      <li>선택 시 카드 보더가 Brand Red로 변경</li>
+      <li>비활성: 발급자가 author가 아닌 작품은 노출 안 됨</li>
+    </ul>
+
+    <h4>"모든 작품" 선택 시 안내</h4>
+    <div class="branch-box warn">
+      <div class="case">"모든 작품" 선택 시 추가 callout</div>
+      <div class="result">"⚠ 모든 작품에 위임이 적용됩니다. 신규로 추가되는 작품도 자동으로 포함됩니다. 보수적으로 운영하려면 특정 작품만 선택하는 것이 권장됩니다."</div>
+    </div>
+
+    <h4>CP 마스터의 경우</h4>
+    <p style="font-size:12px;color:var(--text-sub);">CP 마스터는 회사 소속의 모든 팀·작품을 위임 범위에 선택할 수 있다 (E1 참조). 작품 그리드는 [{팀명}] 섹션으로 그룹화되어 표시.</p>
+  </div>
+</article>
+
+<!-- ─── C3. 액션 선택 ─── -->
+<article class="step-card split-narrow" id="form-3">
+  <div class="step-header">
+    <span class="badge">C3</span>
+    <span class="title">Step 3 — 액션 선택</span>
+    <span class="desc">P-6 원칙 · 일괄 권한이 아닌 액션별 명시</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">어떤 액션을 위임할지 결정</div>
+    <div class="review-modal">
+      <div class="step-progress">
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="step-label">STEP 3 / 5 · 액션</div>
+      <div class="step-title">어떤 액션을<br>위임할까요?</div>
+      <div class="step-desc">위임받은 멤버가 할 수 있는 작업을 선택해주세요. 검수 제출만 위임하는 것이 가장 일반적이에요.</div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;margin:14px 0;">
+        <label style="display:flex;gap:10px;padding:12px;background:var(--brand-red-soft);border:1px solid var(--brand-red);border-radius:var(--r-md);cursor:pointer;">
+          <div style="width:16px;height:16px;border:2px solid var(--brand-red);background:var(--brand-red);border-radius:3px;display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;">✓</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:700;color:var(--text);">검수 제출 (submit_review)</div>
+            <div style="font-size:11px;color:var(--text-sub);margin-top:2px;line-height:1.5;">회차를 어드민 검수에 올릴 수 있어요. 반려 사유 응답과 재제출도 포함됩니다.</div>
+          </div>
+          <span style="font-size:10px;background:var(--brand-red);color:white;padding:2px 6px;border-radius:3px;height:fit-content;">필수</span>
+        </label>
+
+        <label style="display:flex;gap:10px;padding:12px;background:white;border:1px solid var(--border);border-radius:var(--r-md);cursor:pointer;">
+          <div style="width:16px;height:16px;border:1.5px solid var(--border);background:white;border-radius:3px;flex-shrink:0;margin-top:1px;"></div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:700;color:var(--text);">예약 공개 설정 (schedule_publish)</div>
+            <div style="font-size:11px;color:var(--text-sub);margin-top:2px;line-height:1.5;">검수 승인된 회차의 공개 일시를 설정·변경할 수 있어요.</div>
+          </div>
+        </label>
+
+        <label style="display:flex;gap:10px;padding:12px;background:white;border:1px solid var(--border);border-radius:var(--r-md);cursor:pointer;">
+          <div style="width:16px;height:16px;border:1.5px solid var(--border);background:white;border-radius:3px;flex-shrink:0;margin-top:1px;"></div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:700;color:var(--text);">발행 이력 수정 (edit_publish_history)</div>
+            <div style="font-size:11px;color:var(--text-sub);margin-top:2px;line-height:1.5;">발행된 회차의 버전 롤백·메타 수정. <strong>매우 신중한 권한</strong>이에요.</div>
+          </div>
+          <span style="font-size:10px;background:var(--warn-soft);color:#92400E;padding:2px 6px;border-radius:3px;height:fit-content;">위험</span>
+        </label>
+      </div>
+
+      <div class="m-callout lavender">
+        <strong>💡 액션 추천</strong>
+        대부분의 위임은 <strong>검수 제출만</strong>으로 충분합니다. 출장이나 휴가 같은 일시적 부재라면 검수 제출만 위임하세요.
+      </div>
+
+      <div class="m-btn-row">
+        <button class="m-btn secondary">← 이전</button>
+        <button class="m-btn" style="flex:2;">다음 →</button>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>4가지 액션 타입</h4>
+    <table>
+      <tr><th>코드</th><th>한국어</th><th>기본 포함</th><th>특이사항</th></tr>
+      <tr><td class="label"><code>submit_review</code></td><td>검수 제출</td><td>✓ default</td><td>respond_rejection 자동 포함 (반려 응답)</td></tr>
+      <tr><td class="label"><code>schedule_publish</code></td><td>예약 공개 설정</td><td>—</td><td>승인된 회차 한정 · 공개 일시 변경 포함</td></tr>
+      <tr><td class="label"><code>edit_publish_history</code></td><td>발행 이력 수정</td><td>—</td><td>롤백·메타 수정 · "위험" 라벨</td></tr>
+      <tr><td class="label"><code>respond_rejection</code></td><td>반려 사유 응답</td><td>submit_review에 포함</td><td>독립 선택 불가 (검수 제출과 묶음)</td></tr>
+    </table>
+
+    <h4>UI 요소</h4>
+    <table>
+      <tr><th>요소</th><th>설명</th></tr>
+      <tr><td class="label">submit_review (필수)</td><td>해제 불가 · "필수" 빨간 배지 · 모든 위임은 최소한 이 액션 포함</td></tr>
+      <tr><td class="label">schedule_publish (선택)</td><td>일반 옵션 · 체크박스</td></tr>
+      <tr><td class="label">edit_publish_history (위험)</td><td>"위험" 황색 배지 · 선택 시 추가 확인 다이얼로그</td></tr>
+      <tr><td class="label">하단 callout</td><td>"검수 제출만으로 충분" 권장 안내 (Lavender)</td></tr>
+    </table>
+
+    <h4>edit_publish_history 선택 시 추가 확인</h4>
+    <div class="branch-box error">
+      <div class="case">edit_publish_history 체크 시</div>
+      <div class="result">"이 권한은 발행된 회차의 롤백·수정을 포함합니다. 매우 신중하게 사용하세요. 정말 이 권한을 위임하시겠습니까?" 모달 추가 표시 · 확인 시에만 활성화</div>
+    </div>
+
+    <h4>액션 조합 예시 (시나리오)</h4>
+    <table>
+      <tr><th>시나리오</th><th>권장 액션</th></tr>
+      <tr><td class="label">팀장 단기 부재 (휴가·출장)</td><td>submit_review만</td></tr>
+      <tr><td class="label">팀장 장기 부재 (육아·해외 거주)</td><td>submit_review + schedule_publish</td></tr>
+      <tr><td class="label">팀장 부재 + 긴급 수정 가능성</td><td>3개 모두 (보수적 권한 부여 권장 안 함)</td></tr>
+      <tr><td class="label">CP 마스터의 회사 전체 운영</td><td>회사 정책에 따름 (E1 참조)</td></tr>
+    </table>
+  </div>
+</article>
+
+<!-- ─── C4. 기간 · 사유 ─── -->
+<article class="step-card split-narrow" id="form-4">
+  <div class="step-header">
+    <span class="badge">C4</span>
+    <span class="title">Step 4 — 유효 기간 · 사유</span>
+    <span class="desc">시한 설정 + 감사 추적용 메모</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">언제까지 유효한지 + 왜 발급하는지</div>
+    <div class="review-modal">
+      <div class="step-progress">
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="step-label">STEP 4 / 5 · 기간 · 사유</div>
+      <div class="step-title">언제까지 유효할까요?</div>
+
+      <div class="m-field">
+        <div class="m-label">유효 기간 (Quick Select)</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;">
+          <div style="padding:5px 10px;background:white;border:1px solid var(--border);border-radius:14px;font-size:11px;color:var(--text-sub);">3일</div>
+          <div style="padding:5px 10px;background:var(--brand-red);border:1px solid var(--brand-red);border-radius:14px;font-size:11px;color:white;font-weight:700;">7일</div>
+          <div style="padding:5px 10px;background:white;border:1px solid var(--border);border-radius:14px;font-size:11px;color:var(--text-sub);">14일</div>
+          <div style="padding:5px 10px;background:white;border:1px solid var(--border);border-radius:14px;font-size:11px;color:var(--text-sub);">30일</div>
+          <div style="padding:5px 10px;background:white;border:1px solid var(--border);border-radius:14px;font-size:11px;color:var(--text-sub);">90일</div>
+          <div style="padding:5px 10px;background:white;border:1px solid var(--border);border-radius:14px;font-size:11px;color:var(--text-sub);">직접 입력</div>
+        </div>
+      </div>
+
+      <div class="m-field">
+        <div class="m-label">상세 일시</div>
+        <div style="display:flex;gap:6px;">
+          <div style="flex:1;">
+            <div style="font-size:10px;color:var(--text-sub);margin-bottom:3px;">시작</div>
+            <input class="m-input" value="2026-05-29 (오늘)">
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:10px;color:var(--text-sub);margin-bottom:3px;">종료</div>
+            <input class="m-input" value="2026-06-05 (+7일)">
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--bg-soft);padding:8px 10px;border-radius:var(--r-md);font-size:11px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;">
+          <span style="color:var(--text-sub);">실제 유효기간</span>
+          <span style="color:var(--text);font-weight:700;">7일 (2026-06-05 23:59 만료)</span>
+        </div>
+      </div>
+
+      <div class="m-field">
+        <div class="m-label">발급 사유 (선택, 외부 비공개)</div>
+        <textarea class="m-textarea placeholder">예) 해외 출장 (5/30~6/5)으로 직접 검수 제출이 어려움. 김OO 님이 대신 처리하기로 합의됨.</textarea>
+      </div>
+
+      <div class="m-callout yellow">
+        <strong>📝 사유는 감사 추적용</strong>
+        외부에 노출되지 않지만 어드민 audit log에 저장됩니다. 향후 분쟁 시 참고 자료로 활용 가능해요.
+      </div>
+
+      <div class="m-btn-row">
+        <button class="m-btn secondary">← 이전</button>
+        <button class="m-btn" style="flex:2;">다음 →</button>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>유효 기간 정책</h4>
+    <table>
+      <tr><th>옵션</th><th>설명</th></tr>
+      <tr><td class="label">Quick Select 5종</td><td>3일 · 7일 · 14일 · 30일 · 90일 · 직접 입력</td></tr>
+      <tr><td class="label">최소</td><td>1시간 후 (즉시는 불가)</td></tr>
+      <tr><td class="label">최대</td><td>180일 (6개월)</td></tr>
+      <tr><td class="label">기본값</td><td>7일 (가장 일반적)</td></tr>
+      <tr><td class="label">시작일</td><td>default: 오늘 · 미래 시작도 가능 (예약 발급)</td></tr>
+      <tr><td class="label">종료일</td><td>KST 23:59 기준 자동 정렬</td></tr>
+    </table>
+
+    <h4>왜 무기한 옵션이 없나 (D-2 정책 결정)</h4>
+    <p style="font-size:12px;color:var(--text-sub);">계정 시스템 V1.1.0의 정책 결정 D-2에서 "무기한 위임"은 V1.2.1에서 제외하기로 결정. 최대 180일까지만 가능하며, 연장은 자유롭게 가능 (B2 참조). 무기한이 필요한 케이스 (예: CP 소속 작가)는 CP 무위임 업로드(E2)로 처리.</p>
+
+    <h4>발급 사유 (선택)</h4>
+    <ul>
+      <li>최대 200자 · 외부 비공개</li>
+      <li>저장 위치: AUTH_AUDIT_LOG · DELEGATION.issued_reason</li>
+      <li>활용: 어드민 분쟁 조사 · 발급자 본인의 후속 추적용</li>
+      <li>수령자에게는 일부만 노출 (작가 관점에서 자기 메모 노출이 부담스러울 수 있음)</li>
+    </ul>
+
+    <h4>UI 모션</h4>
+    <ul>
+      <li>Quick Select 클릭 시 종료일 자동 갱신 (시작일은 그대로)</li>
+      <li>직접 입력 클릭 시 종료일 input 자유 편집</li>
+      <li>유효기간 표시 행은 실시간 갱신 (오늘부터 +N일 형식)</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ─── C5. 발급 확인 ─── -->
+<article class="step-card split-narrow" id="form-5">
+  <div class="step-header">
+    <span class="badge dark">C5</span>
+    <span class="title">Step 5 — 발급 확인</span>
+    <span class="desc">최종 요약 + 발급</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">발급 직전 모든 정보 요약</div>
+    <div class="review-modal">
+      <div class="step-progress">
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+      </div>
+      <div class="step-label">STEP 5 / 5 · 확인</div>
+      <div class="step-title">이대로 위임 발급?</div>
+
+      <div class="m-summary">
+        <div class="row"><span class="k">수령자</span><span class="v">김OO (Editor)</span></div>
+        <div class="row"><span class="k">범위</span><span class="v">어둠의 격투사 · 마법사의 도시</span></div>
+        <div class="row"><span class="k">액션</span><span class="v">검수 제출</span></div>
+        <div class="row"><span class="k">유효 기간</span><span class="v">2026-05-29 ~ 2026-06-05 (7일)</span></div>
+        <div class="row"><span class="k">사유</span><span class="v">해외 출장 (5/30~6/5)</span></div>
+      </div>
+
+      <div class="m-callout lavender">
+        <strong>📌 작품 작가 표기는 변하지 않습니다</strong>
+        이 위임이 활성화되어도 어둠의 격투사·마법사의 도시의 author는 <strong>박OO (본인)</strong>로 유지됩니다. 김OO 님이 업로드한 회차도 박OO 님의 작품으로 발행됩니다. 업로드 이력에는 김OO 님이 제출자로 기록됩니다.
+      </div>
+
+      <div class="m-callout green">
+        <strong>📨 발급 후 동작</strong>
+        · 김OO 님에게 이메일 + 인앱 알림 즉시 발송<br>
+        · 김OO 님의 [받은 위임] 탭에 노출<br>
+        · 만료 D-3 시점에 양쪽 모두에게 만료 임박 알림
+      </div>
+
+      <div class="m-btn-row">
+        <button class="m-btn secondary">← 수정</button>
+        <button class="m-btn" style="flex:2;">위임 발급하기</button>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>발급 처리 (POST /delegation)</h4>
+    <ul>
+      <li>DELEGATION 신규 레코드 생성 · status=active · 자동 D-XXXX 발급</li>
+      <li>발급자: <code>issuer_id = current_user.author_id</code></li>
+      <li>수령자별로 별도 레코드 (다중 선택 시 N개 생성)</li>
+      <li>AUTH_AUDIT_LOG에 <code>delegation_issued</code> 이벤트 기록</li>
+      <li>수령자에게 이메일 + 인앱 알림 발송 (즉시)</li>
+      <li>발급자에게는 발급 완료 화면 + 위임 목록으로 이동 옵션</li>
+    </ul>
+
+    <h4>발급 완료 후 화면</h4>
+    <div class="branch-box green">
+      <div class="case">발급 성공</div>
+      <div class="result">✓ 위임이 발급되었습니다. D-2432 (자동 발급된 ID 표시)<br>→ [위임 목록 보기] (Primary) / [추가 위임 발급] (Secondary)</div>
+    </div>
+
+    <h4>실패 처리</h4>
+    <table>
+      <tr><th>실패 케이스</th><th>처리</th></tr>
+      <tr><td class="label">수령자가 발급 직전 팀 탈퇴</td><td>"수령자가 더 이상 팀 멤버가 아닙니다" → C1으로 되돌리기</td></tr>
+      <tr><td class="label">동일 (수령자, 범위, 액션) 활성 위임 존재</td><td>"중복 위임 존재. 기존 D-XXXX 확인 필요" → 기존 위임 보기 옵션</td></tr>
+      <tr><td class="label">시스템 오류</td><td>"발급 중 오류 발생. 잠시 후 다시 시도" → C5 유지</td></tr>
+    </table>
+
+    <h4>수령자에게 발송되는 알림 내용</h4>
+    <div class="branch-box lavender">
+      <div class="case">이메일 + 인앱 알림 (수령자 김OO)</div>
+      <div class="result"><strong>제목:</strong> [PlayToon] 박OO님이 발행 권한을 위임했어요<br><br><strong>본문:</strong><br>박OO 작가님이 다음 작품의 검수 제출 권한을 위임했습니다.<br><br>· 작품: 어둠의 격투사, 마법사의 도시<br>· 액션: 검수 제출<br>· 유효 기간: ~ 2026-06-05 (7일)<br>· 위임 ID: D-2432<br><br>워크스페이스의 [대리 발행] 탭에서 위임받은 작품을 확인할 수 있습니다.<br><br>[받은 위임 확인하기 →]</div>
+    </div>
+  </div>
+</article>
+
+<div class="chapter-divider">
+  <span class="num">D</span>
+  <span class="title">수령자 측 화면 (팀원)</span>
+  <span class="sub">위임을 받은 사람의 흐름</span>
+</div>
+
+<!-- ─── D1. 위임 받음 알림 ─── -->
+<article class="step-card split" id="receiver-notify">
+  <div class="step-header">
+    <span class="badge lavender">D1</span>
+    <span class="title">위임 받음 알림 (수령 직후)</span>
+    <span class="desc">이메일 + 인앱 + 대시보드 위젯</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">위임 발급 직후 수령자 워크스페이스 메인</div>
+    <div class="ws-frame">
+      <div class="ws-side">
+        <div class="ws-grp">워크스페이스</div>
+        <div class="ws-item active"><span class="ic"></span>홈 (대시보드)</div>
+        <div class="ws-item"><span class="ic"></span>전체 프로젝트</div>
+        <div class="ws-grp">새 알림</div>
+        <div style="font-size:8px;color:var(--lavender-dark);padding:4px 12px;background:var(--lavender-soft);">📨 위임 1건</div>
+      </div>
+      <div class="ws-main">
+        <div class="ws-h">
+          <span class="crumb">홈 / <b>대시보드</b></span>
+        </div>
+
+        <div style="background:var(--lavender-soft);border:1px solid var(--lavender);border-radius:var(--r-md);padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+          <div style="width:30px;height:30px;border-radius:50%;background:var(--maroon);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">박</div>
+          <div style="flex:1;font-size:11px;">
+            <div style="font-weight:700;color:var(--text);">박OO님이 발행 권한을 위임했어요</div>
+            <div style="color:var(--text-sub);margin-top:2px;font-size:10px;">어둠의 격투사 · 마법사의 도시 · 유효기간 D-7 · 위임 ID D-2432</div>
+          </div>
+          <div style="display:flex;gap:4px;">
+            <div style="padding:4px 10px;background:var(--lavender);color:white;border-radius:3px;font-size:9px;font-weight:700;">확인하기</div>
+            <div style="padding:4px 8px;background:white;border:1px solid var(--border);border-radius:3px;font-size:9px;color:var(--text-sub);">×</div>
+          </div>
+        </div>
+
+        <div style="font-size:9px;color:var(--text-muted);margin-bottom:4px;font-weight:700;letter-spacing:0.05em;">받은 위임 (1)</div>
+        <div class="rv-grid cols-2">
+          <div class="ep-card" style="border:1px solid var(--lavender);">
+            <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;font-size:8px;color:var(--lavender-dark);font-weight:700;">
+              <span>📨 D-2432 · D-7 만료</span>
+            </div>
+            <div style="display:flex;gap:4px;align-items:center;margin-bottom:4px;">
+              <div style="width:12px;height:12px;border-radius:50%;background:var(--maroon);color:white;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;">박</div>
+              <span style="font-size:8px;color:var(--text-sub);">박OO 님 작품</span>
+            </div>
+            <div style="display:flex;gap:4px;margin-bottom:6px;">
+              <div class="ep-thumb gradient" style="flex:1;height:32px;font-size:10px;">A</div>
+              <div class="ep-thumb gradient2" style="flex:1;height:32px;font-size:10px;">B</div>
+            </div>
+            <div class="ep-name">어둠의 격투사 외 1건</div>
+            <div class="ep-sub">검수 제출 가능</div>
+            <div class="ep-act lav">대리 발행 시작</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>알림 채널 3종</h4>
+    <table>
+      <tr><th>채널</th><th>발송 시점</th><th>내용</th></tr>
+      <tr><td class="label">인앱 푸시</td><td>발급 즉시 (실시간)</td><td>"박OO님이 위임을 발급했습니다" 토스트</td></tr>
+      <tr><td class="label">이메일</td><td>발급 즉시</td><td>전체 정보 + 워크스페이스 진입 링크</td></tr>
+      <tr><td class="label">대시보드 위젯</td><td>대시보드 진입 시</td><td>지속 노출 (확인 또는 위임 만료까지)</td></tr>
+    </table>
+
+    <h4>대시보드 위젯 동작</h4>
+    <ul>
+      <li>위임 수령 직후 대시보드 상단에 Lavender 톤 배너 표시</li>
+      <li>[확인하기] 클릭: 위임 상세 → [받은 위임] 탭으로 이동 (B1 메인 화면의 ② 탭)</li>
+      <li>[×] 클릭: 배너만 닫음 (위임은 여전히 활성)</li>
+      <li>여러 개 받았다면 [받은 위임 N건]으로 카운트 표시</li>
+    </ul>
+
+    <h4>새 알림 사이드바 표시</h4>
+    <p style="font-size:12px;color:var(--text-sub);">사이드바에 [📨 위임 1건] 라벤더 칩이 표시되어 발견성 향상. 클릭 시 [받은 위임] 탭으로 이동.</p>
+
+    <h4>받은 위임 카드 (대시보드)</h4>
+    <table>
+      <tr><th>요소</th><th>표시</th></tr>
+      <tr><td class="label">상단 배지</td><td>📨 D-{ID} · D-N 만료 (Lavender 톤)</td></tr>
+      <tr><td class="label">발급자 표시</td><td>발급자 아바타 + "{이름} 님 작품"</td></tr>
+      <tr><td class="label">작품 썸네일</td><td>위임 범위에 포함된 작품들 (최대 2개 + "외 N건")</td></tr>
+      <tr><td class="label">작품명</td><td>"어둠의 격투사 외 1건" 식 요약</td></tr>
+      <tr><td class="label">액션 안내</td><td>"검수 제출 가능" 등 위임된 액션 표시</td></tr>
+      <tr><td class="label">CTA</td><td>[대리 발행 시작] · Lavender · 클릭 시 검수·발행 영역의 [대리 발행] 탭으로</td></tr>
+    </table>
+  </div>
+</article>
+
+<!-- ─── D2. 받은 권한 목록 ─── -->
+<article class="step-card split" id="receiver-list">
+  <div class="step-header">
+    <span class="badge lavender">D2</span>
+    <span class="title">받은 위임 목록 — B1의 ② 탭</span>
+    <span class="desc">활성·만료 임박·만료 모두 표시</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">팀·멤버 관리 > 발행 권한 위임 > [받은 위임] 탭</div>
+    <div class="ws-frame">
+      <div class="ws-side">
+        <div class="ws-grp">팀·멤버 관리</div>
+        <div class="ws-item active"><span class="ic"></span>발행 권한 위임</div>
+      </div>
+      <div class="ws-main">
+        <div class="ws-h">
+          <span class="crumb">발행 권한 위임 / <b>받은 위임</b></span>
+        </div>
+        <div class="rv-tabs">
+          <div class="tab">발급한 위임</div>
+          <div class="tab active">받은 위임 <span class="count">2</span></div>
+          <div class="tab">이력</div>
+        </div>
+
+        <div class="m-callout lavender" style="font-size:10px;padding:8px;margin-bottom:10px;">
+          <strong style="font-size:11px;">📌 받은 위임의 사용</strong>
+          위임받은 작품의 검수 제출·예약 공개는 <strong>검수·발행 영역의 [대리 발행] 탭</strong>에서 진행하세요.
+        </div>
+
+        <div style="border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;font-size:9px;">
+          <div style="display:grid;grid-template-columns:60px 90px 1fr 90px 80px 80px;background:var(--bg-soft);padding:6px 10px;font-size:8px;font-weight:700;color:var(--text-sub);">
+            <span>ID</span><span>발급자</span><span>범위 · 액션</span><span>유효기간</span><span>상태</span><span>액션</span>
+          </div>
+          <div style="display:grid;grid-template-columns:60px 90px 1fr 90px 80px 80px;padding:8px 10px;border-top:1px solid var(--border-soft);align-items:center;">
+            <span style="font-family:monospace;color:var(--brand-red-dark);">D-2432</span>
+            <span style="font-weight:700;">박OO</span>
+            <span style="color:var(--text-sub);">어둠의 격투사 외 1건 · 검수 제출</span>
+            <span style="color:var(--warn);font-weight:700;">D-3</span>
+            <span><span class="ep-status status-approved" style="font-size:8px;">활성</span></span>
+            <span style="font-size:8px;color:var(--brand-red);font-weight:700;">[사용][연장 요청]</span>
+          </div>
+          <div style="display:grid;grid-template-columns:60px 90px 1fr 90px 80px 80px;padding:8px 10px;border-top:1px solid var(--border-soft);align-items:center;">
+            <span style="font-family:monospace;color:var(--brand-red-dark);">D-2435</span>
+            <span style="font-weight:700;">이OO (CP)</span>
+            <span style="color:var(--text-sub);">모든 작품 · 검수+예약</span>
+            <span style="color:var(--text-sub);">~ 7/29</span>
+            <span><span class="ep-status status-approved" style="font-size:8px;">활성</span></span>
+            <span style="font-size:8px;color:var(--brand-red);font-weight:700;">[사용]</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>발급한 위임 목록과의 차이</h4>
+    <table>
+      <tr><th>요소</th><th>발급한 위임 (B2)</th><th>받은 위임 (D2)</th></tr>
+      <tr><td class="label">발급자/수령자 컬럼</td><td>수령자 표시</td><td>발급자 표시 (+CP 마스터인 경우 CP 라벨)</td></tr>
+      <tr><td class="label">행 액션</td><td>[연장][회수]</td><td>[사용][연장 요청]</td></tr>
+      <tr><td class="label">발급 사유</td><td>본인이 입력한 사유 표시</td><td>숨김 (외부 비공개 원칙)</td></tr>
+      <tr><td class="label">강조 컬러</td><td>Brand Red (발급자 관점)</td><td>Lavender (수령자 관점)</td></tr>
+      <tr><td class="label">상단 안내</td><td>없음</td><td>[대리 발행] 탭 사용 안내 callout</td></tr>
+    </table>
+
+    <h4>수령자의 행 액션</h4>
+    <table>
+      <tr><th>액션</th><th>동작</th></tr>
+      <tr><td class="label">[사용]</td><td>검수·발행 영역의 [대리 발행] 탭으로 이동 (해당 작품 자동 필터)</td></tr>
+      <tr><td class="label">[연장 요청]</td><td>발급자(팀장)에게 연장 요청 알림 발송 · 메시지 첨부 가능</td></tr>
+      <tr><td class="label">[상세] (만료 후)</td><td>읽기 전용 상세 + 본인 사용 이력</td></tr>
+    </table>
+
+    <h4>위임 연장 요청 흐름</h4>
+    <div class="branch-box lavender">
+      <div class="case">[연장 요청] 클릭</div>
+      <div class="result">→ 작은 모달 표시: "박OO 님에게 위임 연장 요청"<br>→ 메시지 입력 (선택): "출장이 일주일 더 길어졌어요"<br>→ [요청 보내기] → 발급자에게 인앱 + 이메일 알림<br>→ 발급자는 [위임 발급] 폼 진입 시 기존 위임이 자동 채워진 상태로 시작 (연장 모드)</div>
+    </div>
+
+    <h4>활성 위임이 0건일 때</h4>
+    <div class="branch-box muted">
+      <div class="case">받은 위임 빈 상태</div>
+      <div class="result">"받은 위임이 없습니다"<br>+ [+ 팀장에게 위임 요청] (Secondary) — 클릭 시 팀장 선택 → 요청 메시지 → 전송</div>
+    </div>
+  </div>
+</article>
+
+<!-- ─── D3. 사용 컨텍스트 ─── -->
+<article class="step-card split" id="receiver-use">
+  <div class="step-header">
+    <span class="badge maroon">D3</span>
+    <span class="title">위임 사용 컨텍스트 — 4가지 표시 지점</span>
+    <span class="desc">위임받은 권한이 화면에 표시되는 모든 곳</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">수령자의 워크스페이스에서 위임이 어떻게 보이는지</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <!-- 컨텍스트 1: 대시보드 -->
+      <div style="background:white;border:1px solid var(--border);border-radius:var(--r-md);padding:10px;font-size:10px;">
+        <div style="font-size:9px;color:var(--text-muted);margin-bottom:4px;font-family:monospace;">① 대시보드 위젯 (수령 직후)</div>
+        <div style="background:var(--lavender-soft);border:1px solid var(--lavender);padding:6px 8px;border-radius:var(--r-sm);font-size:10px;">
+          📨 박OO님의 위임 D-2432 · D-3 만료 임박
+        </div>
+      </div>
+
+      <!-- 컨텍스트 2: 검수·발행 [대리 발행] 탭 -->
+      <div style="background:white;border:1px solid var(--border);border-radius:var(--r-md);padding:10px;font-size:10px;">
+        <div style="font-size:9px;color:var(--text-muted);margin-bottom:4px;font-family:monospace;">② 검수·발행 [대리 발행] 탭 (작품 카드)</div>
+        <div class="ep-card" style="border:1px solid var(--lavender);max-width:160px;">
+          <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;font-size:8px;color:var(--lavender-dark);font-weight:700;">
+            <span style="width:10px;height:10px;border-radius:50%;background:var(--maroon);color:white;display:flex;align-items:center;justify-content:center;font-size:7px;">박</span>
+            <span>박OO 님 작품 · D-3</span>
+          </div>
+          <div class="ep-thumb gradient">7</div>
+          <div class="ep-name">어둠의 격투사</div>
+          <div class="ep-act lav">대리 수정·제출</div>
+        </div>
+      </div>
+
+      <!-- 컨텍스트 3: 검수 제출 모달 C4 -->
+      <div style="background:white;border:1px solid var(--border);border-radius:var(--r-md);padding:10px;font-size:10px;">
+        <div style="font-size:9px;color:var(--text-muted);margin-bottom:4px;font-family:monospace;">③ 검수 제출 모달 C4 단계 (대리 권한 확인)</div>
+        <div style="background:var(--lavender-soft);border:1px solid var(--lavender);padding:8px;border-radius:var(--r-sm);font-size:10px;">
+          <div style="font-weight:700;color:var(--lavender-dark);margin-bottom:4px;">📌 대리 업로드 모드</div>
+          <div style="color:var(--lavender-dark);font-size:9px;">박OO 작가님의 작품으로 등록 · 본인(김OO)이 제출자로 함께 기록</div>
+          <div style="background:white;padding:4px 6px;border-radius:3px;margin-top:6px;font-family:monospace;font-size:9px;color:var(--brand-red-dark);">위임 ID: D-2432 (D-3 만료)</div>
+        </div>
+      </div>
+
+      <!-- 컨텍스트 4: 프로필 -->
+      <div style="background:white;border:1px solid var(--border);border-radius:var(--r-md);padding:10px;font-size:10px;">
+        <div style="font-size:9px;color:var(--text-muted);margin-bottom:4px;font-family:monospace;">④ 본인 프로필 (받은 위임 history)</div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;padding:6px 8px;background:var(--bg-soft);border-radius:var(--r-sm);">
+          <span style="color:var(--text-sub);">받은 위임 (활성)</span>
+          <span style="font-weight:700;color:var(--text);">2건 · 사용 횟수 5회</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>4가지 표시 지점</h4>
+    <table>
+      <tr><th>위치</th><th>표시 목적</th><th>표시 컬러</th></tr>
+      <tr><td class="label">① 대시보드 위젯</td><td>위임 수령 직후 알림 + 만료 임박 알림</td><td>Lavender 배너</td></tr>
+      <tr><td class="label">② 검수·발행 [대리 발행] 탭</td><td>위임받은 작품의 카드들 (별도 탭)</td><td>Lavender 보더 + 칩</td></tr>
+      <tr><td class="label">③ 검수 제출 모달 C4</td><td>제출 직전 권한 검증 + author/uploader 분리 안내</td><td>Lavender callout + 모달</td></tr>
+      <tr><td class="label">④ 본인 프로필</td><td>받은 위임 통계 + 사용 횟수</td><td>회색 톤 (정보 표시)</td></tr>
+    </table>
+
+    <h4>일관된 시각 언어 — Lavender</h4>
+    <p style="font-size:12px;color:var(--text-sub);">수령자 측의 모든 위임 관련 UI는 <strong>Lavender</strong> 톤으로 일관성 유지. 발급자 측은 Brand Red. 사용자는 컬러만 봐도 "내가 위임받은 것"과 "내가 발급한 것"을 구분 가능.</p>
+
+    <h4>위임 사용 시 시각적 강조</h4>
+    <ul>
+      <li>위임받은 작품 카드는 Lavender 보더 (일반 카드와 시각 구분)</li>
+      <li>카드 상단에 발급자 아바타 + 이름 라벨 (누구의 작품인지 즉시 인지)</li>
+      <li>카드 상단에 D-N 만료 카운트 (긴급도 표시)</li>
+      <li>CTA 버튼은 Lavender (대리 액션임을 컬러로 명시)</li>
+    </ul>
+
+    <h4>만료된 위임의 처리</h4>
+    <div class="branch-box muted">
+      <div class="case">위임 만료 또는 회수</div>
+      <div class="result">대시보드 위젯 자동 제거 · 검수·발행 [대리 발행] 탭에서 작품 카드 자동 제거 · 사용 시도 시 권한 검증 실패 → [위임이 만료되었습니다 / 회수되었습니다] 안내 + [팀장에게 연장 요청] CTA</div>
+    </div>
+  </div>
+</article>
+
+<div class="chapter-divider">
+  <span class="num">E</span>
+  <span class="title">CP 마스터 케이스</span>
+  <span class="sub">회사가 책임지는 운영 모드</span>
+</div>
+
+<!-- ─── E1. CP 마스터 발급 ─── -->
+<article class="step-card split" id="cp-master">
+  <div class="step-header">
+    <span class="badge maroon">E1</span>
+    <span class="title">CP 마스터의 위임 발급 — 회사 전체 범위</span>
+    <span class="desc">팀장과의 차이점</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">CP 마스터로 로그인한 워크스페이스 → 위임 발급 폼</div>
+    <div class="ws-frame">
+      <div class="ws-side">
+        <div class="ws-grp">CP-001 (이세계웹툰)</div>
+        <div class="ws-item active"><span class="ic"></span>발행 권한 위임</div>
+        <div style="font-size:8px;color:var(--maroon);padding:4px 12px;font-weight:700;">👑 CP 마스터 모드</div>
+      </div>
+      <div class="ws-main">
+        <div class="ws-h">
+          <span class="crumb">CP 관제 / <b>발행 권한 위임</b></span>
+          <span style="margin-left:auto;font-size:8px;color:var(--maroon);font-weight:700;">👑 회사 전체</span>
+        </div>
+
+        <div class="m-callout" style="background:#FCE7E9;border-color:var(--maroon);font-size:10px;padding:8px;margin-bottom:10px;">
+          <strong style="color:var(--maroon);font-size:11px;">👑 CP 마스터 권한</strong>
+          <span style="color:var(--maroon);">CP-001 소속 모든 팀(5팀, 11명 작가)의 위임을 발급·관제할 수 있어요.</span>
+        </div>
+
+        <div style="border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;font-size:9px;">
+          <div style="display:grid;grid-template-columns:60px 80px 80px 1fr 90px 80px;background:var(--bg-soft);padding:6px 10px;font-size:8px;font-weight:700;color:var(--text-sub);">
+            <span>ID</span><span>발급자</span><span>수령자</span><span>범위 · 액션</span><span>유효기간</span><span>상태</span>
+          </div>
+          <div style="display:grid;grid-template-columns:60px 80px 80px 1fr 90px 80px;padding:8px 10px;border-top:1px solid var(--border-soft);align-items:center;">
+            <span style="font-family:monospace;color:var(--brand-red-dark);">D-2432</span>
+            <span style="font-weight:700;font-size:8px;color:var(--maroon);">박OO (팀장)</span>
+            <span style="font-weight:700;">김OO</span>
+            <span style="color:var(--text-sub);">어둠의 격투사 외 1 · 검수</span>
+            <span style="color:var(--warn);font-weight:700;">D-3</span>
+            <span><span class="ep-status status-approved" style="font-size:8px;">활성</span></span>
+          </div>
+          <div style="display:grid;grid-template-columns:60px 80px 80px 1fr 90px 80px;padding:8px 10px;border-top:1px solid var(--border-soft);align-items:center;background:#FFF9F0;">
+            <span style="font-family:monospace;color:var(--brand-red-dark);">D-2440</span>
+            <span style="font-weight:700;font-size:8px;color:var(--maroon);">이OO (CP 마스터)</span>
+            <span style="font-weight:700;">본인</span>
+            <span style="color:var(--text-sub);">모든 작품 · 검수+예약+이력</span>
+            <span style="color:var(--text-sub);">~ 12/31</span>
+            <span><span class="ep-status status-approved" style="font-size:8px;">활성</span></span>
+          </div>
+          <div style="display:grid;grid-template-columns:60px 80px 80px 1fr 90px 80px;padding:8px 10px;border-top:1px solid var(--border-soft);align-items:center;">
+            <span style="font-family:monospace;color:var(--brand-red-dark);">D-2438</span>
+            <span style="font-weight:700;font-size:8px;color:var(--maroon);">최OO (팀장)</span>
+            <span style="font-weight:700;">박OO</span>
+            <span style="color:var(--text-sub);">백일의 나홍이 · 검수</span>
+            <span style="color:var(--text-sub);">~ 6/15</span>
+            <span><span class="ep-status status-approved" style="font-size:8px;">활성</span></span>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:6px;margin-top:10px;">
+          <div style="padding:4px 10px;background:var(--brand-red);color:white;border-radius:3px;font-size:9px;font-weight:700;">+ 위임 발급 (회사 전체)</div>
+          <div style="padding:4px 10px;background:white;border:1px solid var(--border);border-radius:3px;font-size:9px;color:var(--text);">CP 정책 설정</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>CP 마스터와 팀장의 차이</h4>
+    <table>
+      <tr><th>항목</th><th>팀장 (Owner)</th><th>CP 마스터 (role=master)</th></tr>
+      <tr><td class="label">발급 범위</td><td>본인 팀의 작품만</td><td><strong>CP 소속 모든 팀·작품</strong></td></tr>
+      <tr><td class="label">수령자 풀</td><td>본인 팀 active 멤버</td><td>회사 소속 모든 팀의 active 멤버</td></tr>
+      <tr><td class="label">본인에게도 발급 가능?</td><td>×</td><td>○ (회사 정책 모드)</td></tr>
+      <tr><td class="label">관제 가능 위임</td><td>본인 발급 + 본인 수령</td><td><strong>회사 전체 위임 모두 조회·회수</strong></td></tr>
+      <tr><td class="label">목록 화면 그룹화</td><td>단일 팀</td><td>팀별 섹션으로 그룹화 표시</td></tr>
+      <tr><td class="label">시각 강조</td><td>일반 Brand Red 톤</td><td>👑 마룬 톤 강조 (CP 모드 명시)</td></tr>
+    </table>
+
+    <h4>CP 마스터 발급 폼 변경 사항</h4>
+    <table>
+      <tr><th>Step</th><th>차이점</th></tr>
+      <tr><td class="label">C1 수령자</td><td>회사 소속 모든 팀 멤버 노출 · 팀별 그룹화 · 본인 선택 가능</td></tr>
+      <tr><td class="label">C2 범위</td><td>작품 그리드가 [{팀명}] 섹션으로 그룹화 · 다중 팀 작품 선택 가능</td></tr>
+      <tr><td class="label">C3 액션</td><td>edit_publish_history 추가 확인 다이얼로그가 더 강함</td></tr>
+      <tr><td class="label">C4 기간</td><td>최대 365일 가능 (팀장은 180일)</td></tr>
+      <tr><td class="label">C5 확인</td><td>"회사 정책 발급" 라벨 추가</td></tr>
+    </table>
+
+    <h4>회사 전체 위임 목록의 추가 컬럼</h4>
+    <ul>
+      <li>발급자 컬럼 표시 (팀장 또는 CP 마스터 본인)</li>
+      <li>발급자가 CP 마스터인 경우 행 배경 옅은 옐로우 (식별 강화)</li>
+      <li>회사 전체에 발급된 활성 위임 통계 위젯 (총 N건, 만료 임박 N건)</li>
+      <li>[CP 정책 설정] 버튼 (E2로 연결)</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ─── E2. CP 무위임 업로드 정책 ─── -->
+<article class="step-card split" id="cp-policy">
+  <div class="step-header">
+    <span class="badge maroon">E2</span>
+    <span class="title">CP 무위임 업로드 정책 (D-1 결정 항목)</span>
+    <span class="desc">위임 없이도 CP 마스터가 업로드 가능 여부</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">CP 마스터 → [CP 정책 설정] 진입</div>
+    <div style="background:white;border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;font-size:11px;max-width:480px;">
+      <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:8px;">CP 정책 설정</div>
+      <div style="font-size:11px;color:var(--text-sub);margin-bottom:14px;">회사 운영 편의와 작가 보호 사이의 균형을 결정하세요.</div>
+
+      <div style="background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:700;color:var(--text);">CP 마스터 무위임 업로드</div>
+            <div style="font-size:11px;color:var(--text-sub);margin-top:2px;line-height:1.5;">위임을 받지 않은 상태에서도 CP 마스터가 회사 소속 작품을 직접 업로드할 수 있게 허용합니다.</div>
+          </div>
+          <div style="display:inline-block;width:36px;height:20px;border-radius:10px;background:var(--border);position:relative;flex-shrink:0;margin-top:2px;">
+            <div style="position:absolute;top:2px;left:2px;width:16px;height:16px;background:white;border-radius:50%;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>
+          </div>
+        </div>
+        <div style="background:var(--success-soft);color:#065F46;padding:6px 8px;border-radius:var(--r-sm);font-size:10px;">
+          <strong>OFF (기본값 · 권장)</strong> 작가 보호 우선. CP 마스터도 위임을 받아야만 업로드 가능.
+        </div>
+      </div>
+
+      <div style="background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--r-md);padding:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:700;color:var(--text);">CP 마스터 무위임 — ON 시</div>
+          </div>
+          <div style="display:inline-block;width:36px;height:20px;border-radius:10px;background:var(--brand-red);position:relative;flex-shrink:0;margin-top:2px;">
+            <div style="position:absolute;top:2px;left:18px;width:16px;height:16px;background:white;border-radius:50%;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>
+          </div>
+        </div>
+        <div style="background:var(--warn-soft);color:#92400E;padding:6px 8px;border-radius:var(--r-sm);font-size:10px;">
+          <strong>ON (회사 정책 모드)</strong> 위임 없이도 회사 소속 작품 모두 업로드 가능. upload_mode=cp_master로 기록.
+        </div>
+      </div>
+
+      <div class="m-callout yellow" style="margin-top:14px;">
+        <strong>⚠ 변경 시 알아둘 점</strong>
+        · 정책 변경은 모든 소속 작가에게 알림 발송<br>
+        · 작가가 동의하지 않으면 CP 탈퇴 권리가 있음 (계약상)<br>
+        · 변경 이력은 Audit Log에 영구 기록
+      </div>
+
+      <button class="m-btn lavender full" style="margin-top:10px;">정책 적용</button>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>두 모드의 차이</h4>
+    <table>
+      <tr><th>상황</th><th>OFF (기본값)</th><th>ON (회사 정책)</th></tr>
+      <tr><td class="label">CP 마스터가 업로드</td><td>위임 필요</td><td>위임 없이 가능</td></tr>
+      <tr><td class="label">작품의 author</td><td>팀장 고정 (불변)</td><td>팀장 고정 (불변)</td></tr>
+      <tr><td class="label">uploader 기록</td><td>CP 마스터 (+ 위임 ID)</td><td>CP 마스터 (위임 ID 없음)</td></tr>
+      <tr><td class="label">upload_mode</td><td>delegated</td><td><strong>cp_master</strong></td></tr>
+      <tr><td class="label">팀 내부 표시</td><td>대리 D-XXXX</td><td>CP 정책</td></tr>
+      <tr><td class="label">독자 노출</td><td>변화 없음 (author만 표시)</td><td>변화 없음 (author만 표시)</td></tr>
+      <tr><td class="label">감사 추적</td><td>위임 토큰 + 사용 로그</td><td>cp_master 액션 로그</td></tr>
+    </table>
+
+    <h4>저장 컬럼 (CP_COMPANY 테이블)</h4>
+    <table>
+      <tr><th>컬럼</th><th>설명</th></tr>
+      <tr><td class="label"><code>master_uploads_without_delegation</code></td><td>BOOLEAN · default false · 본 토글의 저장 값</td></tr>
+      <tr><td class="label"><code>policy_changed_at</code></td><td>TIMESTAMP · 마지막 정책 변경 시각</td></tr>
+      <tr><td class="label"><code>policy_changed_by</code></td><td>BIGINT · 변경한 CP 마스터 ID</td></tr>
+    </table>
+
+    <h4>정책 변경 시 동작</h4>
+    <ul>
+      <li>CP 마스터가 토글 변경 → 확인 다이얼로그 + 이유 입력 (audit log용)</li>
+      <li>소속 모든 작가에게 이메일 + 인앱 알림 발송</li>
+      <li>알림 본문: "CP-001의 무위임 업로드 정책이 ON으로 변경되었습니다. 동의하지 않는 경우 CP 탈퇴를 요청할 수 있습니다."</li>
+      <li>Audit Log에 <code>cp_policy_changed</code> 이벤트 기록 (이전 값, 새 값, 사유 포함)</li>
+    </ul>
+
+    <h4>왜 OFF가 권장인가</h4>
+    <p style="font-size:12px;color:var(--text-sub);">작가의 작품에 대한 통제권을 보장하는 것이 기본 원칙. ON 모드는 회사 정책에 따라 작가가 모르는 사이에 업로드가 일어날 수 있어, 분쟁 시 작가 보호가 약해진다. 부득이한 경우 (예: 일괄 마이그레이션·운영 자동화)에만 임시 ON 권장.</p>
+  </div>
+</article>
+
+<!-- ─── F. Audit Log ─── -->
+<div class="chapter-divider">
+  <span class="num">F</span>
+  <span class="title">위임 이력 (Audit Log)</span>
+  <span class="sub">모든 이벤트의 영구 기록</span>
+</div>
+
+<article class="step-card split" id="audit-log">
+  <div class="step-header">
+    <span class="badge dark">F</span>
+    <span class="title">위임 이력 — 이벤트별 추적</span>
+    <span class="desc">B1 메인의 ③ 이력 탭</span>
+  </div>
+  <div class="mockup">
+    <div class="mockup-label">발행 권한 위임 > [이력] 탭</div>
+    <div class="ws-frame">
+      <div class="ws-side">
+        <div class="ws-grp">팀·멤버 관리</div>
+        <div class="ws-item active"><span class="ic"></span>발행 권한 위임</div>
+      </div>
+      <div class="ws-main">
+        <div class="ws-h">
+          <span class="crumb">발행 권한 위임 / <b>이력</b></span>
+        </div>
+        <div class="rv-tabs">
+          <div class="tab">발급한 위임</div>
+          <div class="tab">받은 위임</div>
+          <div class="tab active">이력 (Audit Log)</div>
+        </div>
+
+        <div class="rv-filter" style="margin-bottom:10px;">
+          <div class="chip on">전체</div>
+          <div class="chip">발급</div>
+          <div class="chip">연장</div>
+          <div class="chip">회수</div>
+          <div class="chip">사용</div>
+          <div class="chip">만료</div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;font-size:9px;">
+          <div style="padding:8px 10px;display:flex;gap:10px;align-items:start;border-bottom:1px solid var(--border-soft);">
+            <span style="background:var(--success-soft);color:#065F46;padding:2px 6px;border-radius:3px;font-size:8px;font-weight:700;flex-shrink:0;">발급</span>
+            <div style="flex:1;">
+              <div style="font-weight:700;color:var(--text);">D-2432 발급 · 박OO → 김OO</div>
+              <div style="color:var(--text-sub);margin-top:1px;">어둠의 격투사 외 1건 · 검수 제출 · 7일</div>
+            </div>
+            <span style="color:var(--text-muted);">방금</span>
+          </div>
+          <div style="padding:8px 10px;display:flex;gap:10px;align-items:start;border-bottom:1px solid var(--border-soft);">
+            <span style="background:var(--info-soft);color:#1E40AF;padding:2px 6px;border-radius:3px;font-size:8px;font-weight:700;flex-shrink:0;">사용</span>
+            <div style="flex:1;">
+              <div style="font-weight:700;color:var(--text);">D-2431 사용 · 김OO이 검수 제출</div>
+              <div style="color:var(--text-sub);margin-top:1px;">어둠의 격투사 Ep.7 v1.3 · 박OO 작가의 작품으로 등록</div>
+            </div>
+            <span style="color:var(--text-muted);">2시간 전</span>
+          </div>
+          <div style="padding:8px 10px;display:flex;gap:10px;align-items:start;border-bottom:1px solid var(--border-soft);">
+            <span style="background:var(--coral-soft);color:#9A3412;padding:2px 6px;border-radius:3px;font-size:8px;font-weight:700;flex-shrink:0;">연장</span>
+            <div style="flex:1;">
+              <div style="font-weight:700;color:var(--text);">D-2428 연장 · 박OO이 +7일 연장</div>
+              <div style="color:var(--text-sub);margin-top:1px;">사유: 출장 일정 변경 · 새 만료일: 2026-06-12</div>
+            </div>
+            <span style="color:var(--text-muted);">어제</span>
+          </div>
+          <div style="padding:8px 10px;display:flex;gap:10px;align-items:start;border-bottom:1px solid var(--border-soft);">
+            <span style="background:var(--error-soft);color:#8B1F1F;padding:2px 6px;border-radius:3px;font-size:8px;font-weight:700;flex-shrink:0;">회수</span>
+            <div style="flex:1;">
+              <div style="font-weight:700;color:var(--text);">D-2418 회수 · 박OO이 회수</div>
+              <div style="color:var(--text-sub);margin-top:1px;">사유: 출장 취소 · 수령자(박OO)에게 알림 발송</div>
+            </div>
+            <span style="color:var(--text-muted);">3일 전</span>
+          </div>
+          <div style="padding:8px 10px;display:flex;gap:10px;align-items:start;">
+            <span style="background:var(--bg-softer);color:var(--text-sub);padding:2px 6px;border-radius:3px;font-size:8px;font-weight:700;flex-shrink:0;">만료</span>
+            <div style="flex:1;">
+              <div style="font-weight:700;color:var(--text);">D-2401 자동 만료</div>
+              <div style="color:var(--text-sub);margin-top:1px;">사용 횟수: 4회 · 만료 후 7일간 사용 이력 보존</div>
+            </div>
+            <span style="color:var(--text-muted);">1주일 전</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="spec">
+    <h4>이벤트 5종</h4>
+    <table>
+      <tr><th>이벤트</th><th>코드</th><th>색상</th><th>트리거</th></tr>
+      <tr><td class="label">발급</td><td><code>delegation_issued</code></td><td>녹색</td><td>발급 폼 C5 완료</td></tr>
+      <tr><td class="label">연장</td><td><code>delegation_extended</code></td><td>코랄</td><td>위임 행 [연장] 버튼</td></tr>
+      <tr><td class="label">회수</td><td><code>delegation_revoked</code></td><td>적색</td><td>회수 4-Step 모달 완료</td></tr>
+      <tr><td class="label">만료</td><td><code>delegation_expired</code></td><td>회색</td><td>valid_to 도래 시 시스템 자동</td></tr>
+      <tr><td class="label">사용</td><td><code>delegation_used</code></td><td>청색</td><td>위임으로 액션 실행 시</td></tr>
+    </table>
+
+    <h4>이력 행 구성</h4>
+    <ul>
+      <li>좌측: 이벤트 타입 배지 (색상 코딩)</li>
+      <li>중앙: 위임 ID + 액션 + 주체 (1줄 요약)</li>
+      <li>중앙 하단: 추가 정보 (사유 · 범위 · 수령자)</li>
+      <li>우측: 상대 시각 (방금/N시간 전/N일 전)</li>
+    </ul>
+
+    <h4>필터 칩</h4>
+    <p style="font-size:12px;color:var(--text-sub);">기본 [전체] · 이벤트 종류별 필터 (발급/연장/회수/사용/만료) · 추가 필터: 위임 ID 검색, 날짜 범위, 관련 멤버</p>
+
+    <h4>접근 권한</h4>
+    <table>
+      <tr><th>역할</th><th>볼 수 있는 이력</th></tr>
+      <tr><td class="label">팀장 (본인)</td><td>본인이 발급·수령한 위임의 이력</td></tr>
+      <tr><td class="label">CP 마스터</td><td>회사 전체 위임 이력</td></tr>
+      <tr><td class="label">팀원 (수령자)</td><td>본인 관련 이벤트만 (사용·받은 위임)</td></tr>
+      <tr><td class="label">어드민 (운영자)</td><td>모든 이력 + IP·디바이스·세션 정보</td></tr>
+    </table>
+
+    <h4>데이터 보존 정책</h4>
+    <ul>
+      <li>Audit Log는 영구 보존 (삭제 불가)</li>
+      <li>만료/회수된 위임의 카드는 워크스페이스에 7일간 노출 후 자동 숨김 (이력은 그대로)</li>
+      <li>법적 분쟁 시 어드민이 전체 이력 조회 가능</li>
+    </ul>
+  </div>
+</article>
+
+<!-- ─── G. 정책 결정 항목 ─── -->
+<div class="chapter-divider">
+  <span class="num">G</span>
+  <span class="title">정책 결정 항목 · 운영 정책</span>
+  <span class="sub">V1.2.1 출시 전 결정 필요 사항</span>
+</div>
+
+<article class="step-card" id="decisions">
+  <div class="step-header">
+    <span class="badge dark">G</span>
+    <span class="title">정책 결정 항목 (워크스페이스 V1.2.1 정합)</span>
+    <span class="desc">기획·CEO 결정 필요</span>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:14px;">워크스페이스 V1.2.1 IA의 8-1절에서 정의된 정책 결정 항목 중 위임 관련 사항을 정리.</p>
+
+    <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:24px;">
+      <tr style="background:var(--bg-soft);">
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">#</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">항목</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">권장안</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">SB 반영</th>
+      </tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">D-1</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">CP 마스터 무위임 업로드 기본값</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">OFF (작가 보호)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">E2 · 토글 default OFF</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">D-2</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">위임 무기한 허용 여부</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);"><strong>불허</strong> · 최대 180일 (CP 마스터는 365일)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">C4 · 최대 180일 + 연장 가능</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">D-3</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">대리 업로드 외부 노출</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">어드민·팀 내부에만 (외부 비공개)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">D3 · author만 외부 노출</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">D-위임</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">edit_publish_history 위임 가능 여부</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">가능하되 위험 라벨 + 추가 확인</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">C3 · "위험" 배지 + 모달</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">D-알림</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">위임 만료 임박 알림 시점</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">D-3 (3일 전 양쪽 알림)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">D1 · 대시보드 위젯</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">D-만료후</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">만료된 위임 노출 기간</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">목록 7일 노출 · Audit Log 영구</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">F · 정책 명시</td></tr>
+    </table>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin-bottom:12px;letter-spacing:0.06em;text-transform:uppercase;">자동화 정책 요약</h4>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <tr style="background:var(--bg-soft);">
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">트리거</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">자동 동작</th>
+      </tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">valid_to 도래 (00:00)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">status=expired 전환 · 사용자 알림 · Audit Log 기록</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">valid_to - D3 (3일 전 00:00)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">양쪽에 만료 임박 알림 발송 (이메일+인앱) · 대시보드 위젯 표시</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">valid_to - D1 (1일 전 00:00)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">2차 알림 (인앱만, 이메일은 노이즈 방지)</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">수령자 팀 탈퇴</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">해당 멤버 대상 모든 위임 자동 회수 · 발급자에게 알림</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">팀 Owner 변경</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">기존 Owner 발급 위임 회수 · 새 Owner에게 위임 재발급 옵션 제공</td></tr>
+      <tr><td style="padding:10px;font-weight:600;border-bottom:1px solid var(--border-soft);">CP 정책 변경 (OFF → ON)</td><td style="padding:10px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">소속 모든 작가에게 알림 · 작가 동의 수집 (UI는 V1.2.2)</td></tr>
+    </table>
+  </div>
+</article>
+
+<!-- ─── H. API · 데이터 모델 ─── -->
+<div class="chapter-divider">
+  <span class="num">H</span>
+  <span class="title">API · 데이터 모델 요약</span>
+  <span class="sub">개발팀 참조용</span>
+</div>
+
+<article class="step-card" id="api">
+  <div class="step-header">
+    <span class="badge dark">H</span>
+    <span class="title">DELEGATION 테이블 + 주요 API</span>
+    <span class="desc">계정 V1.1.0 · 워크스페이스 V1.2.1 정합</span>
+  </div>
+  <div class="section-body">
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin-bottom:12px;letter-spacing:0.06em;text-transform:uppercase;">H1. DELEGATION 테이블 스펙</h4>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px;">
+      <tr style="background:var(--bg-soft);">
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">컬럼</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">타입</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">설명</th>
+      </tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">delegation_id</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">VARCHAR(20), PK</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">D-XXXX 자동 발급 (D- 접두어 + 4자리 시퀀스)</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">issuer_id</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">BIGINT, FK</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">발급자 AUTHOR.id (팀장 또는 CP 마스터)</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">receiver_id</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">BIGINT, FK</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">수령자 AUTHOR.id</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">team_id</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">BIGINT, FK</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">관련 팀 (CP 마스터의 경우 NULL 또는 특정 팀)</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">cp_id</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">BIGINT, NULLABLE</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">CP 소속 위임이면 회사 ID</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">scope</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">ENUM</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">all_series / specific_series</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">series_ids</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">JSON ARRAY</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">scope=specific_series일 때 작품 ID 배열</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">action_types</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">JSON ARRAY</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">submit_review / schedule_publish / edit_publish_history</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">valid_from</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">TIMESTAMP</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">유효 시작</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">valid_to</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">TIMESTAMP</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">유효 종료 · 23:59 KST 자동 정렬</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">issued_reason</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">TEXT</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">발급 사유 (200자 이내)</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">status</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">ENUM</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">active / expired / revoked</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">revoked_at</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">TIMESTAMP, NULL</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">회수 시각</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">revoked_reason</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">TEXT</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">회수 사유</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">usage_count</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">INT</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">이 위임으로 실행된 액션 횟수</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">last_used_at</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">TIMESTAMP, NULL</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">마지막 사용 시각</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border-soft);">created_at</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">TIMESTAMP</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">발급 시각</td></tr>
+    </table>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:24px 0 12px;letter-spacing:0.06em;text-transform:uppercase;">H2. 주요 API 엔드포인트</h4>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px;">
+      <tr style="background:var(--bg-soft);">
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">메서드 · 경로</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">설명</th>
+        <th style="text-align:left;padding:10px;font-size:11px;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);">권한</th>
+      </tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;color:var(--brand-red-dark);border-bottom:1px solid var(--border-soft);">GET /delegation</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">발급한 위임 목록 (B1 ① 탭)</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">Owner · CP Master</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;color:var(--brand-red-dark);border-bottom:1px solid var(--border-soft);">GET /delegation/received</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">받은 위임 목록 (B1 ② 탭)</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">수령자</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;color:var(--brand-red-dark);border-bottom:1px solid var(--border-soft);">GET /delegation/:id</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">위임 상세 (B2)</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">발급자/수령자/어드민</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;color:var(--brand-red-dark);border-bottom:1px solid var(--border-soft);">POST /delegation</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">위임 발급 (C5 완료)</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">Owner · CP Master</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;color:var(--brand-red-dark);border-bottom:1px solid var(--border-soft);">PATCH /delegation/:id/extend</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">위임 연장</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">발급자</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;color:var(--brand-red-dark);border-bottom:1px solid var(--border-soft);">DELETE /delegation/:id</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">위임 회수 (B3)</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">발급자 · CP Master</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;color:var(--brand-red-dark);border-bottom:1px solid var(--border-soft);">POST /delegation/request</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">팀원이 팀장에게 위임 요청 (D2)</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">팀 멤버</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;color:var(--brand-red-dark);border-bottom:1px solid var(--border-soft);">GET /delegation/audit</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">위임 이력 (F)</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">팀장/CP Master/어드민</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;color:var(--brand-red-dark);border-bottom:1px solid var(--border-soft);">POST /delegation/verify</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">위임 권한 검증 (C4 진입 시)</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">시스템 내부 호출</td></tr>
+      <tr><td style="padding:9px;font-family:monospace;font-size:11px;color:var(--brand-red-dark);border-bottom:1px solid var(--border-soft);">PATCH /cp/:id/policy</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">CP 정책 변경 (E2)</td><td style="padding:9px;color:var(--text-sub);border-bottom:1px solid var(--border-soft);">CP Master만</td></tr>
+    </table>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:24px 0 12px;letter-spacing:0.06em;text-transform:uppercase;">H3. 권한 검증 알고리즘</h4>
+    <div style="background:#1F1F1F;color:#E5E7EB;padding:14px;border-radius:var(--r-md);font-family:monospace;font-size:11px;line-height:1.7;overflow-x:auto;">
+<span style="color:#FACC15;">// 위임 권한 검증 (C4 진입 시 호출)</span>
+<span style="color:#DC3545;">function</span> verifyDelegation(userId, action, seriesId) {
+  <span style="color:#A99DE4;">// 1. 본인이 author인가</span>
+  <span style="color:#DC3545;">if</span> (series.author_id === userId) <span style="color:#DC3545;">return</span> { ok: <span style="color:#10B981;">true</span>, mode: <span style="color:#FACC15;">'self'</span> };
+<br>  <span style="color:#A99DE4;">// 2. 활성 위임 찾기</span>
+  <span style="color:#DC3545;">const</span> delegation = DELEGATION.find({
+    receiver_id: userId,
+    status: <span style="color:#FACC15;">'active'</span>,
+    valid_to: { $gte: <span style="color:#10B981;">NOW</span>() },
+    action_types: { $contains: action },
+    $or: [
+      { scope: <span style="color:#FACC15;">'all_series'</span>, issuer_id: series.author_id },
+      { scope: <span style="color:#FACC15;">'specific_series'</span>, series_ids: { $contains: seriesId } }
+    ]
+  });
+<br>  <span style="color:#DC3545;">if</span> (delegation) <span style="color:#DC3545;">return</span> { ok: <span style="color:#10B981;">true</span>, mode: <span style="color:#FACC15;">'delegated'</span>, delegation };
+<br>  <span style="color:#A99DE4;">// 3. CP 마스터 무위임 업로드 (E2)</span>
+  <span style="color:#DC3545;">if</span> (user.role === <span style="color:#FACC15;">'master'</span> && cp.master_uploads_without_delegation) {
+    <span style="color:#DC3545;">return</span> { ok: <span style="color:#10B981;">true</span>, mode: <span style="color:#FACC15;">'cp_master'</span> };
+  }
+<br>  <span style="color:#DC3545;">return</span> { ok: <span style="color:#EF4444;">false</span>, reason: <span style="color:#FACC15;">'no_permission'</span> };
+}
+    </div>
+
+    <h4 style="font-size:11px;font-weight:700;color:var(--brand-red);margin:24px 0 12px;letter-spacing:0.06em;text-transform:uppercase;">H4. 다음 작업 연계</h4>
+    <ul>
+      <li>본 SB는 <strong>작업 3 (위임 발급/회수 화면 풀 SB)</strong> 완성판</li>
+      <li>다음 P0 — <strong>작업 4: DB 마이그레이션 SQL</strong>로 이어짐</li>
+      <li>작업 4에서 DELEGATION · CONTENT_UPLOAD · AUTH_AUDIT_LOG 등 V1.2.1 신규 테이블 SQL 작성</li>
+      <li>그 다음 — 작업 5 (어드민 ↔ 워크스페이스 API 명세 · OpenAPI)</li>
+    </ul>
+  </div>
+</article>
+
+</main>
+
+</div>
+
+<footer class="doc-footer">
+  <strong>PlayToon</strong>발행 권한 위임 SB V1.0.0 · 워크스페이스 V1.2.1 부속 · 2026.05.29
+  <div class="meta-line">계정 시스템 V1.1.0 · 회원가입 SB V1.0.0 · 검수·발행 SB V1.0.0 디자인 시스템 정합</div>
+</footer>
+
+<script>
+const links = document.querySelectorAll('.sidebar a');
+const sections = document.querySelectorAll('[id]');
+function activateLink() {
+  let current = '';
+  sections.forEach(sec => {
+    const top = sec.getBoundingClientRect().top;
+    if (top < 200) current = sec.id;
+  });
+  links.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
+}
+window.addEventListener('scroll', activateLink);
+links.forEach(l => l.addEventListener('click', e => {
+  const id = l.getAttribute('href');
+  const target = document.querySelector(id);
+  if (target) {
+    e.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}));
+</script>
+
+</body>
+</html>

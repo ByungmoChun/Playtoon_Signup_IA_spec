@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>플레이툰 워크스페이스 V1.2.1 정보 구조 (IA)</title>
+<meta name="viewport" content="width=1280">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+:root {
+  --brand-red: #DC3545;
+  --brand-red-dark: #B82838;
+  --brand-red-soft: #FCE7E9;
+  --maroon: #6B1F1F;
+  --lavender: #A99DE4;
+  --lavender-dark: #8E80D3;
+  --lavender-soft: #EEEBF9;
+  --yellow: #FACC15;
+  --yellow-soft: #FFFBE6;
+  --success: #10B981;
+  --success-soft: #D1FAE5;
+  --warn: #F59E0B;
+  --warn-soft: #FEF3C7;
+  --error: #EF4444;
+  --error-soft: #FEE2E2;
+  --info: #3B82F6;
+  --info-soft: #DBEAFE;
+  --coral: #FB923C;
+  --coral-soft: #FFEDD5;
+  --text: #111827;
+  --text-sub: #6B7280;
+  --text-muted: #9CA3AF;
+  --bg: #FFFFFF;
+  --bg-soft: #F8F9FA;
+  --bg-softer: #F3F4F6;
+  --border: #E5E7EB;
+  --border-soft: #F3F4F6;
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, sans-serif;
+  background: var(--bg-soft);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.alert-banner {
+  background: #1F1F1F;
+  color: white;
+  padding: 10px 24px;
+  text-align: center;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.alert-banner .pill {
+  background: var(--brand-red);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.alert-banner .cta {
+  background: white;
+  color: var(--text);
+  padding: 4px 12px;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 700;
+}
+.doc-header {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 28px 48px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.doc-header .logo { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+.doc-header .title { font-size: 18px; font-weight: 600; }
+.doc-header .meta { margin-left: auto; display: flex; gap: 16px; font-size: 12px; color: var(--text-sub); }
+.doc-header .meta strong { color: var(--text); font-weight: 600; }
+.layout { display: grid; grid-template-columns: 240px 1fr; max-width: 1680px; margin: 0 auto; }
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  background: white;
+  border-right: 1px solid var(--border);
+  padding: 24px 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar h3 {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  padding: 0 24px 8px;
+  margin-top: 20px;
+}
+.sidebar h3:first-of-type { margin-top: 0; }
+.sidebar a {
+  display: block;
+  padding: 7px 24px 7px 36px;
+  font-size: 13px;
+  color: var(--text-sub);
+  text-decoration: none;
+  position: relative;
+}
+.sidebar a:hover { background: var(--bg-soft); color: var(--text); }
+.sidebar a.active {
+  color: var(--brand-red);
+  font-weight: 600;
+  background: var(--brand-red-soft);
+}
+.sidebar a.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--brand-red);
+}
+.sidebar a .num {
+  display: inline-block;
+  width: 28px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-left: -22px;
+}
+.sidebar a.active .num { color: var(--brand-red); }
+.main { padding: 32px 48px 80px; max-width: 1340px; }
+.chapter-divider {
+  margin: 48px 0 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--text);
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+}
+.chapter-divider:first-of-type { margin-top: 0; }
+.chapter-divider .num {
+  font-size: 64px;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+.chapter-divider .title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.chapter-divider .sub {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+}
+.section-intro {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+}
+.section-intro h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.section-intro p { color: var(--text-sub); font-size: 13px; line-height: 1.7; }
+.section-intro .pills { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+.pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--bg-soft);
+  color: var(--text-sub);
+}
+.pill.red { background: var(--brand-red-soft); color: var(--brand-red-dark); }
+.pill.lavender { background: var(--lavender-soft); color: var(--lavender-dark); }
+.pill.green { background: var(--success-soft); color: #065F46; }
+.pill.coral { background: var(--coral-soft); color: #9A3412; }
+.pill.maroon { background: var(--brand-red-soft); color: var(--maroon); }
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.card-header {
+  background: var(--bg-soft);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.card-header .badge {
+  background: var(--brand-red);
+  color: white;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  font-family: 'JetBrains Mono', monospace;
+}
+.card-header .badge.lavender { background: var(--lavender); }
+.card-header .badge.maroon { background: var(--maroon); }
+.card-header .badge.dark { background: var(--text); }
+.card-header .name { font-size: 15px; font-weight: 700; }
+.card-header .ko { font-size: 13px; color: var(--text-sub); }
+.card-header .source { margin-left: auto; font-size: 11px; color: var(--text-muted); }
+.card-body { padding: 20px 22px; }
+.card-body p { font-size: 13px; color: var(--text-sub); line-height: 1.7; margin-bottom: 12px; }
+.card-body p:last-child { margin-bottom: 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin: 8px 0;
+}
+table th {
+  text-align: left;
+  background: var(--bg-soft);
+  color: var(--text);
+  padding: 8px 10px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+  color: var(--text-sub);
+  font-size: 12px;
+  line-height: 1.5;
+}
+table td.col {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--text);
+}
+table .y { color: var(--success); font-weight: 700; text-align: center; }
+table .n { color: var(--text-muted); text-align: center; }
+table .new-mark {
+  background: var(--brand-red);
+  color: white;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+ul.list, ol.list {
+  font-size: 13px;
+  color: var(--text-sub);
+  padding-left: 20px;
+  line-height: 1.8;
+}
+ul.list li, ol.list li { margin: 4px 0; }
+ul.list code, ol.list code {
+  background: var(--bg-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--brand-red-dark);
+}
+
+.ia-tree {
+  background: var(--bg-softer);
+  padding: 20px 24px;
+  border-radius: var(--r-md);
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 11px;
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--text);
+}
+.ia-tree .new { color: var(--brand-red); font-weight: 700; }
+.ia-tree .keep { color: var(--text-muted); }
+.ia-tree .head { color: var(--maroon); font-weight: 700; }
+
+.callout {
+  border-left: 3px solid var(--brand-red);
+  background: var(--brand-red-soft);
+  padding: 12px 16px;
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  margin: 12px 0;
+  font-size: 12px;
+  color: var(--text);
+}
+.callout.lavender { border-color: var(--lavender); background: var(--lavender-soft); }
+.callout.green { border-color: var(--success); background: var(--success-soft); }
+.callout.maroon { border-color: var(--maroon); background: #FCE7E9; }
+
+.doc-footer {
+  background: var(--text);
+  color: white;
+  padding: 24px 48px;
+  text-align: center;
+  font-size: 12px;
+  opacity: 0.9;
+}
+.doc-footer strong { color: var(--brand-red); margin-right: 4px; }
+.doc-footer .meta-line { margin-top: 6px; font-size: 11px; opacity: 0.65; }
+</style>
+</head>
+<body>
+
+<div class="alert-banner">
+  <span class="pill">IA</span>
+  <span>워크스페이스 V1.2.1 정보 구조 정의서 — 8장 · 7개 메뉴 + α</span>
+  <span class="cta">V1.2.1</span>
+</div>
+
+<header class="doc-header">
+  <div class="logo">PlayToon</div>
+  <div class="title">워크스페이스 V1.2.1 정보 구조 (IA)</div>
+  <div class="meta">
+    <span><strong>workspace.playtoon.io</strong></span>
+    <span><strong>2026.05.29</strong></span>
+    <span>개발TF · 디자인팀 전달용</span>
+  </div>
+</header>
+
+<div class="layout">
+
+<nav class="sidebar">
+  <h3>문서 안내</h3>
+  <a href="#info" class="active"><span class="num">@</span>문서 정보</a>
+
+  <h3>본문 8장</h3>
+  <a href="#ch1"><span class="num">1</span>V1.2.0 → V1.2.1 변화</a>
+  <a href="#ch2"><span class="num">2</span>IA 전체 구조 (7+α)</a>
+  <a href="#ch3"><span class="num">3</span>검수·발행 영역</a>
+  <a href="#ch4"><span class="num">4</span>발행 권한 위임</a>
+  <a href="#ch5"><span class="num">5</span>권한 매트릭스</a>
+  <a href="#ch6"><span class="num">6</span>핵심 신규 화면 SB</a>
+  <a href="#ch7"><span class="num">7</span>시스템 연동 흐름</a>
+  <a href="#ch8"><span class="num">8</span>다음 단계</a>
+</nav>
+
+<main class="main">
+
+<!-- ─── 문서 정보 ─── -->
+<section class="section-intro" id="info">
+  <h2>워크스페이스 V1.2.1 IA 정의서</h2>
+  <p>V1.2.0의 경량화 원칙을 유지하면서, 작가 본인 작품의 검수·발행 및 팀 위임을 워크스페이스에 재통합한 V1.2.1 정보 구조. 7개 대메뉴 + 1개 외부 진입(에디터)으로 구성된다.</p>
+  <div class="pills">
+    <span class="pill red">V1.2.1 · 2026.05.29</span>
+    <span class="pill lavender">계정 시스템 V1.1.0 정합</span>
+    <span class="pill green">7개 메뉴 + α</span>
+    <span class="pill coral">3개 권한 레이어</span>
+  </div>
+</section>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge dark">@</span>
+    <span class="name">버전 히스토리</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>버전</th><th>일시</th><th>상태</th><th>주요 변경</th></tr>
+      <tr><td class="col">V1.1.0</td><td>2026.03.</td><td>초안</td><td>9개 메뉴 — 검수·매출·정산·CP관리 모두 포함</td></tr>
+      <tr><td class="col">V1.2.0</td><td>2026.04.06</td><td>경량화</td><td>7개 메뉴 — 검수·매출·정산·CP관리 제거 → 파트너 어드민으로 이관</td></tr>
+      <tr><td class="col" style="color:var(--brand-red);">V1.2.1</td><td>2026.05.29</td><td>현행</td><td>V1.2.0 경량화 원칙 유지 + 검수·발행·위임 재통합</td></tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ─── 1장. V1.2.0 → V1.2.1 변화 ─── -->
+<div class="chapter-divider" id="ch1">
+  <span class="num">1</span>
+  <span class="title">V1.2.0 → V1.2.1 — 무엇이, 왜 바뀌었나</span>
+  <span class="sub">배경 · 4대 원칙</span>
+</div>
+
+<section class="section-intro">
+  <h2>1-1. 배경</h2>
+  <p>V1.2.0(2026.04.06)는 파트너 어드민과의 기능 중복을 제거하기 위해 워크스페이스에서 작품 게시·검수·매출·정산·CP 관리를 모두 빼냈다. 그 결과 워크스페이스는 "순수 제작 환경 허브"로 깨끗하게 정리되었다. 그러나 두 가지 사실이 V1.2.0의 경량화를 부분 조정할 것을 요구하고 있다.</p>
+</section>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">1-1</span>
+    <span class="name">V1.2.0 한계와 V1.2.1 보정</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>사실</th><th>V1.2.0 한계</th><th>V1.2.1 보정</th></tr>
+      <tr>
+        <td>두 웹의 사용자 페르소나가 다름 (작가 vs CP 운영자)</td>
+        <td>작가가 본인 작품을 검수 제출하려면 별도 도메인의 파트너 어드민으로 이동해야 함 — 작가 페르소나와 맞지 않음</td>
+        <td>작가 본인 작품의 "검수 제출 액션"은 워크스페이스에 두되, 정산·매출·계약은 파트너 어드민에 유지</td>
+      </tr>
+      <tr>
+        <td>팀 협업 + 위임 케이스가 미정의</td>
+        <td>팀장이 부재할 때 팀원이 대신 업로드해야 하는 흐름이 V1.2.0에 없음</td>
+        <td>팀·멤버 관리 영역에 발행 권한 위임 (DELEGATION) 서브영역 신설</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">1-2</span>
+    <span class="name">V1.2.1 보정의 4대 원칙</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th style="width:25%">원칙</th><th>설명</th></tr>
+      <tr><td class="col">원칙 1<br><span style="color:var(--brand-red);font-weight:700;">V1.2.0 경량화 유지</span></td><td>정산·매출·계약·RS/MG는 워크스페이스에 절대 들이지 않음. 파트너 어드민 영역 침범 금지.</td></tr>
+      <tr><td class="col">원칙 2<br><span style="color:var(--brand-red);font-weight:700;">Author ≠ Uploader 분리</span></td><td>작품의 author는 팀장(원작가)으로 고정된다. 팀원이 위임받아 업로드해도 author는 변하지 않는다.</td></tr>
+      <tr><td class="col">원칙 3<br><span style="color:var(--brand-red);font-weight:700;">위임은 토큰형 권한</span></td><td>위임은 "권한 부여"가 아니라 "시한·범위가 있는 토큰"이다. 발급·회수·만료가 명확하다.</td></tr>
+      <tr><td class="col">원칙 4<br><span style="color:var(--brand-red);font-weight:700;">역할 매트릭스의 일관성</span></td><td>메이커 협업 권한(Owner/Editor/Commenter/Viewer) · 위임 권한 · AUTHOR 역할 — 3개 레이어가 명확히 구분되고 공존한다.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">1-3</span>
+    <span class="name">V1.2.0 → V1.2.1 한눈에</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>영역</th><th style="text-align:center;">V1.2.0</th><th style="text-align:center;">V1.2.1</th><th>변화</th></tr>
+      <tr><td>로그인·인증</td><td class="y">○</td><td class="y" style="color:var(--brand-red);">●</td><td>회원가입 4-Step + 옵션 연동 추가</td></tr>
+      <tr><td>대시보드</td><td class="y">○</td><td class="y" style="color:var(--brand-red);">●</td><td>할 일 알림(반려/위임 만료) 위젯 추가</td></tr>
+      <tr><td>프로젝트 관리</td><td class="y">○</td><td class="y" style="color:var(--brand-red);">●</td><td><strong>검수·발행 서브영역 신규</strong></td></tr>
+      <tr><td>에셋 라이브러리</td><td class="y">○</td><td class="y">○</td><td>변화 없음</td></tr>
+      <tr><td>팀·멤버 관리</td><td class="y">○</td><td class="y" style="color:var(--brand-red);">●</td><td><strong>위임·CP 소속 정보 추가</strong></td></tr>
+      <tr><td>요금제·결제</td><td class="y">○</td><td class="y">○</td><td>변화 없음</td></tr>
+      <tr><td>워크스페이스 설정</td><td class="y">○</td><td class="y" style="color:var(--brand-red);">●</td><td>연동된 USER 계정 관리 추가</td></tr>
+      <tr><td>에디터 진입</td><td class="y">○</td><td class="y">○</td><td>변화 없음</td></tr>
+    </table>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">범례 — ○ : 기존 / ● : V1.2.1에서 변경됨</p>
+  </div>
+</div>
+
+
+<!-- ─── 2장. IA 전체 구조 ─── -->
+<div class="chapter-divider" id="ch2">
+  <span class="num">2</span>
+  <span class="title">V1.2.1 IA 전체 구조</span>
+  <span class="sub">7개 영역 + α</span>
+</div>
+
+<section class="section-intro">
+  <h2>워크스페이스 V1.2.1의 메뉴 구조</h2>
+  <p>7개의 대메뉴와 1개의 외부 진입(에디터)으로 구성된다. V1.2.0의 골격을 그대로 유지하되, 일부 영역에 서브 항목이 확장된다.</p>
+</section>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">2-1</span>
+    <span class="name">IA 다이어그램 — 한눈에</span>
+    <span class="source">텍스트 트리</span>
+  </div>
+  <div class="card-body">
+<div class="ia-tree"><span class="head">workspace.playtoon.io</span>
+│
+├── ① 로그인·인증
+│   ├── 로그인 (이메일·소셜 4종)
+│   ├── 회원가입 4-Step <span class="new">★ 옵션 연동 단계 신규</span>
+│   ├── 비밀번호 재설정 (Q2 분기)
+│   └── SSO/OAuth Handshake
+│
+├── ② 대시보드
+│   ├── <span class="new">★ 할 일 알림 위젯 (반려·위임·예약)</span>
+│   ├── 프로젝트 썸네일 그리드
+│   ├── 최근 작업 내역
+│   └── 빠른 실행
+│
+├── ③ 프로젝트 관리
+│   ├── 프로젝트 목록 (상태 필터 확장)
+│   ├── 신규 프로젝트 생성
+│   ├── 프로젝트 상세
+│   ├── 버전 관리 (Auto-save · 스냅샷)
+│   └── <span class="new">★ 검수·발행 서브영역 (7개 항목 · 3장 참조)</span>
+│
+├── ④ 에셋 라이브러리 <span class="keep">(변화 없음)</span>
+│   ├── 팀 공용 / 개인 에셋
+│   └── 6개 카테고리 탭
+│
+├── ⑤ 팀·멤버 관리
+│   ├── 멤버 목록·권한 조회
+│   ├── 멤버 초대 (4-role)
+│   ├── 멤버 관리
+│   ├── <span class="new">★ 발행 권한 위임 (4장 참조)</span>
+│   └── <span class="new">★ CP 소속 정보</span>
+│
+├── ⑥ 요금제·결제 <span class="keep">(변화 없음)</span>
+│
+├── ⑦ 워크스페이스 설정
+│   ├── 프로필
+│   ├── 계정 보안
+│   │   └── <span class="new">★ 연동된 USER 계정 관리 (Q4)</span>
+│   ├── 알림 설정
+│   └── 청구·결제
+│
+└── ⑧ <span class="head">외부 진입</span> — 에디터 (editor.playtoon.io) <span class="keep">변화 없음</span>
+    └── Access Token + project.json + Handshake</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">2-2</span>
+    <span class="name">영역별 변경 상세</span>
+  </div>
+  <div class="card-body">
+    <h3 style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--brand-red);">① 로그인·인증 — 회원가입 4-Step 확장</h3>
+    <table>
+      <tr><th>항목</th><th>V1.2.0</th><th>V1.2.1</th></tr>
+      <tr><td class="col">회원가입 단계</td><td>단일 폼</td><td>4-Step (가입방식 → 작가 정보 → 옵션 연동 → 완료)</td></tr>
+      <tr><td class="col">옵션 연동</td><td>—</td><td>Step 3에 "플랫폼 계정 동시 생성" 옵션</td></tr>
+      <tr><td class="col">CP 소속 코드 입력</td><td>프로필에서 사후 입력</td><td>Step 2에서 가입 시 CP 초대코드 입력 가능</td></tr>
+      <tr><td class="col">소셜 로그인</td><td>양쪽 동시 가능</td><td>Q3 정책에 따라 같은 소셜계정 양쪽 가입 금지</td></tr>
+    </table>
+
+    <h3 style="font-size:13px;font-weight:700;margin:16px 0 8px;color:var(--brand-red);">② 대시보드 — 할 일 알림 위젯 신규</h3>
+    <table>
+      <tr><th>카드 유형</th><th>트리거</th><th>CTA</th><th>우선순위</th></tr>
+      <tr><td>반려 재제출 필요</td><td>본인 작품이 반려 상태</td><td>[수정하러 가기 →]</td><td><span style="color:var(--brand-red);font-weight:700;">최상위</span></td></tr>
+      <tr><td>위임 만료 임박</td><td>발급한 위임이 D-3 이내 만료</td><td>[연장] / [회수]</td><td>상위</td></tr>
+      <tr><td>발행 예약 임박</td><td>예약 회차가 24시간 이내</td><td>[발행 시간 확인]</td><td>상위</td></tr>
+      <tr><td>위임받은 작업 대기</td><td>팀원으로서 받은 활성 위임 + 미업로드 회차</td><td>[업로드 진행]</td><td>중위</td></tr>
+    </table>
+
+    <h3 style="font-size:13px;font-weight:700;margin:16px 0 8px;color:var(--brand-red);">③ 프로젝트 관리 — 검수·발행 서브영역 신규</h3>
+    <table>
+      <tr><th>서브항목</th><th>V1.2.0</th><th>V1.2.1</th></tr>
+      <tr><td class="col">프로젝트 목록</td><td>3단 상태 필터</td><td>확장 (작업중·검수대기·승인·반려·발행완료·예약)</td></tr>
+      <tr><td class="col">신규 프로젝트</td><td>이름·캔버스·타입</td><td>+ 팀 선택 (owner 팀 또는 위임받은 팀)</td></tr>
+      <tr><td class="col">프로젝트 상세</td><td>메타·에피소드·복제·삭제</td><td>+ 검수 제출 · 발행 상태 · author 표시</td></tr>
+      <tr><td class="col">검수·발행 영역</td><td>—</td><td><strong style="color:var(--brand-red);">신규 7개 서브항목 (3장)</strong></td></tr>
+    </table>
+
+    <h3 style="font-size:13px;font-weight:700;margin:16px 0 8px;color:var(--brand-red);">⑤ 팀·멤버 관리 — 위임·CP 소속 추가</h3>
+    <table>
+      <tr><th>서브항목</th><th>V1.2.0</th><th>V1.2.1</th></tr>
+      <tr><td class="col">멤버 권한</td><td>3-role (Owner·Editor·Viewer)</td><td>4-role (+ Commenter)</td></tr>
+      <tr><td class="col">멤버 초대</td><td>이메일·역할</td><td>+ 에피소드별 세부 권한</td></tr>
+      <tr><td class="col">발행 권한 위임</td><td>—</td><td><strong style="color:var(--brand-red);">신규 (4장)</strong></td></tr>
+      <tr><td class="col">CP 소속 정보</td><td>—</td><td>회사 · 역할 · 마스터 정책 표시</td></tr>
+    </table>
+
+    <h3 style="font-size:13px;font-weight:700;margin:16px 0 8px;color:var(--brand-red);">⑦ 워크스페이스 설정 — 연동 USER 관리 추가</h3>
+    <table>
+      <tr><th>UI 요소</th><th>UI Copy</th><th>동작</th></tr>
+      <tr><td class="col">섹션 헤더</td><td>[연동된 계정]</td><td></td></tr>
+      <tr><td class="col">연동 상태</td><td>[플랫폼 계정 연동됨] + 마스킹된 이메일</td><td>active 상태일 때만</td></tr>
+      <tr><td class="col">연동 해제</td><td>[연동 해제]</td><td>비밀번호 재입력 → 양쪽 알림</td></tr>
+      <tr><td class="col">미연동</td><td>[연동된 플랫폼 계정이 없습니다]</td><td>+ [지금 연동하기] CTA</td></tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ─── 3장. 검수·발행 영역 ─── -->
+<div class="chapter-divider" id="ch3">
+  <span class="num">3</span>
+  <span class="title">검수·발행 영역 상세</span>
+  <span class="sub">신규 핵심 영역 · 7개 서브항목</span>
+</div>
+
+<section class="section-intro">
+  <h2>V1.2.1의 핵심 추가 영역</h2>
+  <p>프로젝트 관리 메뉴 하위에 "검수·발행" 서브영역이 신설된다. 7개 서브항목 · 검수 제출부터 발행 이력·대리 발행까지 작가 측 완결 흐름.</p>
+</section>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">3-1</span>
+    <span class="name">7개 서브항목 구성</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th style="width:30px;">No</th><th>서브항목</th><th>핵심 기능</th><th>대상</th></tr>
+      <tr><td class="col">1</td><td>검수 제출 (자기 작품)</td><td>회차 단위 검수 요청. 미리보기 → 제출</td><td>팀장 (author)</td></tr>
+      <tr><td class="col">2</td><td>검수 상태 추적</td><td>대기/심사/승인/반려 실시간</td><td>팀장 + 위임 수령자</td></tr>
+      <tr><td class="col">3</td><td>반려 사유 확인·재제출</td><td>사유 표시 + 수정 + 재제출</td><td>팀장 + 위임 수령자</td></tr>
+      <tr><td class="col">4</td><td>예약 공개 설정</td><td>승인 후 공개 일시 설정</td><td>팀장 + 위임 수령자</td></tr>
+      <tr><td class="col">5</td><td>발행 이력 · 버전 비교</td><td>v1.0 → v1.x 변경 추적</td><td>팀장 + 위임 수령자</td></tr>
+      <tr><td class="col">6</td><td>대리 발행 (위임받은 작품)</td><td>위임받은 작품 별도 탭</td><td>위임 수령자</td></tr>
+      <tr><td class="col">7</td><td>업로드 이력 (작품 상세)</td><td>author vs uploader 분리 표시</td><td>팀장 + 멤버</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">3-2</span>
+    <span class="name">검수 제출 6-Step 흐름</span>
+    <span class="source">진입 경로 3종 통합</span>
+  </div>
+  <div class="card-body">
+    <p><strong>진입 경로</strong></p>
+    <ul class="list">
+      <li>① 프로젝트 상세 화면의 회차 카드 → <code>[검수 제출]</code> 버튼</li>
+      <li>② 검수·발행 영역의 <code>검수 제출</code> 탭 → 회차 선택</li>
+      <li>③ 에디터 웹에서 작업 종료 시 다이얼로그 → 워크스페이스 이동</li>
+    </ul>
+    <table style="margin-top:12px;">
+      <tr><th>Step</th><th>화면</th><th>UI 요소</th><th>검증</th></tr>
+      <tr><td class="col">1</td><td>회차 선택 & 사전 체크</td><td>제목·이미지수·페이지수·예상 PG</td><td>제목 / 이미지 1+ / 메타 완전</td></tr>
+      <tr><td class="col">2</td><td>미리보기</td><td>독자 뷰어와 동일한 풀스크린</td><td>스크롤 끝까지 도달 확인</td></tr>
+      <tr><td class="col">3</td><td>검수 요청서</td><td>[검수 메모] 200자 + 첨부 1</td><td></td></tr>
+      <tr><td class="col">4</td><td>권한 확인 (대리 시)</td><td>현재 author / 업로드 실행자 / 위임 ID</td><td>위임 만료·회수 시 차단</td></tr>
+      <tr><td class="col">5</td><td>최종 확인</td><td>요약 정보 + [제출] CTA</td><td></td></tr>
+      <tr><td class="col">6</td><td>완료</td><td>접수 번호 + 다음 단계 안내</td><td></td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">3-3</span>
+    <span class="name">검수 상태 추적 (5단계)</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>상태</th><th>의미</th><th>UI 표시</th><th>액션</th></tr>
+      <tr><td>검수 대기</td><td>어드민 큐 진입</td><td><span class="pill" style="background:var(--bg-soft);">검수 대기</span></td><td>대기</td></tr>
+      <tr><td>심사 중</td><td>어드민 심사 중</td><td><span class="pill" style="background:var(--yellow-soft);color:#92400E;">심사 중</span></td><td>대기 (취소 불가)</td></tr>
+      <tr><td>승인</td><td>어드민 승인</td><td><span class="pill green">승인</span></td><td>예약 / 즉시 공개</td></tr>
+      <tr><td>반려</td><td>어드민 반려</td><td><span class="pill red">반려</span></td><td>수정 → 재제출</td></tr>
+      <tr><td>보류</td><td>추가 정보 요청</td><td><span class="pill coral">보류</span></td><td>채팅 답신</td></tr>
+    </table>
+    <div class="callout" style="margin-top:12px;">
+      <strong>Source of Truth</strong> — 상태 데이터는 어드민 DB가 원본. 워크스페이스는 polling 또는 WebSocket으로 동기화하여 표시한다.
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">3-4</span>
+    <span class="name">반려 사유 카드 + 재제출 흐름</span>
+  </div>
+  <div class="card-body">
+    <p>반려가 발생하면 빠르게 수정·재제출 흐름으로 연결. 화면 컨텍스트를 끊지 않는 것이 중요.</p>
+    <table>
+      <tr><th>요소</th><th>내용</th><th>비고</th></tr>
+      <tr><td class="col">반려 헤더</td><td>[반려 #2 · {회차명} · {반려일}]</td><td>재반려 횟수</td></tr>
+      <tr><td class="col">카테고리</td><td>저작권 / 폭력성 / 이미지 품질 / 메타데이터 / IE / 정책 / 기타 (8종)</td><td>어드민 분류</td></tr>
+      <tr><td class="col">상세 사유</td><td>어드민 자유 텍스트 + 이미지 첨부</td><td></td></tr>
+      <tr><td class="col">수정 가이드</td><td>어드민 작성 수정 방향</td><td>V1.2.1 신규</td></tr>
+      <tr><td class="col">재제출 CTA</td><td>[수정하기 →]</td><td>에디터 진입 → 자동 diff</td></tr>
+    </table>
+    <p style="margin-top:12px;"><strong>재제출 자동 diff (V1.2.1 신규)</strong></p>
+    <ul class="list">
+      <li>이미지 변경: 변경 컷 번호 자동 표기 (예: "3, 7, 12번 컷 교체")</li>
+      <li>IE 요소 변경: 변경된 선택지·분기 자동 표기</li>
+      <li>메타데이터 변경: 변경 전/후 비교 표 자동 생성</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">3-5</span>
+    <span class="name">예약 공개 설정</span>
+  </div>
+  <div class="card-body">
+    <p>어드민 승인 후 작가가 직접 공개 일시 결정. V1.2.0에서는 "파트너 어드민의 게시 토글"이었지만, V1.2.1에서는 워크스페이스에 두는 것이 자연스럽다 (작가의 작품 운영 결정).</p>
+    <table>
+      <tr><th>UI 요소</th><th>UI Copy</th><th>동작</th></tr>
+      <tr><td class="col">승인 정보</td><td>[승인일 · 승인자]</td><td>어드민에서 받음 (읽기 전용)</td></tr>
+      <tr><td class="col">공개 방식</td><td>○ 즉시 / ○ 예약 (default)</td><td></td></tr>
+      <tr><td class="col">공개 일시</td><td>[날짜] [시간] (15분 단위)</td><td>KST 고정 · 최대 3개월</td></tr>
+      <tr><td class="col">독자 알림</td><td>☑ 팔로워에게 D-1 푸시</td><td>default ON</td></tr>
+      <tr><td class="col">변경 가능 기한</td><td>발행 1시간 전까지</td><td></td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">3-6</span>
+    <span class="name">발행 이력 · 버전 비교</span>
+  </div>
+  <div class="card-body">
+    <p>회차가 발행된 이후의 모든 수정 이력 보존. "몇 화 v1.2에서 v1.3으로 무엇이 바뀌었나" 추적.</p>
+    <table>
+      <tr><th>컬럼</th><th>내용</th><th>비고</th></tr>
+      <tr><td class="col">버전</td><td>v1.0 · v1.1 · v1.2 ...</td><td>최초 발행 v1.0</td></tr>
+      <tr><td class="col">시각</td><td>2026-05-25 14:32</td><td></td></tr>
+      <tr><td class="col">수행자</td><td>팀원 김OO 업로드 (위임 #D-2431)</td><td>위임 ID 함께</td></tr>
+      <tr><td class="col">변경 요약</td><td>이미지 교체 3건 + 메타데이터</td><td>자동 또는 입력</td></tr>
+      <tr><td class="col">롤백</td><td>edit_publish_history 권한 시 가능</td><td>위험 액션</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge lavender">3-7</span>
+    <span class="name">대리 발행 · 업로드 이력</span>
+    <span class="source">P-4 · D-3 정책</span>
+  </div>
+  <div class="card-body">
+    <p><strong>"author는 팀장 고정, uploader는 분리 기록"</strong> 원칙을 시각화한다.</p>
+
+    <div class="callout lavender">
+      <strong>대리 발행 모드 배지</strong> — 위임받은 팀원이 검수·발행 영역 진입 시 화면 상단에 명확한 배지 표시.
+      <br>예: <code style="background:white;padding:2px 6px;border-radius:3px;">대리 업로드 모드 · 박OO 작가의 작품 · 위임 D-2432</code>
+    </div>
+
+    <p style="margin-top:12px;"><strong>팀 내부 뷰 (업로드 이력)</strong> — 팀장·팀원 모두 자기 팀 작품의 업로드 이력 확인 가능</p>
+    <table>
+      <tr><th>표시 항목</th><th>예시</th></tr>
+      <tr><td class="col">author</td><td>박OO (팀장 · 불변)</td></tr>
+      <tr><td class="col">uploader</td><td>김OO (위임 D-2432)</td></tr>
+      <tr><td class="col">버전</td><td>v1.1</td></tr>
+      <tr><td class="col">시각</td><td>2026-05-25 14:32</td></tr>
+    </table>
+
+    <div class="callout maroon" style="margin-top:12px;">
+      <strong>외부(독자) 측 표시 — D-3 정책</strong><br>
+      플랫폼에서 독자가 작품을 볼 때는 <code style="background:white;padding:2px 6px;border-radius:3px;">author = 박OO</code>만 표시. uploader 정보는 노출되지 않는다.<br>
+      계정 시스템 V1.1.0의 "Author vs Uploader vs Payout Recipient 분리" 원칙과 정합.
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── 4장. 위임 ─── -->
+<div class="chapter-divider" id="ch4">
+  <span class="num">4</span>
+  <span class="title">발행 권한 위임 (DELEGATION)</span>
+  <span class="sub">6대 원칙 · 5개 서브영역</span>
+</div>
+
+<section class="section-intro">
+  <h2>두 번째 핵심 신규 영역</h2>
+  <p>팀·멤버 관리 메뉴 하위에 위치. 토큰형 권한 모델 · 발급자/수령자 제한 · author 불변 · 액션 명시 등 6대 원칙으로 작가 보호와 운영 편의를 동시 달성.</p>
+</section>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge lavender">4-1</span>
+    <span class="name">위임 모델 6대 원칙</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th style="width:25%">원칙</th><th>내용</th></tr>
+      <tr><td class="col">P-1 토큰형 권한</td><td>위임은 "권한 부여"가 아닌 "시한·범위가 있는 토큰". 발급·회수·만료가 명확.</td></tr>
+      <tr><td class="col">P-2 발급자 제한</td><td>팀장(team.owner_author_id) 본인. CP 마스터도 회사 소속 팀에 한해 가능.</td></tr>
+      <tr><td class="col">P-3 수령자 제한</td><td>같은 팀의 active 멤버. 팀 외부에는 위임 불가.</td></tr>
+      <tr><td class="col">P-4 Author 불변</td><td>위임받은 팀원이 업로드해도 작품의 author는 팀장 고정.</td></tr>
+      <tr><td class="col">P-5 이력 추적</td><td>모든 위임 이벤트(발급·연장·회수·만료·사용) Audit Log 영구 보존.</td></tr>
+      <tr><td class="col">P-6 액션 범위 명시</td><td>submit_review / schedule_publish / edit_publish_history 등 액션별 명시.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge lavender">4-2</span>
+    <span class="name">위임 발급 화면 (모달)</span>
+    <span class="source">팀·멤버 관리 → 발행 권한 위임 → [+ 위임 발급]</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>UI 요소</th><th>UI Copy</th><th>비고</th></tr>
+      <tr><td class="col">설명</td><td>"휴가·해외 출장·건강 문제 등으로 직접 검수 제출이 어려울 때..."</td><td>Caption</td></tr>
+      <tr><td class="col">수령자</td><td>위임받을 팀원 (다중 가능, active 멤버 only)</td><td>P-3</td></tr>
+      <tr><td class="col">범위</td><td>○ 모든 작품 / ● 특정 작품 선택</td><td>P-6</td></tr>
+      <tr><td class="col">액션</td><td>☑ 검수 제출 (default) / ☐ 예약 공개 / ☐ 발행 이력</td><td>submit_review 필수</td></tr>
+      <tr><td class="col">기간</td><td>[시작 일시] ~ [종료 일시]</td><td>최대 365일 (D-2)</td></tr>
+      <tr><td class="col">사유</td><td>(선택, 200자) — Audit Log 보존</td><td></td></tr>
+      <tr><td class="col">CTA</td><td>[위임 발급] Primary Red</td><td>5-Step 모달</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge lavender">4-3</span>
+    <span class="name">발급된 위임 목록</span>
+    <span class="source">목록 탭</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>컬럼</th><th>내용</th><th>액션</th></tr>
+      <tr><td class="col">위임 ID</td><td>D-2431 (자동)</td><td></td></tr>
+      <tr><td class="col">수령자</td><td>팀원명 + 아바타</td><td>프로필 호버</td></tr>
+      <tr><td class="col">범위</td><td>모든 작품 / 특정 작품 N건</td><td>호버 시 작품 리스트</td></tr>
+      <tr><td class="col">액션</td><td>검수 제출 / +예약 공개 / +발행 이력</td><td></td></tr>
+      <tr><td class="col">유효 기간</td><td>~2026-06-01 (D-3)</td><td>임박 시 황색 표시</td></tr>
+      <tr><td class="col">상태</td><td>활성 / 만료 / 회수</td><td>배지</td></tr>
+      <tr><td class="col">조작</td><td>[연장] / [회수]</td><td></td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge lavender">4-4</span>
+    <span class="name">위임 회수 흐름 (4-Step 모달)</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>Step</th><th>화면</th><th>UI Copy</th></tr>
+      <tr><td class="col">1</td><td>회수 확인</td><td>"{팀원명}에게 부여한 위임을 회수하시겠습니까?"</td></tr>
+      <tr><td class="col">2</td><td>사유 입력 (선택)</td><td>[회수 사유 (Audit Log 저장)]</td></tr>
+      <tr><td class="col">3</td><td>확인</td><td>[회수하기] Primary Red</td></tr>
+      <tr><td class="col">4</td><td>완료</td><td>"위임이 회수되었습니다" + 수령자 즉시 알림</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge lavender">4-5</span>
+    <span class="name">위임받는 입장 — 수령자 측 UI</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>위치</th><th>표시 내용</th><th>비고</th></tr>
+      <tr><td class="col">대시보드 할 일</td><td>"{팀장명}님이 발행 권한을 위임했어요. 유효기간: ~{날짜}"</td><td>위임 직후</td></tr>
+      <tr><td class="col">검수·발행 영역</td><td>[대리 발행] 탭에 위임받은 작품 목록</td><td>본인 작품과 분리</td></tr>
+      <tr><td class="col">검수 제출 화면</td><td>상단 "대리 업로드 모드" 배지 + 위임 ID</td><td>매 단계 확인</td></tr>
+      <tr><td class="col">프로필</td><td>[위임받은 작품: N건]</td><td>사후 조회용</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge maroon">4-6</span>
+    <span class="name">CP 마스터의 위임 + 무위임 업로드</span>
+    <span class="source">D-1 정책</span>
+  </div>
+  <div class="card-body">
+    <p>CP 소속 팀의 경우, 팀장(작가) 외에 CP 마스터(회사 대표·실장)도 위임 발급 가능.</p>
+    <table>
+      <tr><th>발급자</th><th>대상 팀</th><th>발급 가능한 위임</th></tr>
+      <tr><td>팀장 (작가)</td><td>본인이 owner인 팀</td><td>팀 멤버에게 위임</td></tr>
+      <tr><td>CP 마스터</td><td>회사 소속 모든 팀</td><td>팀장 ↔ 팀원 위임 + CP 마스터 본인에게도 가능</td></tr>
+      <tr><td>CP 정산 담당</td><td>—</td><td>— (발급 권한 없음)</td></tr>
+    </table>
+
+    <p style="margin-top:16px;"><strong>CP 마스터 무위임 업로드 (D-1)</strong> — <code>CP_COMPANY.master_uploads_without_delegation</code> 토글로 결정.</p>
+    <table>
+      <tr><th>토글</th><th>CP 마스터의 업로드</th><th>비고</th></tr>
+      <tr><td><span class="pill green">OFF (기본·권장)</span></td><td>작가별 위임을 받아야 가능</td><td>작가 보호 우선</td></tr>
+      <tr><td><span class="pill maroon">ON (회사 정책)</span></td><td>위임 없이도 모든 회사 작품 업로드 (upload_mode=cp_master)</td><td>회사 책임 운영 편의</td></tr>
+    </table>
+    <div class="callout maroon" style="margin-top:12px;">
+      CP 마스터의 무위임 업로드 시에도 <strong>author는 작가 고정 (P-4 불변)</strong>. upload_mode=cp_master로 기록되어 감사 추적 가능.
+    </div>
+  </div>
+</div>
+
+<!-- ─── 5장. 권한 매트릭스 ─── -->
+<div class="chapter-divider" id="ch5">
+  <span class="num">5</span>
+  <span class="title">권한 매트릭스 V1.2.1</span>
+  <span class="sub">3개 권한 레이어의 공존</span>
+</div>
+
+<section class="section-intro">
+  <h2>3개 레이어가 공존하는 권한 구조</h2>
+  <p>V1.2.1은 3개의 독립적 권한 레이어가 공존한다. 한 사용자가 동시에 여러 레이어의 권한을 가질 수 있다. L1 메이커 협업 권한 · L2 발행 권한 위임 · L3 AUTHOR 역할.</p>
+</section>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">5-1</span>
+    <span class="name">3개 권한 레이어</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>레이어</th><th>구분</th><th>권한 종류</th><th>어디서 부여되나</th></tr>
+      <tr><td class="col" style="color:var(--brand-red);"><strong>L1</strong><br>메이커 협업 권한</td><td>TEAM_MEMBERSHIP.collab_role</td><td>Owner · Editor · Commenter · Viewer (4-role)</td><td>팀장이 멤버 초대·관리 시</td></tr>
+      <tr><td class="col" style="color:var(--lavender-dark);"><strong>L2</strong><br>발행 권한 위임</td><td>DELEGATION</td><td>검수 제출 · 예약 공개 · 발행 이력 수정 (액션별)</td><td>팀장 또는 CP 마스터가 발급</td></tr>
+      <tr><td class="col" style="color:var(--maroon);"><strong>L3</strong><br>AUTHOR 역할</td><td>AUTHOR.role</td><td>author / accounting / master</td><td>CP 가입 시 또는 어드민 직권</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">5-2</span>
+    <span class="name">L1. 메이커 협업 권한 (4-role)</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>기능</th><th style="text-align:center;">Owner</th><th style="text-align:center;">Editor</th><th style="text-align:center;">Commenter</th><th style="text-align:center;">Viewer</th></tr>
+      <tr><td>프로젝트 열람</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="y">●</td></tr>
+      <tr><td>에피소드·테이크 편집 (에디터)</td><td class="y">●</td><td class="y">●</td><td class="n">×</td><td class="n">×</td></tr>
+      <tr><td>에셋 업로드</td><td class="y">●</td><td class="y">●</td><td class="n">×</td><td class="n">×</td></tr>
+      <tr><td>프로젝트 생성·삭제</td><td class="y">●</td><td class="n">×</td><td class="n">×</td><td class="n">×</td></tr>
+      <tr><td>댓글</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="n">×</td></tr>
+      <tr><td>멤버 초대·관리</td><td class="y">●</td><td class="n">×</td><td class="n">×</td><td class="n">×</td></tr>
+      <tr><td>위임 발급 (L2)</td><td class="y">●</td><td class="n">×</td><td class="n">×</td><td class="n">×</td></tr>
+      <tr><td>검수 제출 (본인)</td><td class="y">●</td><td class="n">위임 시*</td><td class="n">위임 시*</td><td class="n">위임 시*</td></tr>
+    </table>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">* Editor·Commenter·Viewer는 L2 위임을 받았을 때만 검수 제출 가능 (L1+L2 결합).<br>※ Owner는 1팀 1인 = 작품의 author = 팀장 (계정 V1.1.0 정합 · 변경 불가)</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge lavender">5-3</span>
+    <span class="name">L2. 발행 권한 위임</span>
+  </div>
+  <div class="card-body">
+    <h4 style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--brand-red);">위임 발급 가능자</h4>
+    <table>
+      <tr><th>역할</th><th>대상</th><th style="text-align:center;">발급 가능?</th></tr>
+      <tr><td>팀장 (Owner of TEAM)</td><td>본인 팀의 멤버</td><td class="y">●</td></tr>
+      <tr><td>Editor</td><td>—</td><td class="n">×</td></tr>
+      <tr><td>CP 마스터</td><td>CP 소속 모든 팀의 멤버</td><td class="y">●</td></tr>
+      <tr><td>CP 정산 담당</td><td>—</td><td class="n">×</td></tr>
+    </table>
+
+    <h4 style="font-size:12px;font-weight:700;margin:16px 0 8px;color:var(--brand-red);">위임 수령 가능자</h4>
+    <table>
+      <tr><th>대상</th><th style="text-align:center;">수령 가능?</th></tr>
+      <tr><td>같은 팀의 Editor</td><td class="y">●</td></tr>
+      <tr><td>같은 팀의 Commenter</td><td class="y">●</td></tr>
+      <tr><td>같은 팀의 Viewer</td><td class="y">●</td></tr>
+      <tr><td>다른 팀의 멤버</td><td class="n">×</td></tr>
+    </table>
+
+    <h4 style="font-size:12px;font-weight:700;margin:16px 0 8px;color:var(--brand-red);">위임 가능한 액션 (P-6)</h4>
+    <table>
+      <tr><th>액션 코드</th><th>의미</th><th>기본 포함</th></tr>
+      <tr><td class="col">submit_review</td><td>검수 제출</td><td class="y">✓ 필수</td></tr>
+      <tr><td class="col">schedule_publish</td><td>예약 공개 설정·변경</td><td></td></tr>
+      <tr><td class="col">edit_publish_history</td><td>발행 이력 수정 (긴급)</td><td></td></tr>
+      <tr><td class="col">respond_rejection</td><td>반려 사유 확인 + 재제출</td><td class="y">✓ (submit_review 포함)</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge maroon">5-4</span>
+    <span class="name">L3. AUTHOR 역할 (4종)</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>기능</th><th style="text-align:center;">개인 author</th><th style="text-align:center;">CP 소속 author</th><th style="text-align:center;">CP accounting</th><th style="text-align:center;">CP master</th></tr>
+      <tr><td>워크스페이스 로그인</td><td class="y">●</td><td class="y">●</td><td class="y">●*</td><td class="y">●</td></tr>
+      <tr><td>프로젝트 생성·편집</td><td class="y">●</td><td class="y">●</td><td class="n">×</td><td class="n">△**</td></tr>
+      <tr><td>본인 작품 검수 제출</td><td class="y">●</td><td class="y">●</td><td class="n">×</td><td class="n">×</td></tr>
+      <tr><td>회사 작품 정산 조회</td><td class="n">×</td><td class="n">×</td><td class="y">●</td><td class="y">●</td></tr>
+      <tr><td>회사 작품 검수 제출</td><td class="n">×</td><td class="n">×</td><td class="n">×</td><td class="n">조건부***</td></tr>
+      <tr><td>위임 발급</td><td>본인 팀 한정</td><td>본인 팀 한정</td><td class="n">×</td><td class="y">회사 전체</td></tr>
+      <tr><td>회사 정책 변경 (D-1)</td><td class="n">×</td><td class="n">×</td><td class="n">×</td><td class="y">●</td></tr>
+    </table>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">
+      * CP accounting은 파트너 어드민에 주로 접근. 워크스페이스 로그인 가능하나 편집 권한 없음.<br>
+      ** CP master의 워크스페이스 진입은 "회사 소속 작품 관제" 목적. 직접 편집은 권장 X.<br>
+      *** CP 정책 master_uploads_without_delegation ON일 때만.
+    </p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">5-5</span>
+    <span class="name">시나리오별 권한 조합 예시</span>
+  </div>
+  <div class="card-body">
+    <h4 style="font-size:13px;font-weight:700;margin-bottom:8px;">시나리오 1 — 개인 작가</h4>
+    <table>
+      <tr><th>속성</th><th>값</th></tr>
+      <tr><td class="col">AUTHOR.role</td><td>author</td></tr>
+      <tr><td class="col">AUTHOR.cp_id</td><td>NULL (개인)</td></tr>
+      <tr><td class="col">TEAM.owner_author_id</td><td>본인 (1인 팀)</td></tr>
+      <tr><td class="col">TEAM_MEMBERSHIP</td><td>본인 = Owner</td></tr>
+      <tr><td class="col">DELEGATION</td><td>없음 (필요 없음)</td></tr>
+      <tr><td class="col">권한</td><td>모든 작품·검수·발행 본인</td></tr>
+    </table>
+
+    <h4 style="font-size:13px;font-weight:700;margin:16px 0 8px;">시나리오 2 — 개인 작가 + 팀원 3명</h4>
+    <table>
+      <tr><th>속성</th><th>팀장 (Author A)</th><th>팀원 B (Editor)</th><th>팀원 C (Commenter)</th></tr>
+      <tr><td class="col">AUTHOR.role</td><td>author</td><td>author</td><td>author</td></tr>
+      <tr><td class="col">AUTHOR.cp_id</td><td>NULL</td><td>NULL</td><td>NULL</td></tr>
+      <tr><td class="col">TEAM_MEMBERSHIP</td><td>Owner</td><td>Editor</td><td>Commenter</td></tr>
+      <tr><td class="col">위임 없을 때</td><td>전체</td><td>프로젝트 편집·에셋 업로드</td><td>보기·댓글</td></tr>
+      <tr><td class="col">위임받으면</td><td>—</td><td>+ 검수 제출</td><td>+ 검수 제출</td></tr>
+    </table>
+
+    <h4 style="font-size:13px;font-weight:700;margin:16px 0 8px;">시나리오 3 — CP사 + 3명의 소속 작가</h4>
+    <table>
+      <tr><th>속성</th><th>CP 마스터</th><th>Author X (소속, 팀장)</th><th>X의 팀원 (Editor)</th></tr>
+      <tr><td class="col">AUTHOR.role</td><td>master</td><td>author</td><td>author</td></tr>
+      <tr><td class="col">AUTHOR.cp_id</td><td>CP-001</td><td>CP-001</td><td>CP-001</td></tr>
+      <tr><td class="col">권한</td><td>회사 관제 + 작가 초대 + 위임 발급 + 정산 조회</td><td>본인 팀 운영 + 본인 작품 발행</td><td>프로젝트 편집</td></tr>
+      <tr><td class="col">검수 제출</td><td>위임받거나 D-1 ON일 때</td><td class="y">● 가능</td><td class="n">× 위임 필요</td></tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ─── 6장. 핵심 신규 화면 SB ─── -->
+<div class="chapter-divider" id="ch6">
+  <span class="num">6</span>
+  <span class="title">핵심 신규 화면 SB</span>
+  <span class="sub">6개 화면 · 별도 SB 문서 참조</span>
+</div>
+
+<section class="section-intro">
+  <h2>V1.2.1 신규 6개 핵심 화면</h2>
+  <p>본 IA가 정의한 신규 영역의 화면 구성 명세. 정밀 디자인 시안과 인터랙션은 본 IA의 후속 SB 문서들에 별도 정의되어 있다.</p>
+  <div class="pills">
+    <span class="pill red">회원가입 SB V1.0.0</span>
+    <span class="pill lavender">검수·발행 SB V1.0.0</span>
+    <span class="pill maroon">위임 SB V1.0.0</span>
+  </div>
+</section>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">6-1 ~ 6-6</span>
+    <span class="name">6개 핵심 신규 화면</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>SB</th><th>화면</th><th>위치</th><th>상세 문서</th></tr>
+      <tr><td class="col">SB-1</td><td>검수·발행 영역 메인</td><td>프로젝트 관리 → 검수·발행</td><td>검수·발행 SB B 챕터</td></tr>
+      <tr><td class="col">SB-2</td><td>검수 제출 6-Step 모달</td><td>회차 카드 → [검수 제출]</td><td>검수·발행 SB C 챕터</td></tr>
+      <tr><td class="col">SB-3</td><td>반려 사유 카드 (인라인)</td><td>회차 상세 · 대시보드</td><td>검수·발행 SB D1</td></tr>
+      <tr><td class="col">SB-4</td><td>위임 발급 폼 (5-Step 모달)</td><td>팀·멤버 → 발행 권한 위임 → [+ 위임 발급]</td><td>위임 SB C 챕터</td></tr>
+      <tr><td class="col">SB-5</td><td>위임 목록 화면</td><td>팀·멤버 → 발행 권한 위임 → [목록]</td><td>위임 SB B 챕터</td></tr>
+      <tr><td class="col">SB-6</td><td>업로드 이력 (작품 상세 탭)</td><td>프로젝트 관리 → 프로젝트 상세 → [업로드 이력]</td><td>검수·발행 SB G 챕터</td></tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ─── 7장. 시스템 연동 ─── -->
+<div class="chapter-divider" id="ch7">
+  <span class="num">7</span>
+  <span class="title">시스템 연동 흐름</span>
+  <span class="sub">워크스페이스 ↔ 어드민</span>
+</div>
+
+<section class="section-intro">
+  <h2>책임 분담의 명확화</h2>
+  <p>V1.2.1에서 워크스페이스가 검수 제출 액션을 가져오면서, 어드민과의 데이터 교환이 늘어난다. 양측의 책임을 명확히 한다.</p>
+</section>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">7-1</span>
+    <span class="name">3개 시스템의 책임 분담</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>기능</th><th>워크스페이스</th><th>어드민</th><th>파트너 어드민</th></tr>
+      <tr><td class="col">검수 제출 액션</td><td>UI + 검증 + 큐 전달</td><td>큐 수신 + 검수자 배정</td><td>(접근 없음)</td></tr>
+      <tr><td class="col">검수 진행 상태</td><td>polling/WS 동기화 표시</td><td>상태 변경 트리거</td><td>상태 조회 (CP만)</td></tr>
+      <tr><td class="col">반려 사유</td><td>표시·재제출 UI</td><td>작성·발송</td><td>조회 (CP만)</td></tr>
+      <tr><td class="col">예약 공개 설정</td><td>작가 입력 UI + 예약 큐 등록</td><td>예약 큐 실행</td><td>조회 + 회사 정책상 변경</td></tr>
+      <tr><td class="col">발행 이력</td><td>조회·롤백 UI</td><td>상태 변경 기록</td><td>조회 (CP만)</td></tr>
+      <tr><td class="col">정산 / 매출</td><td class="n">×</td><td>집계 데이터 생성</td><td>● 원본 (정산 UI)</td></tr>
+      <tr><td class="col">CP 관리 (작가 영입 등)</td><td>일부 (CP 마스터 자기 회사)</td><td class="n">×</td><td>● 원본</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">7-2</span>
+    <span class="name">검수 제출 시퀀스</span>
+  </div>
+  <div class="card-body">
+    <p>작가가 워크스페이스에서 검수 제출 클릭한 순간부터 어드민이 결과 회신까지의 흐름.</p>
+    <ol class="list" style="margin-top:8px;">
+      <li>워크스페이스: 작가가 [검수 제출] 클릭 → 6-Step 모달 진행</li>
+      <li>워크스페이스 → 백엔드 API: <code>POST /content/uploads</code> + X-Delegation-Id (위임 시)</li>
+      <li>백엔드: <code>verify_delegation_permission()</code> 검증 → DB INSERT → 어드민 큐 전송</li>
+      <li>어드민: 큐 수신 → 검수자 배정 → 심사 시작 (review_status=reviewing)</li>
+      <li>어드민 → 백엔드: 상태 변경 + 결과 작성 (승인/반려/보류)</li>
+      <li>백엔드 → 워크스페이스: WebSocket 또는 polling으로 상태 푸시</li>
+      <li>워크스페이스: 알림 표시 → 작가가 다음 액션 (재제출/예약 공개/응답)</li>
+    </ol>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">7-3</span>
+    <span class="name">데이터 흐름 · Source of Truth</span>
+  </div>
+  <div class="card-body">
+    <p>동일한 데이터를 여러 시스템이 보여줄 때 "어디가 원본인가"를 명확히 한다.</p>
+    <table>
+      <tr><th>데이터</th><th>Source of Truth</th><th>워크스페이스</th><th>어드민</th><th>파트너 어드민</th></tr>
+      <tr><td>회차 콘텐츠 (이미지·IE)</td><td>S3 + DB</td><td>원본 (편집)</td><td>조회 (검수)</td><td>조회 (CP만)</td></tr>
+      <tr><td>회차 검수 상태</td><td>어드민 DB</td><td>polling</td><td>● 원본</td><td>polling (CP)</td></tr>
+      <tr><td>반려 사유</td><td>어드민 DB</td><td>조회만</td><td>● 원본 (작성)</td><td>조회만 (CP)</td></tr>
+      <tr><td>예약 공개 일시</td><td>예약 큐 (어드민)</td><td>● 원본 (설정·변경)</td><td>조회·관제</td><td>조회 (CP)</td></tr>
+      <tr><td>발행 이력</td><td>어드민 DB</td><td>조회·롤백</td><td>● 원본</td><td>조회 (CP)</td></tr>
+      <tr><td>위임 (DELEGATION)</td><td>워크스페이스 DB</td><td>● 원본</td><td>조회 (감사)</td><td>조회 (CP)</td></tr>
+      <tr><td>매출·정산</td><td>어드민 DB</td><td>—</td><td>● 원본 (집계)</td><td>조회 (CP 표시)</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">7-4</span>
+    <span class="name">알림 발송 정책</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>이벤트</th><th>워크스페이스 인앱</th><th>이메일</th><th>파트너 어드민 인앱</th></tr>
+      <tr><td>검수 제출 완료</td><td>팀장</td><td>팀장</td><td>CP 소속 시 마스터+정산</td></tr>
+      <tr><td>검수 승인</td><td>팀장 + 위임 수령자</td><td>팀장</td><td>CP 소속 시 마스터</td></tr>
+      <tr><td>검수 반려</td><td>팀장 + 위임 수령자</td><td>팀장 + 위임 수령자</td><td>CP 소속 시 마스터</td></tr>
+      <tr><td>예약 공개 24h 전</td><td>팀장 + 위임 수령자</td><td>(선택)</td><td>(선택)</td></tr>
+      <tr><td>발행 완료</td><td>팀장 + 위임 수령자 + 팔로워</td><td>팀장 (선택)</td><td>CP 소속 시 마스터</td></tr>
+      <tr><td>위임 발급</td><td>팀장 + 수령자</td><td>수령자</td><td>—</td></tr>
+      <tr><td>위임 회수</td><td>팀장 + 수령자</td><td>수령자</td><td>—</td></tr>
+      <tr><td>위임 D-3 만료 임박</td><td>팀장</td><td>팀장</td><td>—</td></tr>
+    </table>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:8px;">알림 수신 설정은 워크스페이스 [설정 → 알림] 에서 각자 토글 가능 (이메일만)</p>
+  </div>
+</div>
+
+
+<!-- ─── 8장. 다음 단계 ─── -->
+<div class="chapter-divider" id="ch8">
+  <span class="num">8</span>
+  <span class="title">다음 단계</span>
+  <span class="sub">정책 결정 · 후속 작업 · Out of Scope</span>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">8-1</span>
+    <span class="name">정책 결정이 필요한 항목 (V1.2.1 출시 전)</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>#</th><th>항목</th><th>현재 권장안</th><th>결정 시점</th></tr>
+      <tr><td class="col">D-1</td><td>CP 마스터 무위임 업로드 기본값</td><td><span class="pill green">OFF (작가 보호)</span></td><td>출시 전 ✓</td></tr>
+      <tr><td class="col">D-2</td><td>위임 무기한 허용 여부</td><td><span class="pill green">불허 (최대 365일)</span></td><td>출시 전 ✓</td></tr>
+      <tr><td class="col">D-3</td><td>대리 업로드 외부 노출</td><td><span class="pill green">팀·어드민 내부만 (외부 비공개)</span></td><td>출시 전 ✓</td></tr>
+      <tr><td class="col">D-4</td><td>반려 이의 제기 기능</td><td>V1.2.0.2로 연기</td><td>차후</td></tr>
+      <tr><td class="col">D-5</td><td>예약 공개 일시의 최대 미래값</td><td>3개월</td><td>출시 전</td></tr>
+      <tr><td class="col">D-6</td><td>위임 사용 이력 작가 본인 조회 가능 여부</td><td>가능 (G-자세히 패널)</td><td>출시 전 ✓</td></tr>
+      <tr><td class="col">D-7</td><td>CP 마스터의 작품 직접 편집 허용 여부</td><td>권장 ×</td><td>차후</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge green">8-2</span>
+    <span class="name">후속 작업 — P0 완료 현황</span>
+    <span class="source">5개 작업 모두 완료</span>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>순위</th><th>작업</th><th>산출물</th><th>상태</th></tr>
+      <tr><td class="col">P0-1</td><td>회원가입 4-Step 화면 SB</td><td>playtoon_signup_sb_v1.0.0.html</td><td><span class="pill green">완료</span></td></tr>
+      <tr><td class="col">P0-2</td><td>검수·발행 영역 정밀 SB</td><td>playtoon_review_publish_sb_v1.0.0.html</td><td><span class="pill green">완료</span></td></tr>
+      <tr><td class="col">P0-3</td><td>위임 발급·회수 풀 SB</td><td>playtoon_delegation_sb_v1.0.0.html</td><td><span class="pill green">완료</span></td></tr>
+      <tr><td class="col">P0-4</td><td>DB 마이그레이션 SQL (V1.2.1)</td><td>playtoon_v1.2.1_master.sql + 11 파일</td><td><span class="pill green">완료</span></td></tr>
+      <tr><td class="col">P0-5</td><td>API 명세 (OpenAPI 3.0)</td><td>playtoon_api_v1.2.1.yaml + html</td><td><span class="pill green">완료</span></td></tr>
+      <tr><td class="col">P1</td><td>Figma 디자인 시안</td><td>Figma 파일</td><td>예정</td></tr>
+      <tr><td class="col">P1</td><td>백엔드 구현 스프린트 분할</td><td>이슈 트래커</td><td>예정</td></tr>
+      <tr><td class="col">P1</td><td>어드민 측 미정의 영역 정의 (정산·큐레이션)</td><td>별도 IA 문서</td><td>예정</td></tr>
+      <tr><td class="col">P2+</td><td>플레이북 (Playbook) 에디터 V1.3.0</td><td>—</td><td>장기</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span class="badge">8-3</span>
+    <span class="name">본 문서가 풀지 않은 것 (Out of Scope)</span>
+  </div>
+  <div class="card-body">
+    <ul class="list">
+      <li>어드민의 검수 작업 내부 화면 (검수자 배정·심사 도구·반려 사유 작성 폼)</li>
+      <li>검수 SLA 정책 (영업일 기준·우선순위 큐·긴급 검수 트랙)</li>
+      <li>정산 RS/MG 계약 모델 (파트너 어드민 정산 모듈)</li>
+      <li>IE 요소 가격 정책·과금 모델</li>
+      <li>작품 다국어 검수 분기</li>
+      <li>외부 플랫폼 동시 발행 (Webtoon Canvas 등) 흐름 — 별도 채널 전략</li>
+    </ul>
+  </div>
+</div>
+
+<section class="section-intro" style="margin-top:32px;background:linear-gradient(135deg,var(--brand-red-soft),var(--lavender-soft));">
+  <h2>V1.2.1의 의의</h2>
+  <p>본 V1.2.1은 V1.2.0의 경량화 결정을 부정하지 않는다. 오히려 V1.2.0의 원칙(작가 페르소나·정산 분리)을 유지하면서, 그 안에서 미처 정의되지 못한 두 가지 흐름(작가 본인의 검수 제출 액션 · 팀 협업과 위임)을 추가한다.</p>
+  <p style="margin-top:8px;">결과적으로 워크스페이스 V1.2.1은 "<strong>제작 + 자기 작품 운영 + 팀 협업</strong>"을 모두 포괄하는 작가 중심의 완결된 환경이 된다. 정산·매출·계약은 파트너 어드민으로 유지하고, 작가의 일상 흐름은 워크스페이스 한 곳에서 완결된다.</p>
+  <div class="pills" style="margin-top:16px;">
+    <span class="pill red">제작 (V1.2.0)</span>
+    <span class="pill lavender">+ 자기 작품 운영 (V1.2.1)</span>
+    <span class="pill maroon">+ 팀 협업·위임 (V1.2.1)</span>
+    <span class="pill green">= 작가 중심 완결 환경</span>
+  </div>
+</section>
+
+<p style="text-align:center;color:var(--text-muted);margin-top:32px;font-size:11px;">— 끝 —</p>
+
+</main>
+
+</div>
+
+<footer class="doc-footer">
+  <strong>PlayToon</strong>워크스페이스 V1.2.1 IA · 2026.05.29
+  <div class="meta-line">8장 · 7개 메뉴 + α · 3개 권한 레이어 · 6개 신규 화면 SB</div>
+</footer>
+
+<script>
+const links = document.querySelectorAll('.sidebar a');
+const sections = document.querySelectorAll('[id]');
+function activate() {
+  let current = '';
+  sections.forEach(s => {
+    if (s.getBoundingClientRect().top < 200) current = s.id;
+  });
+  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+}
+window.addEventListener('scroll', activate);
+links.forEach(l => l.addEventListener('click', e => {
+  const t = document.querySelector(l.getAttribute('href'));
+  if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+}));
+</script>
+
+</body>
+</html>
